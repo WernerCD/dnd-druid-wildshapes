@@ -37,7 +37,7 @@
     sort: store.get('ws.sort', 'cr-desc'),
     detail: store.get('ws.detail', 'basic'),
     merge: store.get('ws.merge', false),
-    srcOff: store.get('ws.srcOff', {}),
+    srcSel: store.get('ws.srcSel', null), /* books switched on; null = the core books */
     srcQ: '',
     favs: prof().favs,
     hidden: prof().hidden,
@@ -115,7 +115,20 @@
 
   /* source key: "Monster Manual (2014) p.79" -> "Monster Manual (2014)" */
   function srcKey(x) { return String(x || '').replace(/\s+p\.\s*\d+$/, ''); }
-  function srcOn(k) { return !state.srcOff[k]; }
+  /* the main books: listed first in the Sources picker and selected by default */
+  var CORE = ['SRD 5.1', 'SRD 5.2', 'Monster Manual (2014)', 'Monster Manual (2025)'];
+  function coreSel() { var o = {}; CORE.forEach(function (k) { o[k] = true; }); return o; }
+  function coreIdx(k) { var i = CORE.indexOf(k); return i < 0 ? 99 : i; }
+  function srcSort(a, b) { return coreIdx(a) - coreIdx(b) || a.localeCompare(b); }
+  if (!state.srcSel || typeof state.srcSel !== 'object') state.srcSel = coreSel();
+  function srcOn(k) { return !!state.srcSel[k]; }
+  function allBooks() {
+    var o = {};
+    DATA.beasts.forEach(function (e) { for (var ed in e.editions) o[srcKey(e.editions[ed].source)] = 1; });
+    (DATA.others || []).forEach(function (x) { o[x.sourceName || x.source] = 1; });
+    return Object.keys(o);
+  }
+  var FILTER_DEFAULTS = { q: '', moves: [], size: '', favOnly: false, showHidden: false };
 
   /* one hue per book; CSS turns it into a light- or dark-mode colour */
   var BOOK_HUE = {
@@ -150,7 +163,7 @@
     var seen = {};
     DATA.beasts.forEach(function (e) { for (var ed in e.editions) seen[srcKey(e.editions[ed].source)] = 1; });
     (DATA.others || []).forEach(function (o) { seen[o.sourceName || o.source] = 1; });
-    var keys = Object.keys(seen).sort(function (a, b) { return (/^SRD/.test(a) ? 0 : 1) - (/^SRD/.test(b) ? 0 : 1) || a.localeCompare(b); });
+    var keys = Object.keys(seen).sort(srcSort);
     $('#srcLinks').innerHTML = keys.map(function (k) {
       var u = BOOK_URL[k];
       var note = k === "Boo's Astral Menagerie" ? ' (in the Spelljammer: Adventures in Space set)' : /^SRD/.test(k) ? ' (free, CC-BY-4.0)' : '';
@@ -225,7 +238,7 @@
     renderRules(r);
     $('#wisCtl').hidden = !(state.ed === '2024' && state.circle === 'moon');
     var q = state.q.trim().toLowerCase();
-    var rows = [];
+    var cands = [];
     DATA.beasts.forEach(function (e) {
       var b = block(e);
       if (!b) return;
@@ -233,18 +246,36 @@
       if (e.swarm && !state.swarms) return;
       var el = eligibility(e, b, r);
       if (!el.ok && !state.showAll) return;
-      if (state.size && b.size !== state.size) return;
-      for (var i = 0; i < state.moves.length; i++) if (!b.speed[state.moves[i]]) return;
       if (!srcOn(srcKey(b.source))) return;
       if (state.hidden[e.id] && !state.showHidden) return;
       if (state.favOnly && !state.favs[favKey(e.id)]) return;
       if (q && haystack(e, b).indexOf(q) < 0 && (state.notes[e.id] || '').toLowerCase().indexOf(q) < 0) return;
-      rows.push({ e: e, b: b, el: el });
+      cands.push({ e: e, b: b, el: el });
     });
-    if (state.merge) otherRows(r, q).forEach(function (x) { rows.push(x); });
+    if (state.merge) otherRows(r, q).forEach(function (x) { cands.push(x); });
+    function movesOK(sp, extra) {
+      for (var i = 0; i < state.moves.length; i++) if (!sp[state.moves[i]]) return false;
+      return !extra || !!sp[extra];
+    }
+    var rows = cands.filter(function (x) { return (!state.size || x.b.size === state.size) && movesOK(x.b.speed); });
+    /* counts follow every other filter, so a chip's number is what you get */
+    document.querySelectorAll('[data-move]').forEach(function (btn) {
+      var m = btn.dataset.move, n = cands.filter(function (x) { return (!state.size || x.b.size === state.size) && movesOK(x.b.speed, m); }).length;
+      btn.querySelector('.n').textContent = n;
+      btn.classList.toggle('zero', !n);
+    });
+    Array.prototype.forEach.call($('#size').options, function (o) {
+      if (!o.value) return;
+      var n = cands.filter(function (x) { return x.b.size === o.value && movesOK(x.b.speed); }).length;
+      o.textContent = o.value + ' (' + n + ')';
+    });
     var s = state.sort;
+    /* when searching, beasts whose name matches come before ones that only mention it */
+    function nameHit(x) { return q && (x.b.name.toLowerCase().indexOf(q) >= 0 || (x.e && x.e.name.toLowerCase().indexOf(q) >= 0)) ? 0 : 1; }
     rows.sort(function (x, y) {
       var a = x.b, c = y.b, d = 0;
+      var nh = nameHit(x) - nameHit(y);
+      if (nh) return nh;
       if (s === 'cr-desc') d = c.cr - a.cr; else if (s === 'cr-asc') d = a.cr - c.cr;
       else if (s === 'hp') d = (c.hp == null ? -1 : c.hp) - (a.hp == null ? -1 : a.hp);
       else if (s === 'ac') d = (c.ac == null ? -1 : shownAC(c, r)) - (a.ac == null ? -1 : shownAC(a, r));
@@ -263,7 +294,7 @@
     syncControls();
     var u = new URL(location.href);
     u.searchParams.set('ed', state.ed); u.searchParams.set('circle', state.circle); u.searchParams.set('lvl', state.level);
-    history.replaceState(null, '', u);
+    if (u.href !== location.href) history.replaceState(null, '', u);
   }
 
   function hideBtn(id, name) {
@@ -332,8 +363,6 @@
       if (o.edition !== state.ed) return false;
       if (!srcOn(o.sourceName || o.source)) return false;
       if (q && (o.name + ' ' + o.sourceName).toLowerCase().indexOf(q) < 0) return false;
-      if (state.size && o.size !== state.size) return false;
-      for (var i = 0; i < state.moves.length; i++) if (!o.speed[state.moves[i]]) return false;
       if (state.favOnly && !state.favs[favKey(o.id)]) return false;
       if (state.hidden[o.id] && !state.showHidden) return false;
       return true;
@@ -342,7 +371,7 @@
       if (o.cr > r.maxCR) why.push('CR ' + o.crText + ' (max ' + crText(r.maxCR) + ')');
       if (r.noFly && o.speed.fly) why.push('Fly speed needs level 8');
       if (r.noSwim && o.speed.swim) why.push('Swim speed needs level 4');
-      return { o: o, b: { name: o.name, cr: o.cr, hp: null, ac: null, speed: o.speed }, el: { ok: !why.length, why: why } };
+      return { o: o, b: { name: o.name, cr: o.cr, hp: null, ac: null, size: o.size, speed: o.speed }, el: { ok: !why.length, why: why } };
     }).filter(function (x) { return x.el.ok || state.showAll; });
   }
   function otherCard(o, el) {
@@ -374,21 +403,18 @@
     return c;
   }
   function renderSources() {
-    var c = sourceCounts(), keys = Object.keys(c).sort(function (a, b) {
-      var sa = /^SRD/.test(a) ? 0 : 1, sb = /^SRD/.test(b) ? 0 : 1;
-      return sa - sb || a.localeCompare(b);
-    });
+    var c = sourceCounts(), keys = Object.keys(c).sort(srcSort);
     var on = keys.filter(srcOn).length, q = state.srcQ.trim().toLowerCase();
     $('#srcSum').textContent = 'Sources' + (on === keys.length ? '' : ' (' + on + ' of ' + keys.length + ')');
     $('#srcPick').classList.toggle('filtered', on !== keys.length);
     $('#srcList').innerHTML = keys.filter(function (k) { return !q || k.toLowerCase().indexOf(q) >= 0; }).map(function (k) {
-      return '<label class="srcrow"' + hueAttr(k) + '><input type="checkbox" data-src="' + esc(k) + '"' + (srcOn(k) ? ' checked' : '') + '> <i class="dot" aria-hidden="true"></i><span>' + esc(k) + '</span><span class="n">' + c[k] + '</span></label>';
+      return '<label class="srcrow' + (coreIdx(k) < 99 ? ' core' : '') + '"' + hueAttr(k) + '><input type="checkbox" data-src="' + esc(k) + '"' + (srcOn(k) ? ' checked' : '') + '> <i class="dot" aria-hidden="true"></i><span>' + esc(k) + '</span><span class="n">' + c[k] + '</span></label>';
     }).join('') || '<p class="small muted">No book matches.</p>';
   }
   function setSources(keys, on) {
-    var off = Object.assign({}, state.srcOff);
-    keys.forEach(function (k) { if (on) delete off[k]; else off[k] = true; });
-    update({ srcOff: off });
+    var sel = Object.assign({}, state.srcSel);
+    keys.forEach(function (k) { if (on) sel[k] = true; else delete sel[k]; });
+    update({ srcSel: sel });
   }
   function visibleSrcKeys() {
     return Array.prototype.map.call(document.querySelectorAll('#srcList [data-src]'), function (i) { return i.dataset.src; });
@@ -492,7 +518,7 @@
   function save() {
     store.set('ws.ed', state.ed); store.set('ws.circle', state.circle); store.set('ws.level', state.level);
     store.set('ws.wis', state.wis); store.set('ws.showAll', state.showAll); store.set('ws.swarms', state.swarms);
-    store.set('ws.sort', state.sort); store.set('ws.detail', state.detail); store.set('ws.merge', state.merge); store.set('ws.srcOff', state.srcOff);
+    store.set('ws.sort', state.sort); store.set('ws.detail', state.detail); store.set('ws.merge', state.merge); store.set('ws.srcSel', state.srcSel);
     var p = prof();
     p.favs = state.favs; p.hidden = state.hidden; p.notes = state.notes;
     p.settings = { ed: state.ed, circle: state.circle, level: state.level, wis: state.wis };
@@ -506,8 +532,10 @@
     if (t.dataset.ed) return update({ ed: t.dataset.ed });
     if (t.dataset.circle) return update({ circle: t.dataset.circle });
     if (t.dataset.detail) return update({ detail: t.dataset.detail });
-    if (t.id === 'srcAll') return setSources(Object.keys(sourceCounts()), true);
-    if (t.id === 'srcNone') return setSources(Object.keys(sourceCounts()), false);
+    if (t.id === 'srcAll') return setSources(allBooks(), true);
+    if (t.id === 'srcNone') return setSources(allBooks(), false);
+    if (t.id === 'srcCore') return update({ srcSel: coreSel() });
+    if (t.id === 'resetBtn') { $('#search').value = ''; return update(Object.assign({}, FILTER_DEFAULTS, { moves: [], srcSel: coreSel() })); }
     if (t.id === 'srcShown') { var vis = visibleSrcKeys(); setSources(Object.keys(sourceCounts()), false); return setSources(vis, true); }
     if (t.dataset.move) {
       var m = state.moves.slice(), i = m.indexOf(t.dataset.move);

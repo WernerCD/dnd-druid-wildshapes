@@ -79,10 +79,10 @@
   </div>
   <div class="wrap filters">
     <div class="chips" role="group" aria-label="Movement filter">
-      <button type="button" class="chip" data-move="fly">Fly</button>
-      <button type="button" class="chip" data-move="swim">Swim</button>
-      <button type="button" class="chip" data-move="climb">Climb</button>
-      <button type="button" class="chip" data-move="burrow">Burrow</button>
+      <button type="button" class="chip" data-move="fly">Fly <span class="n"></span></button>
+      <button type="button" class="chip" data-move="swim">Swim <span class="n"></span></button>
+      <button type="button" class="chip" data-move="climb">Climb <span class="n"></span></button>
+      <button type="button" class="chip" data-move="burrow">Burrow <span class="n"></span></button>
     </div>
     <select id="size" aria-label="Size">
       <option value="">Any size</option>
@@ -92,13 +92,14 @@
       <summary id="srcSum">Sources</summary>
       <div class="srcpop">
         <input type="search" id="srcQ" placeholder="Find a book..." aria-label="Filter sources">
-        <div class="srcbtns"><button type="button" id="srcAll">Select all</button><button type="button" id="srcNone">Clear all</button><button type="button" id="srcShown">Only matches</button></div>
+        <div class="srcbtns"><button type="button" id="srcCore">Core books</button><button type="button" id="srcAll">Select all</button><button type="button" id="srcNone">Clear all</button><button type="button" id="srcShown">Only matches</button></div>
         <div id="srcList" class="srclist"></div>
       </div>
     </details>
     <label class="tog"><input type="checkbox" id="showAll"> Show forms I can't use yet</label>
     <label class="tog"><input type="checkbox" id="swarms"> Swarms (DM's call)</label>
     <label class="tog"><input type="checkbox" id="favOnly"> My forms only</label>
+    <button type="button" class="chip" id="resetBtn">Reset filters</button>
     <label class="tog"><input type="checkbox" id="showHidden"> <span id="showHiddenLbl">Show hidden</span></label>
   </div>
 </section>
@@ -157,6 +158,7 @@
   <section class="about changelog" id="changelog">
     <h2>Change log</h2>
     <ol class="clog" reversed>
+      <li><time datetime="2026-11-13">2026-11-13</time> <b>Core books first, live counts.</b> The Sources picker lists the core books first (the SRDs and the Monster Manuals) and starts with only those selected; a <b>Core books</b> button goes back to that. The movement chips and size menu show how many beasts each would give you. Searching lists name matches first. A <b>Reset filters</b> button clears search, movement, size and the book selection. Filter menus stay above the cards on phones, and each update loads fresh instead of an old cached copy.</li>
       <li><time datetime="2026-11-13">2026-11-13</time> <b>Phone fix.</b> On narrow screens the Sources and profile menus no longer slip behind the beast cards.</li>
       <li><time datetime="2026-11-13">2026-11-13</time> <b>New address.</b> The site moved to wernercd.github.io/dnd-druid-wildshapes. Your saved profiles and notes carry over.</li>
       <li><time datetime="2026-11-13">2026-11-13</time> <b>Profiles, hiding and notes.</b> Keep several druids, each with their own starred forms, hidden beasts, notes and settings. Hide any beast from the list (eye icon), and show hidden ones again. Add notes to a beast in its detail view. Export and import a backup file. Added this change log, the source code link and the source material links.</li>

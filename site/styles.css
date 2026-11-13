@@ -271,3 +271,8 @@ a.srctag:hover { text-decoration: underline; }
 .clog li { padding: 8px 0; border-bottom: 1px solid var(--line); }
 .clog li:last-child { border-bottom: 0; }
 .clog time { display: inline-block; font-size: .8rem; color: var(--muted); margin-right: 8px; font-variant-numeric: tabular-nums; }
+/* faceted counts, core books */
+.chip .n { color: var(--muted); font-size: .76rem; }
+.chip.zero { opacity: .45; }
+.srcrow.core span:first-of-type { font-weight: 600; }
+.srcrow.core + .srcrow:not(.core) { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 8px; }
