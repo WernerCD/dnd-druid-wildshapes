@@ -661,7 +661,6 @@
     if (t.dataset.pact) { $('#pMenu').open = false; return profileAction(t.dataset.pact); }
     if (t.dataset.edTab) return openDetail(dlgId, t.dataset.edTab);
     if (t.id === 'closeDlg') return $('#detail').close();
-    if (t.id === 'themeBtn') return toggleTheme();
     if (t.classList.contains('card') && !t.classList.contains('book')) return openDetail(t.dataset.id);
   });
   document.addEventListener('keydown', function (ev) {
@@ -794,13 +793,6 @@
   document.addEventListener('click', function (ev) { var p = $('#srcPick'); if (p.open && !p.contains(ev.target)) p.open = false; });
   $('#favOnly').addEventListener('change', function () { update({ favOnly: this.checked }); });
 
-  function toggleTheme() {
-    var cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    var next = cur === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next; store.set('ws.theme', next);
-  }
-  var th = store.get('ws.theme', null);
-  if (th) document.documentElement.dataset.theme = th;
 
   fetch('data/beasts.json?v=dev').then(function (r) { return r.json(); }).then(function (d) {
     DATA = d;

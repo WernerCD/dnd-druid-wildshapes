@@ -17,7 +17,7 @@ A searchable list of every beast a D&D 5e druid can Wild Shape into, for both th
 - **One list (all books)** merges the other-books beasts into the main list instead of a separate section.
 - Star your known forms, hide beasts you never use (eye icon, with a "Show hidden" toggle), and keep notes on any beast.
 - **Profiles**: one per druid, each with its own stars, hidden beasts, notes and settings. Everything is saved in your browser; **Export backup** / **Import backup** (the ⋯ menu next to Profile) move it to another device or restore it.
-- Source material links for every book, a change log, and a link to this repo at the bottom of the page.
+- Source material links for every book, and a separate change log page (`site/changes.html`). Header, footer and theme follow the shared D&D Toolbox spec (`WernerCD/dnd` STYLE.md).
 - An index of beasts from later official books (Volo's/Monsters of the Multiverse, Tomb of Annihilation, Icewind Dale, Spelljammer, Bigby, the 2024 Monster Manual and others): name, CR, size and speeds only.
 
 ## Layout
