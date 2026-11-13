@@ -276,3 +276,8 @@ a.srctag:hover { text-decoration: underline; }
 .chip.zero { opacity: .45; }
 .srcrow.core span:first-of-type { font-weight: 600; }
 .srcrow.core + .srcrow:not(.core) { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 8px; }
+/* back-link to the D&D Toolbox hub */
+.hub-bar { padding-top: 10px; }
+.hub-link { display: inline-flex; align-items: center; gap: 4px; font-size: .85rem; font-weight: 500; color: var(--muted); text-decoration: none; border-radius: 6px; padding: 2px 0; }
+.hub-link:hover, .hub-link:focus-visible { color: var(--accent); text-decoration: underline; }
+.hub-bar + .header-inner { padding-top: 8px; }
