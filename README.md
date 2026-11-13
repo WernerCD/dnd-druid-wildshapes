@@ -9,6 +9,9 @@ A searchable list of every beast a D&D 5e druid can Wild Shape into, for both th
 - A rules summary for that pick: uses, duration, HP or temp HP, known forms (2024), and Moon features. The 2024 Moon AC floor (13 + Wis) is applied to every form.
 - Full stat blocks in both editions where a beast exists in both. Creatures renamed in 2024 (Quipper/Piranha, Poisonous/Venomous Snake, Sea Horse/Seahorse) share one entry.
 - An original description and a Wild Shape tip for every creature.
+- Card detail toggle: **Basic** (AC, HP, speeds), **Stats** (ability scores, trait names, and one line per attack with to-hit, reach, save DC and damage), or **Full** (the whole stat block on every card).
+- Every card shows its source. A searchable **Sources** picker (Select all / Clear all / Only matches) filters by book.
+- **One list (all books)** merges the other-books beasts into the main list instead of a separate section.
 - Star your known forms. They're saved in your browser.
 - An index of beasts from later official books (Volo's/Monsters of the Multiverse, Tomb of Annihilation, Icewind Dale, Spelljammer, Bigby, the 2024 Monster Manual and others): name, CR, size and speeds only.
 

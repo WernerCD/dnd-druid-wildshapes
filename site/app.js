@@ -20,10 +20,15 @@
     swarms: store.get('ws.swarms', false),
     favOnly: false,
     sort: store.get('ws.sort', 'cr-desc'),
+    detail: store.get('ws.detail', 'basic'),
+    merge: store.get('ws.merge', false),
+    srcOff: store.get('ws.srcOff', {}),
+    srcQ: '',
     favs: store.get('ws.favs', {})
   };
   if (['2014', '2024'].indexOf(state.ed) < 0) state.ed = '2024';
   if (['standard', 'moon'].indexOf(state.circle) < 0) state.circle = 'standard';
+  if (['basic', 'stats', 'full'].indexOf(state.detail) < 0) state.detail = 'basic';
   state.level = Math.min(20, Math.max(2, state.level || 2));
 
   var DATA = null;
@@ -86,6 +91,10 @@
     }
     return r;
   }
+
+  /* source key: "Monster Manual (2014) p.79" -> "Monster Manual (2014)" */
+  function srcKey(x) { return String(x || '').replace(/\s+p\.\s*\d+$/, ''); }
+  function srcOn(k) { return !state.srcOff[k]; }
 
   function block(entry) { return entry.editions[state.ed]; }
 
@@ -157,24 +166,30 @@
       if (!el.ok && !state.showAll) return;
       if (state.size && b.size !== state.size) return;
       for (var i = 0; i < state.moves.length; i++) if (!b.speed[state.moves[i]]) return;
+      if (!srcOn(srcKey(b.source))) return;
       if (state.favOnly && !state.favs[favKey(e.id)]) return;
       if (q && haystack(e, b).indexOf(q) < 0) return;
       rows.push({ e: e, b: b, el: el });
     });
+    if (state.merge) otherRows(r, q).forEach(function (x) { rows.push(x); });
     var s = state.sort;
     rows.sort(function (x, y) {
       var a = x.b, c = y.b, d = 0;
       if (s === 'cr-desc') d = c.cr - a.cr; else if (s === 'cr-asc') d = a.cr - c.cr;
-      else if (s === 'hp') d = (c.hp || 0) - (a.hp || 0); else if (s === 'ac') d = shownAC(c, r) - shownAC(a, r);
+      else if (s === 'hp') d = (c.hp == null ? -1 : c.hp) - (a.hp == null ? -1 : a.hp);
+      else if (s === 'ac') d = (c.ac == null ? -1 : shownAC(c, r)) - (a.ac == null ? -1 : shownAC(a, r));
       else if (s === 'speed') d = maxSpeed(c.speed) - maxSpeed(a.speed);
       if (x.el.ok !== y.el.ok) return x.el.ok ? -1 : 1;
       return d || a.name.localeCompare(c.name);
     });
     var okN = rows.filter(function (x) { return x.el.ok; }).length;
     $('#count').textContent = okN + ' beast' + (okN === 1 ? '' : 's') + ' available' + (rows.length > okN ? ' (' + (rows.length - okN) + ' locked shown)' : '');
-    $('#list').innerHTML = rows.map(function (x) { return card(x.e, x.b, x.el, r); }).join('');
+    var list = $('#list');
+    list.className = 'list detail-' + state.detail;
+    list.innerHTML = rows.map(function (x) { return x.o ? otherCard(x.o, x.el) : card(x.e, x.b, x.el, r); }).join('');
     $('#empty').hidden = rows.length > 0;
-    renderOthers(r, q);
+    if (state.merge) $('#othersSec').hidden = true; else renderOthers(r, q);
+    renderSources();
     syncControls();
     var u = new URL(location.href);
     u.searchParams.set('ed', state.ed); u.searchParams.set('circle', state.circle); u.searchParams.set('lvl', state.level);
@@ -193,16 +208,118 @@
       '<div class="nums"><div><span>AC</span><b>' + acv + '</b>' + (acv !== b.ac ? '<span class="small"> (' + b.ac + ')</span>' : '') + '</div><div><span>HP</span><b>' + (b.hp == null ? '?' : b.hp) + '</b></div>' +
       (b.pp ? '<div><span>PP</span><b>' + b.pp + '</b></div>' : '') + '</div>' +
       '<div class="moves">' + moves(b.speed) + '</div>' +
+      '<div class="src">' + esc(b.source) + '</div>' +
       (el.ok ? '' : '<div class="why">' + esc(el.why.join(' · ')) + '</div>') +
+      (state.detail === 'stats' ? cardStats(b) : state.detail === 'full' ? '<div class="statblock mini">' + sbBody(b, r) + '</div>' : '') +
       '</article>';
+  }
+
+  /* "Stats" card level: ability scores, trait names, one line per attack */
+  function abilRow(b) {
+    var ab = b.abilities || {}, keys = ['str', 'dex', 'con', 'int', 'wis', 'cha'].filter(function (k) { return ab[k] != null; });
+    if (!keys.length) return '';
+    return '<div class="abil' + (keys.length === 3 ? ' three' : '') + '">' + keys.map(function (k) {
+      return '<div class="' + (['int', 'wis', 'cha'].indexOf(k) >= 0 ? 'mental' : '') + '"><b>' + k.toUpperCase() + '</b>' + ab[k] + ' (' + sgn(abMod(ab[k])) + ')</div>';
+    }).join('') + '</div>';
+  }
+  function attackLine(a) {
+    var d = a.desc || '', bits = [];
+    var hit = d.match(/Attack(?: Roll)?:\s*([+-]\d+)/i);
+    if (hit) bits.push(hit[1] + ' to hit');
+    var rr = d.match(/\b(reach \d+ ft|range [\d\/]+ ft)/i);
+    if (rr) bits.push(rr[1]);
+    var sv = d.match(/(\w+) Saving Throw: DC (\d+)/);
+    if (sv) bits.push('DC ' + sv[2] + ' ' + sv[1].slice(0, 3));
+    else { sv = d.match(/DC (\d+) (\w+) saving throw/i); if (sv) bits.push('DC ' + sv[1] + ' ' + sv[2].slice(0, 3)); }
+    var dmg = [], re = /(?:(\d+) \()?(\d+d\d+(?:\s*[+-]\s*\d+)?)\)? (\w+) damage/gi, m;
+    while ((m = re.exec(d)) && dmg.length < 3) dmg.push((m[1] ? m[1] + ' (' + m[2].replace(/\s+/g, '') + ')' : m[2].replace(/\s+/g, '')) + ' ' + m[3].toLowerCase());
+    if (/^multiattack$/i.test(a.name)) return '<li><b>Multiattack.</b> ' + esc(d.replace(/^The [\w ]+? makes /, 'Makes ')) + '</li>';
+    if (!dmg.length && !hit && !sv) return '<li><b>' + esc(a.name) + '</b></li>';
+    return '<li><b>' + esc(a.name) + '</b> ' + esc(bits.join(', ')) + (dmg.length ? ' &rarr; ' + esc(dmg.join(' + ')) : '') + '</li>';
+  }
+  function cardStats(b) {
+    var h = '<div class="cstats">' + abilRow(b);
+    if (b.traits && b.traits.length) h += '<p class="ctraits"><b>Traits:</b> ' + esc(b.traits.map(function (t) { return t.name; }).join(', ')) + '</p>';
+    var acts = (b.actions || []).concat(b.bonusActions || []);
+    if (acts.length) h += '<ul class="attacks">' + acts.map(attackLine).join('') + '</ul>';
+    return h + '</div>';
+  }
+
+  /* beasts from other books, as rows for the merged list */
+  function otherRows(r, q) {
+    return (DATA.others || []).filter(function (o) {
+      if (o.edition !== state.ed) return false;
+      if (!srcOn(o.sourceName || o.source)) return false;
+      if (q && (o.name + ' ' + o.sourceName).toLowerCase().indexOf(q) < 0) return false;
+      if (state.size && o.size !== state.size) return false;
+      for (var i = 0; i < state.moves.length; i++) if (!o.speed[state.moves[i]]) return false;
+      if (state.favOnly && !state.favs[favKey(o.id)]) return false;
+      return true;
+    }).map(function (o) {
+      var why = [];
+      if (o.cr > r.maxCR) why.push('CR ' + o.crText + ' (max ' + crText(r.maxCR) + ')');
+      if (r.noFly && o.speed.fly) why.push('Fly speed needs level 8');
+      if (r.noSwim && o.speed.swim) why.push('Swim speed needs level 4');
+      return { o: o, b: { name: o.name, cr: o.cr, hp: null, ac: null, speed: o.speed }, el: { ok: !why.length, why: why } };
+    }).filter(function (x) { return x.el.ok || state.showAll; });
+  }
+  function otherCard(o, el) {
+    var fav = !!state.favs[favKey(o.id)], book = o.sourceName || o.source;
+    return '<article class="card book' + (el.ok ? '' : ' locked') + '">' +
+      '<button type="button" class="fav" data-fav="' + o.id + '" aria-pressed="' + fav + '" aria-label="Star ' + esc(o.name) + ' as a known form" title="Known form">' +
+      '<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>' +
+      '<div class="card-top"><div><h3>' + esc(o.name) + '</h3></div><span class="cr">CR ' + esc(o.crText) + '</span></div>' +
+      '<div class="meta">' + esc(o.size || '') + ' &middot; basics only</div>' +
+      '<div class="moves">' + moves(o.speed) + '</div>' +
+      '<div class="src">' + esc(book) + '</div>' +
+      (el.ok ? '' : '<div class="why">' + esc(el.why.join(' · ')) + '</div>') +
+      (state.detail !== 'basic' ? '<p class="small muted nostats">Full stats are in ' + esc(book) + '.</p>' : '') +
+      '</article>';
+  }
+
+  /* source picker: every source in the current edition, with counts */
+  function sourceCounts() {
+    var c = {};
+    DATA.beasts.forEach(function (e) {
+      var b = e.editions[state.ed];
+      if (!b || (e.elemental && state.ed !== '2014')) return;
+      var k = srcKey(b.source); c[k] = (c[k] || 0) + 1;
+    });
+    (DATA.others || []).forEach(function (o) {
+      if (o.edition !== state.ed) return;
+      var k = o.sourceName || o.source; c[k] = (c[k] || 0) + 1;
+    });
+    return c;
+  }
+  function renderSources() {
+    var c = sourceCounts(), keys = Object.keys(c).sort(function (a, b) {
+      var sa = /^SRD/.test(a) ? 0 : 1, sb = /^SRD/.test(b) ? 0 : 1;
+      return sa - sb || a.localeCompare(b);
+    });
+    var on = keys.filter(srcOn).length, q = state.srcQ.trim().toLowerCase();
+    $('#srcSum').textContent = 'Sources' + (on === keys.length ? '' : ' (' + on + ' of ' + keys.length + ')');
+    $('#srcPick').classList.toggle('filtered', on !== keys.length);
+    $('#srcList').innerHTML = keys.filter(function (k) { return !q || k.toLowerCase().indexOf(q) >= 0; }).map(function (k) {
+      return '<label class="srcrow"><input type="checkbox" data-src="' + esc(k) + '"' + (srcOn(k) ? ' checked' : '') + '> <span>' + esc(k) + '</span><span class="n">' + c[k] + '</span></label>';
+    }).join('') || '<p class="small muted">No book matches.</p>';
+  }
+  function setSources(keys, on) {
+    var off = Object.assign({}, state.srcOff);
+    keys.forEach(function (k) { if (on) delete off[k]; else off[k] = true; });
+    update({ srcOff: off });
+  }
+  function visibleSrcKeys() {
+    return Array.prototype.map.call(document.querySelectorAll('#srcList [data-src]'), function (i) { return i.dataset.src; });
   }
 
   function renderOthers(r, q) {
     var list = (DATA.others || []).filter(function (o) {
       if (o.edition !== state.ed) return false;
+      if (!srcOn(o.sourceName || o.source)) return false;
       if (q && (o.name + ' ' + o.sourceName).toLowerCase().indexOf(q) < 0) return false;
       if (state.size && o.size !== state.size) return false;
       for (var i = 0; i < state.moves.length; i++) if (!o.speed[state.moves[i]]) return false;
+      if (state.favOnly && !state.favs[favKey(o.id)]) return false;
       return true;
     }).map(function (o) {
       var ok = o.cr <= r.maxCR && !(r.noFly && o.speed.fly) && !(r.noSwim && o.speed.swim);
@@ -236,27 +353,7 @@
     }
     if (e.desc) h += '<p class="desc">' + esc(e.desc) + '</p>';
     if (e.tip) h += '<div class="tip"><b>Wild Shape tip:</b> ' + esc(e.tip) + '</div>';
-    h += '<div class="statblock">';
-    h += '<p><b>Armor Class</b> ' + b.ac + (b.acNote ? ' (' + esc(b.acNote) + ')' : '') +
-      (r.moonAC && b.type === 'Beast' ? ' <span class="small">&rarr; ' + Math.max(b.ac, r.moonAC) + ' with Circle Forms</span>' : '') +
-      (b.init != null ? ' &nbsp; <b>Initiative</b> ' + sgn(b.init) : '') + '</p>';
-    h += '<p><b>Hit Points</b> ' + (b.hp == null ? '?' : b.hp) + (b.hd ? ' (' + esc(b.hd) + ')' : '') + '</p>';
-    h += '<p><b>Speed</b> ' + ['walk', 'climb', 'swim', 'fly', 'burrow'].filter(function (k) { return b.speed[k]; }).map(function (k) {
-      return (k === 'walk' ? '' : k + ' ') + b.speed[k] + ' ft.' + (k === 'fly' && b.speed.hover ? ' (hover)' : '');
-    }).join(', ') + '</p><hr>';
-    var ab = b.abilities, keys = ['str', 'dex', 'con', 'int', 'wis', 'cha'].filter(function (k) { return ab[k] != null; });
-    h += '<div class="abil' + (keys.length === 3 ? ' three' : '') + '">' + keys.map(function (k) {
-      return '<div class="' + (['int', 'wis', 'cha'].indexOf(k) >= 0 ? 'mental' : '') + '"><b>' + k.toUpperCase() + '</b>' + ab[k] + ' (' + sgn(abMod(ab[k])) + ')</div>';
-    }).join('') + '</div><hr>';
-    var sk = Object.keys(b.skills || {});
-    if (sk.length) h += '<p><b>Skills</b> ' + sk.map(function (k) { return k.replace(/_/g, ' ').replace(/^./, function (c) { return c.toUpperCase(); }) + ' ' + sgn(b.skills[k]); }).join(', ') + '</p>';
-    if (b.vuln) h += '<p><b>Vulnerabilities</b> ' + esc(b.vuln) + '</p>';
-    if (b.resist) h += '<p><b>Resistances</b> ' + esc(b.resist) + '</p>';
-    if (b.immune) h += '<p><b>Immunities</b> ' + esc(b.immune) + '</p>';
-    if (b.condImmune) h += '<p><b>Condition Immunities</b> ' + esc(b.condImmune) + '</p>';
-    h += '<p><b>Senses</b> ' + esc((b.senses || []).concat(b.pp ? ['Passive Perception ' + b.pp] : []).join(', ') || '--') + '</p>';
-    h += section('Traits', b.traits) + section('Actions', b.actions) + section('Bonus Actions', b.bonusActions) + section('Reactions', b.reactions);
-    h += '</div>';
+    h += '<div class="statblock">' + sbBody(b, r) + '</div>';
     if (b.note) h += '<p class="small">' + esc(b.note) + '</p>';
     h += '<div class="wsnote">' + (el.ok ? '<b>Available</b> to a ' + (r.moonActive ? 'Moon' : 'standard') + ' druid at level ' + state.level + ' (' + dlgEd + ' rules).' :
       '<b>Not yet available</b> at level ' + state.level + ': ' + esc(el.why.join('; ')) + '.') +
@@ -265,6 +362,26 @@
     var d = $('#detail');
     if (!d.open) { if (d.showModal) d.showModal(); else d.setAttribute('open', ''); }
     d.querySelector('.dlg').scrollTop = 0;
+  }
+  function sbBody(b, r) {
+    var h = '';
+    h += '<p><b>Armor Class</b> ' + b.ac + (b.acNote ? ' (' + esc(b.acNote) + ')' : '') +
+      (r.moonAC && b.type === 'Beast' ? ' <span class="small">&rarr; ' + Math.max(b.ac, r.moonAC) + ' with Circle Forms</span>' : '') +
+      (b.init != null ? ' &nbsp; <b>Initiative</b> ' + sgn(b.init) : '') + '</p>';
+    h += '<p><b>Hit Points</b> ' + (b.hp == null ? '?' : b.hp) + (b.hd ? ' (' + esc(b.hd) + ')' : '') + '</p>';
+    h += '<p><b>Speed</b> ' + ['walk', 'climb', 'swim', 'fly', 'burrow'].filter(function (k) { return b.speed[k]; }).map(function (k) {
+      return (k === 'walk' ? '' : k + ' ') + b.speed[k] + ' ft.' + (k === 'fly' && b.speed.hover ? ' (hover)' : '');
+    }).join(', ') + '</p><hr>';
+    h += abilRow(b) + '<hr>';
+    var sk = Object.keys(b.skills || {});
+    if (sk.length) h += '<p><b>Skills</b> ' + sk.map(function (k) { return k.replace(/_/g, ' ').replace(/^./, function (c) { return c.toUpperCase(); }) + ' ' + sgn(b.skills[k]); }).join(', ') + '</p>';
+    if (b.vuln) h += '<p><b>Vulnerabilities</b> ' + esc(b.vuln) + '</p>';
+    if (b.resist) h += '<p><b>Resistances</b> ' + esc(b.resist) + '</p>';
+    if (b.immune) h += '<p><b>Immunities</b> ' + esc(b.immune) + '</p>';
+    if (b.condImmune) h += '<p><b>Condition Immunities</b> ' + esc(b.condImmune) + '</p>';
+    h += '<p><b>Senses</b> ' + esc((b.senses || []).concat(b.pp ? ['Passive Perception ' + b.pp] : []).join(', ') || '--') + '</p>';
+    h += section('Traits', b.traits) + section('Actions', b.actions) + section('Bonus Actions', b.bonusActions) + section('Reactions', b.reactions);
+    return h;
   }
   function section(t, list) {
     if (!list || !list.length) return '';
@@ -278,12 +395,13 @@
     document.querySelectorAll('[data-move]').forEach(function (b) { b.setAttribute('aria-pressed', state.moves.indexOf(b.dataset.move) >= 0); });
     $('#level').value = state.level; $('#levelOut').textContent = state.level;
     $('#wis').value = state.wis; $('#showAll').checked = state.showAll; $('#swarms').checked = state.swarms;
-    $('#favOnly').checked = state.favOnly; $('#sort').value = state.sort;
+    $('#favOnly').checked = state.favOnly; $('#sort').value = state.sort; $('#merge').checked = state.merge;
+    document.querySelectorAll('[data-detail]').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.detail === state.detail); });
   }
   function save() {
     store.set('ws.ed', state.ed); store.set('ws.circle', state.circle); store.set('ws.level', state.level);
     store.set('ws.wis', state.wis); store.set('ws.showAll', state.showAll); store.set('ws.swarms', state.swarms);
-    store.set('ws.sort', state.sort); store.set('ws.favs', state.favs);
+    store.set('ws.sort', state.sort); store.set('ws.detail', state.detail); store.set('ws.merge', state.merge); store.set('ws.srcOff', state.srcOff); store.set('ws.favs', state.favs);
   }
   function update(patch) { for (var k in patch) state[k] = patch[k]; save(); render(); }
 
@@ -292,6 +410,10 @@
     if (!t) return;
     if (t.dataset.ed) return update({ ed: t.dataset.ed });
     if (t.dataset.circle) return update({ circle: t.dataset.circle });
+    if (t.dataset.detail) return update({ detail: t.dataset.detail });
+    if (t.id === 'srcAll') return setSources(Object.keys(sourceCounts()), true);
+    if (t.id === 'srcNone') return setSources(Object.keys(sourceCounts()), false);
+    if (t.id === 'srcShown') { var vis = visibleSrcKeys(); setSources(Object.keys(sourceCounts()), false); return setSources(vis, true); }
     if (t.dataset.move) {
       var m = state.moves.slice(), i = m.indexOf(t.dataset.move);
       if (i >= 0) m.splice(i, 1); else m.push(t.dataset.move);
@@ -306,7 +428,7 @@
     if (t.dataset.edTab) return openDetail(dlgId, t.dataset.edTab);
     if (t.id === 'closeDlg') return $('#detail').close();
     if (t.id === 'themeBtn') return toggleTheme();
-    if (t.classList.contains('card')) return openDetail(t.dataset.id);
+    if (t.classList.contains('card') && !t.classList.contains('book')) return openDetail(t.dataset.id);
   });
   document.addEventListener('keydown', function (ev) {
     if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.classList && ev.target.classList.contains('card')) { ev.preventDefault(); openDetail(ev.target.dataset.id); }
@@ -319,6 +441,10 @@
   $('#sort').addEventListener('change', function () { update({ sort: this.value }); });
   $('#showAll').addEventListener('change', function () { update({ showAll: this.checked }); });
   $('#swarms').addEventListener('change', function () { update({ swarms: this.checked }); });
+  $('#merge').addEventListener('change', function () { update({ merge: this.checked }); });
+  $('#srcQ').addEventListener('input', function () { state.srcQ = this.value; renderSources(); });
+  $('#srcList').addEventListener('change', function (ev) { var k = ev.target.dataset.src; if (k) setSources([k], ev.target.checked); });
+  document.addEventListener('click', function (ev) { var p = $('#srcPick'); if (p.open && !p.contains(ev.target)) p.open = false; });
   $('#favOnly').addEventListener('change', function () { update({ favOnly: this.checked }); });
 
   function toggleTheme() {
