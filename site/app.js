@@ -7,12 +7,27 @@
     set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private mode */ } }
   };
 
+  /* Profiles: one per druid/character. Each keeps its own starred forms,
+     hidden beasts, notes and settings. Stored in this browser only. */
+  var PROFILES = store.get('ws.profiles', null);
+  if (!PROFILES || !PROFILES.list || typeof PROFILES.list !== 'object' || !Object.keys(PROFILES.list).length) {
+    PROFILES = { active: 'My druid', list: { 'My druid': { favs: store.get('ws.favs', {}), hidden: {}, notes: {} } } };
+  }
+  function prof() {
+    if (!PROFILES.list[PROFILES.active]) PROFILES.active = Object.keys(PROFILES.list)[0];
+    var p = PROFILES.list[PROFILES.active];
+    p.favs = p.favs || {}; p.hidden = p.hidden || {}; p.notes = p.notes || {};
+    return p;
+  }
+  var pset = prof().settings || {};
+
   var params = new URLSearchParams(location.search);
   var state = {
-    ed: params.get('ed') || store.get('ws.ed', '2024'),
-    circle: params.get('circle') || store.get('ws.circle', 'standard'),
-    level: +(params.get('lvl') || store.get('ws.level', 2)),
-    wis: +store.get('ws.wis', 3),
+    ed: params.get('ed') || pset.ed || store.get('ws.ed', '2024'),
+    circle: params.get('circle') || pset.circle || store.get('ws.circle', 'standard'),
+    level: +(params.get('lvl') || pset.level || store.get('ws.level', 2)),
+    wis: +(pset.wis != null ? pset.wis : store.get('ws.wis', 3)),
+    showHidden: false,
     q: '',
     moves: [],
     size: '',
@@ -24,12 +39,18 @@
     merge: store.get('ws.merge', false),
     srcOff: store.get('ws.srcOff', {}),
     srcQ: '',
-    favs: store.get('ws.favs', {})
+    favs: prof().favs,
+    hidden: prof().hidden,
+    notes: prof().notes
   };
-  if (['2014', '2024'].indexOf(state.ed) < 0) state.ed = '2024';
-  if (['standard', 'moon'].indexOf(state.circle) < 0) state.circle = 'standard';
-  if (['basic', 'stats', 'full'].indexOf(state.detail) < 0) state.detail = 'basic';
-  state.level = Math.min(20, Math.max(2, state.level || 2));
+  function clampState() {
+    if (['2014', '2024'].indexOf(state.ed) < 0) state.ed = '2024';
+    if (['standard', 'moon'].indexOf(state.circle) < 0) state.circle = 'standard';
+    if (['basic', 'stats', 'full'].indexOf(state.detail) < 0) state.detail = 'basic';
+    state.level = Math.min(20, Math.max(2, +state.level || 2));
+    state.wis = isNaN(+state.wis) ? 3 : Math.max(-1, Math.min(7, +state.wis));
+  }
+  clampState();
 
   var DATA = null;
   var $ = function (s) { return document.querySelector(s); };
@@ -107,6 +128,35 @@
     'Mordenkainen Presents: Monsters of the Multiverse': 268, "Volo's Guide to Monsters": 284,
     'The Wild Beyond the Witchlight': 304, "Boo's Astral Menagerie": 324
   };
+  /* where each book can be found (official pages; all links checked 2026-11-13) */
+  var SRD_URL = 'https://dnd.wizards.com/resources/systems-reference-document';
+  var BOOK_URL = {
+    'SRD 5.1': SRD_URL, 'SRD 5.2': SRD_URL,
+    'Monster Manual (2014)': 'https://www.dndbeyond.com/sources/dnd/mm-2014', 'Monster Manual (2025)': 'https://www.dndbeyond.com/sources/dnd/mm-2024',
+    "Fizban's Treasury of Dragons": 'https://www.dndbeyond.com/sources/dnd/ftod', 'Bigby Presents: Glory of the Giants': 'https://www.dndbeyond.com/sources/dnd/gotg',
+    'Tomb of Annihilation': 'https://www.dndbeyond.com/sources/dnd/toa', 'Tales from the Yawning Portal': 'https://www.dndbeyond.com/sources/dnd/tftyp',
+    "Storm King's Thunder": 'https://www.dndbeyond.com/sources/dnd/skt', "Explorer's Guide to Wildemount": 'https://www.dndbeyond.com/sources/dnd/egtw',
+    'Ghosts of Saltmarsh': 'https://www.dndbeyond.com/sources/dnd/gos', 'Icewind Dale: Rime of the Frostmaiden': 'https://www.dndbeyond.com/sources/dnd/idrotf',
+    'Eberron: Rising from the Last War': 'https://www.dndbeyond.com/sources/dnd/erftlw', 'Out of the Abyss': 'https://www.dndbeyond.com/sources/dnd/oota',
+    'Strixhaven: A Curriculum of Chaos': 'https://www.dndbeyond.com/sources/dnd/sacoc', 'Mordenkainen Presents: Monsters of the Multiverse': 'https://www.dndbeyond.com/sources/dnd/motm',
+    "Volo's Guide to Monsters": 'https://www.dndbeyond.com/sources/dnd/vgtm', 'The Wild Beyond the Witchlight': 'https://www.dndbeyond.com/sources/dnd/twbtw',
+    "Boo's Astral Menagerie": 'https://www.dndbeyond.com/sources/dnd/sais'
+  };
+  function bookLink(label) {
+    var u = BOOK_URL[srcKey(label)];
+    return u ? '<a class="srctag" href="' + u + '" target="_blank" rel="noopener"' + hueAttr(label) + '>' + esc(label) + '</a>' : srcTag(label);
+  }
+  function renderSourceLinks() {
+    var seen = {};
+    DATA.beasts.forEach(function (e) { for (var ed in e.editions) seen[srcKey(e.editions[ed].source)] = 1; });
+    (DATA.others || []).forEach(function (o) { seen[o.sourceName || o.source] = 1; });
+    var keys = Object.keys(seen).sort(function (a, b) { return (/^SRD/.test(a) ? 0 : 1) - (/^SRD/.test(b) ? 0 : 1) || a.localeCompare(b); });
+    $('#srcLinks').innerHTML = keys.map(function (k) {
+      var u = BOOK_URL[k];
+      var note = k === "Boo's Astral Menagerie" ? ' (in the Spelljammer: Adventures in Space set)' : /^SRD/.test(k) ? ' (free, CC-BY-4.0)' : '';
+      return '<li><i class="dot"' + hueAttr(k) + '></i>' + (u ? '<a href="' + u + '" target="_blank" rel="noopener">' + esc(k) + '</a>' : esc(k)) + esc(note) + '</li>';
+    }).join('');
+  }
   function srcHue(k) {
     if (BOOK_HUE[k] != null) return BOOK_HUE[k];
     var h = 0; for (var i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) % 360;
@@ -186,8 +236,9 @@
       if (state.size && b.size !== state.size) return;
       for (var i = 0; i < state.moves.length; i++) if (!b.speed[state.moves[i]]) return;
       if (!srcOn(srcKey(b.source))) return;
+      if (state.hidden[e.id] && !state.showHidden) return;
       if (state.favOnly && !state.favs[favKey(e.id)]) return;
-      if (q && haystack(e, b).indexOf(q) < 0) return;
+      if (q && haystack(e, b).indexOf(q) < 0 && (state.notes[e.id] || '').toLowerCase().indexOf(q) < 0) return;
       rows.push({ e: e, b: b, el: el });
     });
     if (state.merge) otherRows(r, q).forEach(function (x) { rows.push(x); });
@@ -215,11 +266,21 @@
     history.replaceState(null, '', u);
   }
 
+  function hideBtn(id, name) {
+    var hid = !!state.hidden[id];
+    return '<button type="button" class="hide" data-hide="' + id + '" aria-pressed="' + hid + '" aria-label="' + (hid ? 'Show ' : 'Hide ') + esc(name) + '" title="' + (hid ? 'Hidden: click to show it again' : 'Hide this beast') + '">' +
+      '<svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>' + (hid ? '<path d="M3 3l18 18"/>' : '') + '</svg></button>';
+  }
+  function noteHTML(id) {
+    var n = state.notes[id];
+    return n ? '<p class="cnote"><b>Note:</b> ' + esc(n) + '</p>' : '';
+  }
   function card(e, b, el, r) {
     var fav = !!state.favs[favKey(e.id)];
     var alt = b.name !== e.name ? '<div class="alt">' + esc(e.name) + ' in 2014</div>' : '';
     var acv = shownAC(b, r);
-    return '<article class="card' + (el.ok ? '' : ' locked') + '"' + hueAttr(b.source) + ' data-id="' + e.id + '" tabindex="0" role="button" aria-label="' + esc(b.name) + ' details">' +
+    return '<article class="card' + (el.ok ? '' : ' locked') + (state.hidden[e.id] ? ' is-hidden' : '') + '"' + hueAttr(b.source) + ' data-id="' + e.id + '" tabindex="0" role="button" aria-label="' + esc(b.name) + ' details">' +
+      hideBtn(e.id, b.name) +
       '<button type="button" class="fav" data-fav="' + e.id + '" aria-pressed="' + fav + '" aria-label="Star ' + esc(b.name) + ' as a known form" title="Known form">' +
       '<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>' +
       '<div class="card-top"><div><h3>' + esc(b.name) + '</h3>' + alt + '</div><span class="cr">CR ' + b.crText + '</span></div>' +
@@ -229,6 +290,7 @@
       '<div class="moves">' + moves(b.speed) + '</div>' +
       '<div class="src">' + srcTag(b.source) + '</div>' +
       (el.ok ? '' : '<div class="why">' + esc(el.why.join(' · ')) + '</div>') +
+      noteHTML(e.id) +
       (state.detail === 'stats' ? cardStats(b) : state.detail === 'full' ? '<div class="statblock mini">' + sbBody(b, r) + '</div>' : '') +
       '</article>';
   }
@@ -273,6 +335,7 @@
       if (state.size && o.size !== state.size) return false;
       for (var i = 0; i < state.moves.length; i++) if (!o.speed[state.moves[i]]) return false;
       if (state.favOnly && !state.favs[favKey(o.id)]) return false;
+      if (state.hidden[o.id] && !state.showHidden) return false;
       return true;
     }).map(function (o) {
       var why = [];
@@ -284,7 +347,7 @@
   }
   function otherCard(o, el) {
     var fav = !!state.favs[favKey(o.id)], book = o.sourceName || o.source;
-    return '<article class="card book' + (el.ok ? '' : ' locked') + '"' + hueAttr(book) + '>' +
+    return '<article class="card book' + (el.ok ? '' : ' locked') + (state.hidden[o.id] ? ' is-hidden' : '') + '"' + hueAttr(book) + '>' + hideBtn(o.id, o.name) +
       '<button type="button" class="fav" data-fav="' + o.id + '" aria-pressed="' + fav + '" aria-label="Star ' + esc(o.name) + ' as a known form" title="Known form">' +
       '<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>' +
       '<div class="card-top"><div><h3>' + esc(o.name) + '</h3></div><span class="cr">CR ' + esc(o.crText) + '</span></div>' +
@@ -339,6 +402,7 @@
       if (state.size && o.size !== state.size) return false;
       for (var i = 0; i < state.moves.length; i++) if (!o.speed[state.moves[i]]) return false;
       if (state.favOnly && !state.favs[favKey(o.id)]) return false;
+      if (state.hidden[o.id] && !state.showHidden) return false;
       return true;
     }).map(function (o) {
       var ok = o.cr <= r.maxCR && !(r.noFly && o.speed.fly) && !(r.noSwim && o.speed.swim);
@@ -364,7 +428,7 @@
     var el = eligibility(e, b, r);
     var eds = Object.keys(e.editions).sort();
     var h = '<div class="sb-head"><h2 id="dTitle">' + esc(b.name) + '</h2>' +
-      '<p class="sb-sub">' + esc(b.size + ' ' + b.type + (b.swarm ? ' (swarm)' : '')) + ', CR ' + b.crText + ' ' + srcTag(b.source) + '</p></div>';
+      '<p class="sb-sub">' + esc(b.size + ' ' + b.type + (b.swarm ? ' (swarm)' : '')) + ', CR ' + b.crText + ' ' + bookLink(b.source) + '</p></div>';
     if (eds.length > 1) {
       h += '<div class="ed-tabs" role="tablist">' + eds.map(function (x) {
         return '<button type="button" role="tab" data-ed-tab="' + x + '" aria-selected="' + (x === dlgEd) + '">' + x + ' rules' + (e.names[x] !== b.name ? '' : '') + '</button>';
@@ -372,6 +436,11 @@
     }
     if (e.desc) h += '<p class="desc">' + esc(e.desc) + '</p>';
     if (e.tip) h += '<div class="tip"><b>Wild Shape tip:</b> ' + esc(e.tip) + '</div>';
+    var isFav = !!state.favs[favKey(e.id)], isHid = !!state.hidden[e.id];
+    h += '<div class="mynotes"><label for="noteBox">My notes <span class="muted small">(' + esc(PROFILES.active) + ', saved in this browser)</span></label>' +
+      '<textarea id="noteBox" data-note="' + e.id + '" rows="3" maxlength="5000" placeholder="Tactics, when you used it, DM rulings...">' + esc(state.notes[e.id] || '') + '</textarea>' +
+      '<div class="mn-actions"><button type="button" class="btn" data-fav="' + e.id + '" aria-pressed="' + isFav + '">' + (isFav ? '&#9733; Known form' : '&#9734; Mark as known form') + '</button>' +
+      '<button type="button" class="btn" data-hide="' + e.id + '" aria-pressed="' + isHid + '">' + (isHid ? 'Show in list again' : 'Hide from list') + '</button></div></div>';
     h += '<div class="statblock">' + sbBody(b, r) + '</div>';
     if (b.note) h += '<p class="small">' + esc(b.note) + '</p>';
     h += '<div class="wsnote">' + (el.ok ? '<b>Available</b> to a ' + (r.moonActive ? 'Moon' : 'standard') + ' druid at level ' + state.level + ' (' + dlgEd + ' rules).' :
@@ -414,13 +483,20 @@
     document.querySelectorAll('[data-move]').forEach(function (b) { b.setAttribute('aria-pressed', state.moves.indexOf(b.dataset.move) >= 0); });
     $('#level').value = state.level; $('#levelOut').textContent = state.level;
     $('#wis').value = state.wis; $('#showAll').checked = state.showAll; $('#swarms').checked = state.swarms;
+    $('#showHidden').checked = state.showHidden;
+    var nh = Object.keys(state.hidden).length;
+    $('#showHiddenLbl').textContent = 'Show hidden' + (nh ? ' (' + nh + ')' : '');
     $('#favOnly').checked = state.favOnly; $('#sort').value = state.sort; $('#merge').checked = state.merge;
     document.querySelectorAll('[data-detail]').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.detail === state.detail); });
   }
   function save() {
     store.set('ws.ed', state.ed); store.set('ws.circle', state.circle); store.set('ws.level', state.level);
     store.set('ws.wis', state.wis); store.set('ws.showAll', state.showAll); store.set('ws.swarms', state.swarms);
-    store.set('ws.sort', state.sort); store.set('ws.detail', state.detail); store.set('ws.merge', state.merge); store.set('ws.srcOff', state.srcOff); store.set('ws.favs', state.favs);
+    store.set('ws.sort', state.sort); store.set('ws.detail', state.detail); store.set('ws.merge', state.merge); store.set('ws.srcOff', state.srcOff);
+    var p = prof();
+    p.favs = state.favs; p.hidden = state.hidden; p.notes = state.notes;
+    p.settings = { ed: state.ed, circle: state.circle, level: state.level, wis: state.wis };
+    store.set('ws.profiles', PROFILES);
   }
   function update(patch) { for (var k in patch) state[k] = patch[k]; save(); render(); }
 
@@ -442,8 +518,19 @@
       ev.stopPropagation();
       var f = Object.assign({}, state.favs), k = favKey(t.dataset.fav);
       if (f[k]) delete f[k]; else f[k] = true;
-      return update({ favs: f });
+      update({ favs: f });
+      if ($('#detail').open && dlgId === t.dataset.fav) openDetail(dlgId, dlgEd);
+      return;
     }
+    if (t.dataset.hide) {
+      ev.stopPropagation();
+      var hd = Object.assign({}, state.hidden), id = t.dataset.hide;
+      if (hd[id]) delete hd[id]; else hd[id] = true;
+      update({ hidden: hd });
+      if ($('#detail').open && dlgId === id) openDetail(dlgId, dlgEd);
+      return;
+    }
+    if (t.dataset.pact) { $('#pMenu').open = false; return profileAction(t.dataset.pact); }
     if (t.dataset.edTab) return openDetail(dlgId, t.dataset.edTab);
     if (t.id === 'closeDlg') return $('#detail').close();
     if (t.id === 'themeBtn') return toggleTheme();
@@ -453,6 +540,118 @@
     if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.classList && ev.target.classList.contains('card')) { ev.preventDefault(); openDetail(ev.target.dataset.id); }
   });
   $('#detail').addEventListener('click', function (ev) { if (ev.target === this) this.close(); });
+  $('#detail').addEventListener('close', function () { render(); });
+  document.addEventListener('input', function (ev) {
+    var id = ev.target.dataset && ev.target.dataset.note;
+    if (!id) return;
+    var n = Object.assign({}, state.notes), v = ev.target.value;
+    if (v.trim()) n[id] = v; else delete n[id];
+    state.notes = n; save();
+  });
+  $('#showHidden').addEventListener('change', function () { update({ showHidden: this.checked }); });
+  $('#profile').addEventListener('change', function () { switchProfile(this.value); });
+  $('#importFile').addEventListener('change', function () { if (this.files[0]) importData(this.files[0]); this.value = ''; });
+  document.addEventListener('click', function (ev) { var p = $('#pMenu'); if (p.open && !p.contains(ev.target)) p.open = false; });
+
+  /* ---------- profiles, export / import ---------- */
+  function renderProfiles() {
+    $('#profile').innerHTML = Object.keys(PROFILES.list).sort().map(function (n) {
+      return '<option' + (n === PROFILES.active ? ' selected' : '') + '>' + esc(n) + '</option>';
+    }).join('');
+  }
+  function loadProfile() {
+    var p = prof(), st = p.settings || {};
+    state.favs = p.favs; state.hidden = p.hidden; state.notes = p.notes;
+    if (st.ed) state.ed = st.ed; if (st.circle) state.circle = st.circle;
+    if (st.level) state.level = st.level; if (st.wis != null) state.wis = st.wis;
+    clampState();
+  }
+  function switchProfile(name) {
+    save();
+    if (!PROFILES.list[name]) return;
+    PROFILES.active = name;
+    loadProfile(); save(); renderProfiles(); render();
+  }
+  function askName(msg, def) {
+    var n = prompt(msg, def || '');
+    if (n == null) return null;
+    n = n.trim().slice(0, 40);
+    if (!n) return null;
+    if (PROFILES.list[n]) { alert('There is already a profile called "' + n + '".'); return null; }
+    return n;
+  }
+  function profileAction(a) {
+    if (a === 'new') {
+      var n = askName('Name for the new profile (for example the character\'s name):');
+      if (!n) return;
+      save();
+      PROFILES.list[n] = { favs: {}, hidden: {}, notes: {}, settings: { ed: state.ed, circle: state.circle, level: state.level, wis: state.wis } };
+      return switchProfile(n);
+    }
+    if (a === 'rename') {
+      var old = PROFILES.active, nn = askName('Rename "' + old + '" to:', old);
+      if (!nn) return;
+      save();
+      PROFILES.list[nn] = PROFILES.list[old]; delete PROFILES.list[old];
+      PROFILES.active = nn; save(); renderProfiles(); return render();
+    }
+    if (a === 'delete') {
+      var names = Object.keys(PROFILES.list);
+      if (names.length < 2) return alert('This is your only profile. Create another one before deleting it.');
+      if (!confirm('Delete the profile "' + PROFILES.active + '" with its starred forms, hidden beasts and notes? Export a backup first if you might want it back.')) return;
+      delete PROFILES.list[PROFILES.active];
+      PROFILES.active = Object.keys(PROFILES.list)[0];
+      loadProfile(); save(); renderProfiles(); return render();
+    }
+    if (a === 'export') return exportData();
+    if (a === 'import') return $('#importFile').click();
+  }
+  function exportData() {
+    save();
+    var data = { app: 'druid-wildshape', version: 1, exported: new Date().toISOString(), active: PROFILES.active, profiles: PROFILES.list };
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'wildshape-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+  }
+  function cleanFlags(o) {
+    var r = {};
+    if (o && typeof o === 'object') for (var k in o) if (o[k] === true && typeof k === 'string' && k.length < 120) r[k] = true;
+    return r;
+  }
+  function cleanNotes(o) {
+    var r = {};
+    if (o && typeof o === 'object') for (var k in o) if (typeof o[k] === 'string' && o[k].trim() && k.length < 120) r[k] = o[k].slice(0, 5000);
+    return r;
+  }
+  function cleanSettings(st) {
+    if (!st || typeof st !== 'object') return undefined;
+    return { ed: String(st.ed || ''), circle: String(st.circle || ''), level: +st.level || 2, wis: isNaN(+st.wis) ? 3 : +st.wis };
+  }
+  function importData(file) {
+    var rd = new FileReader();
+    rd.onload = function () {
+      var d;
+      try { d = JSON.parse(rd.result); } catch (e) { return alert('That file is not a Wild Shape backup (it is not valid JSON).'); }
+      if (!d || d.app !== 'druid-wildshape' || !d.profiles || typeof d.profiles !== 'object') return alert('That file is not a Wild Shape backup.');
+      var names = Object.keys(d.profiles).filter(function (n) { return n && n.length <= 40; });
+      if (!names.length) return alert('The backup has no profiles in it.');
+      var clash = names.filter(function (n) { return PROFILES.list[n]; });
+      if (clash.length && !confirm('The backup has ' + names.length + ' profile(s). These already exist here and will be replaced by the backup copy:\n\n' + clash.join(', ') + '\n\nYour other profiles are kept. Continue?')) return;
+      save();
+      names.forEach(function (n) {
+        var p = d.profiles[n] || {};
+        PROFILES.list[n] = { favs: cleanFlags(p.favs), hidden: cleanFlags(p.hidden), notes: cleanNotes(p.notes), settings: cleanSettings(p.settings) };
+      });
+      PROFILES.active = d.active && PROFILES.list[d.active] ? d.active : names[0];
+      loadProfile(); save(); renderProfiles(); render();
+      alert('Restored ' + names.length + ' profile(s) from the backup.');
+    };
+    rd.readAsText(file);
+  }
+  renderProfiles();
   $('#level').addEventListener('input', function () { update({ level: +this.value }); });
   $('#wis').addEventListener('input', function () { var v = parseInt(this.value, 10); if (!isNaN(v)) update({ wis: Math.max(-1, Math.min(7, v)) }); });
   $('#search').addEventListener('input', function () { update({ q: this.value }); });
@@ -477,6 +676,7 @@
   fetch('data/beasts.json').then(function (r) { return r.json(); }).then(function (d) {
     DATA = d;
     $('#generated').textContent = 'Data built ' + d.generated + ' · ' + d.beasts.length + ' creatures with stat blocks, ' + (d.others || []).length + ' more from other books.';
+    renderSourceLinks();
     render();
   }).catch(function (err) {
     $('#list').innerHTML = '<p class="empty">Could not load the beast data (' + esc(err.message) + ').</p>';

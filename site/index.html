@@ -51,6 +51,27 @@
       <label class="ctl-label" for="wis">Wis mod</label>
       <input type="number" id="wis" min="-1" max="7" value="3">
     </div>
+    <div class="ctl ctl-profile">
+      <label class="ctl-label" for="profile">Profile</label>
+      <div class="profile-row">
+        <select id="profile" aria-label="Profile"></select>
+        <details class="pmenu" id="pMenu">
+          <summary class="icon-btn" aria-label="Manage profiles, backup and restore" title="Manage profiles, backup and restore">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+          </summary>
+          <div class="pmenu-pop">
+            <button type="button" data-pact="new">New profile</button>
+            <button type="button" data-pact="rename">Rename profile</button>
+            <button type="button" data-pact="delete">Delete profile</button>
+            <hr>
+            <button type="button" data-pact="export">Export backup (.json)</button>
+            <button type="button" data-pact="import">Import backup</button>
+            <p class="small muted">Profiles keep starred forms, hidden beasts, notes and settings in this browser. Export a backup to move them to another device.</p>
+          </div>
+        </details>
+        <input type="file" id="importFile" accept=".json,application/json" hidden>
+      </div>
+    </div>
     <div class="ctl ctl-search">
       <label class="ctl-label" for="search">Search</label>
       <input type="search" id="search" placeholder="Name, trait, attack...">
@@ -78,6 +99,7 @@
     <label class="tog"><input type="checkbox" id="showAll"> Show forms I can't use yet</label>
     <label class="tog"><input type="checkbox" id="swarms"> Swarms (DM's call)</label>
     <label class="tog"><input type="checkbox" id="favOnly"> My forms only</label>
+    <label class="tog"><input type="checkbox" id="showHidden"> <span id="showHiddenLbl">Show hidden</span></label>
   </div>
 </section>
 
@@ -122,6 +144,24 @@
     <p>This site grew out of the <a href="https://docs.google.com/spreadsheets/d/1dTGapgzFstOdRr5EJEV6sAhtNSYi0QsX-Tgr2GRutWI/" rel="noopener">Druid "Wild Shape" Beast List</a> Google Sheet by u/spiralout154 (last updated October 2020, 2014 rules). It adds the 2024 rules, the beasts and changes published since, Circle of the Moon at every level, and a short description and tip for each creature.</p>
     <p>Stat blocks marked <em>SRD 5.1</em> or <em>SRD 5.2</em> come from the System Reference Documents 5.1 and 5.2 by Wizards of the Coast LLC, available at <a href="https://dnd.wizards.com/resources/systems-reference-document" rel="noopener">dnd.wizards.com</a> and licensed under the <a href="https://creativecommons.org/licenses/by/4.0/legalcode" rel="noopener">Creative Commons Attribution 4.0 International License</a>. They were retrieved through the <a href="https://open5e.com" rel="noopener">Open5e</a> API. A few 2014 Monster Manual beasts that aren't in the SRD (marked <em>summary</em>) show only the key numbers from the original sheet. Creature descriptions and tips were written for this site. Unofficial fan content; not affiliated with Wizards of the Coast.</p>
     <p class="muted" id="generated"></p>
+    <p><a href="https://github.com/WernerCD/druid-wildshape" rel="noopener">Source code on GitHub</a> &middot; <a href="https://github.com/WernerCD/druid-wildshape/issues" rel="noopener">Report a problem</a></p>
+  </section>
+
+  <section class="about" id="sources">
+    <h2>Source material</h2>
+    <p class="muted">Every book the creatures on this site come from. The SRDs are free; the others are official books, linked to their D&amp;D Beyond pages.</p>
+    <ul id="srcLinks" class="srclinks"></ul>
+    <p class="small muted">Other references: the original <a href="https://docs.google.com/spreadsheets/d/1dTGapgzFstOdRr5EJEV6sAhtNSYi0QsX-Tgr2GRutWI/" rel="noopener">Wild Shape Beast List sheet</a>, the <a href="https://open5e.com" rel="noopener">Open5e</a> API used for the SRD stat blocks, and the free rules: <a href="https://www.dndbeyond.com/sources/dnd/basic-rules-2014" rel="noopener">Basic Rules (2014)</a> and <a href="https://www.dndbeyond.com/sources/dnd/br-2024" rel="noopener">Free Rules (2024)</a>.</p>
+  </section>
+
+  <section class="about changelog" id="changelog">
+    <h2>Change log</h2>
+    <ol class="clog" reversed>
+      <li><time datetime="2026-11-13">2026-11-13</time> <b>Profiles, hiding and notes.</b> Keep several druids, each with their own starred forms, hidden beasts, notes and settings. Hide any beast from the list (eye icon), and show hidden ones again. Add notes to a beast in its detail view. Export and import a backup file. Added this change log, the source code link and the source material links.</li>
+      <li><time datetime="2026-11-13">2026-11-13</time> <b>Book colours.</b> Each source book has its own colour: a coloured edge on cards, a coloured source tag, and a matching dot in the Sources picker.</li>
+      <li><time datetime="2026-11-13">2026-11-13</time> <b>Card detail and sources.</b> Basic / Stats / Full card views, the source on every card, a searchable Sources picker, and the "One list (all books)" toggle.</li>
+      <li><time datetime="2026-11-13">2026-11-13</time> <b>Launch.</b> 2014 and 2024 rules, standard and Circle of the Moon druids at every level, full SRD stat blocks, a description and tip for each beast, starred known forms, and an index of beasts from other books.</li>
+    </ol>
   </section>
 </main>
 
