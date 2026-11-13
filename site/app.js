@@ -29,6 +29,8 @@
     wis: +(pset.wis != null ? pset.wis : store.get('ws.wis', 3)),
     showHidden: false,
     feats: [],
+    trackerOpen: false,
+    trackerMin: false,
     q: '',
     moves: [],
     size: '',
@@ -52,6 +54,7 @@
     state.wis = isNaN(+state.wis) ? 3 : Math.max(-1, Math.min(7, +state.wis));
   }
   clampState();
+  (function () { var t = store.get('ws.trk', null); if (t) { state.trackerOpen = !!t.open; state.trackerMin = !!t.min; } })();
 
   var DATA = null;
   var $ = function (s) { return document.querySelector(s); };
@@ -285,12 +288,149 @@
       stat(r.noFly ? 'No' : 'Yes', 'Flying forms', r.noFly) +
       (r.ed === '2014' ? stat(r.noSwim ? 'No' : 'Yes', 'Swimming forms', r.noSwim) : '') +
       (r.knownForms ? stat(favCount() + ' / ' + r.knownForms, 'Known forms (starred)', favCount() > r.knownForms) : '') +
-      stat(r.uses, 'Uses') + stat(r.duration, 'Duration') + stat(r.hp, 'Hit points') +
+      stat(r.uses, 'Uses') + stat(usesText(r), 'Uses left', usesLeft(r) <= 0) + stat(r.duration, 'Duration') + stat(r.hp, 'Hit points') +
       (r.moonAC ? stat(r.moonAC, 'Min AC (13 + Wis)') : '') +
       (r.elementals ? stat('Yes', 'Elementals') : '') +
       '</div><ul>' + r.extras.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
-      r.notes.map(function (n) { return '<div class="notice">' + esc(n) + '</div>'; }).join('');
+      r.notes.map(function (n) { return '<div class="notice">' + esc(n) + '</div>'; }).join('') +
+      '<div class="rules-actions"><button type="button" class="btn" data-trk="open">Combat tracker</button>' +
+      '<button type="button" class="btn" data-trk="short">Short rest</button><button type="button" class="btn" data-trk="long">Long rest</button></div>';
     $('#rules').innerHTML = h;
+  }
+
+  /* ---------- combat tracker (per profile) ----------
+     prof().wsUsed: Wild Shape uses spent since the last rest.
+     prof().combat: the current form { id, ed, name, hp, maxHp | temp, maxTemp, round, rounds, log[], done } */
+  function usesMax(r) {
+    if (r.ed === '2014') return r.lvl >= 20 ? Infinity : 2;
+    return r.lvl >= 17 ? 4 : r.lvl >= 6 ? 3 : 2;
+  }
+  function usesLeft(r) { return usesMax(r) - (prof().wsUsed || 0); }
+  function usesText(r) { var m = usesMax(r); return m === Infinity ? 'Unlimited' : Math.max(0, usesLeft(r)) + ' / ' + m; }
+  function curRules() { return rules(state.ed, state.circle, state.level, state.wis); }
+  function clog(msg) {
+    var c = prof().combat; if (!c) return;
+    c.log.unshift({ t: 'R' + c.round, m: msg });
+    if (c.log.length > 40) c.log.length = 40;
+  }
+  function rollDice(expr, crit) {
+    var m = String(expr).replace(/\s+/g, '').match(/^(\d+)d(\d+)([+-]\d+)?$/);
+    if (!m) return null;
+    var n = +m[1] * (crit ? 2 : 1), sides = +m[2], mod = m[3] ? +m[3] : 0, rolls = [];
+    for (var i = 0; i < n; i++) rolls.push(1 + Math.floor(Math.random() * sides));
+    var tot = rolls.reduce(function (a, b) { return a + b; }, 0) + mod;
+    return { total: Math.max(0, tot), text: n + 'd' + sides + (mod ? (mod > 0 ? '+' : '') + mod : '') + ': ' + rolls.join('+') + (mod ? (mod > 0 ? ' +' : ' ') + mod : '') };
+  }
+  function attackParts(a) {
+    var d = a.desc || '', hit = d.match(/Attack(?: Roll)?:\s*([+-]\d+)/i), dmg = [], re = /(?:\d+ \()?(\d+d\d+(?:\s*[+-]\s*\d+)?)\)? (\w+) damage/gi, m;
+    while ((m = re.exec(d)) && dmg.length < 3) dmg.push({ dice: m[1], type: m[2].toLowerCase() });
+    var sv = d.match(/(\w+) Saving Throw: DC (\d+)/) || null, dc = sv ? 'DC ' + sv[2] + ' ' + sv[1] : '';
+    if (!sv) { sv = d.match(/DC (\d+) (\w+) saving throw/i); if (sv) dc = 'DC ' + sv[1] + ' ' + sv[2]; }
+    return { name: a.name, bonus: hit ? +hit[1] : null, dmg: dmg, dc: dc };
+  }
+  function formBlock(c) { var e = DATA.beasts.find(function (x) { return x.id === c.id; }); return e ? e.editions[c.ed] : null; }
+  function startForm(id, ed) {
+    var e = DATA.beasts.find(function (x) { return x.id === id; }); if (!e) return;
+    var b = e.editions[ed], r = rules(ed, state.circle, state.level, state.wis), cost = e.elemental ? 2 : 1, p = prof();
+    if (usesLeft(r) < cost && !confirm('You have no Wild Shape uses left' + (cost > 1 ? ' (an elemental costs two)' : '') + '. Transform anyway?')) return;
+    if (p.combat && !p.combat.done && !confirm('You are already a ' + p.combat.name + '. Switch to ' + b.name + '?')) return;
+    p.wsUsed = (p.wsUsed || 0) + (usesMax(r) === Infinity ? 0 : cost);
+    p.combat = { id: id, ed: ed, name: b.name, round: 1, rounds: Math.floor(state.level / 2) * 600, log: [], done: false };
+    if (ed === '2014') { p.combat.hp = p.combat.maxHp = b.hp || 0; }
+    else { p.combat.temp = p.combat.maxTemp = r.tempHP; }
+    clog('Became a ' + b.name + (ed === '2014' ? ' (' + b.hp + ' HP)' : ' (+' + r.tempHP + ' temp HP)') + (cost > 1 ? '; used two uses' : '') + '.');
+    state.trackerOpen = true; save();
+    if ($('#detail').open) $('#detail').close();
+    render();
+  }
+  function trkAction(a) {
+    var p = prof(), c = p.combat, r = curRules(), n = parseInt(($('#trkAmt') || {}).value, 10);
+    if (a === 'open') { state.trackerOpen = true; return renderTracker(); }
+    if (a === 'close') { state.trackerOpen = false; return renderTracker(); }
+    if (a === 'min') { state.trackerMin = !state.trackerMin; return renderTracker(); }
+    if (a === 'short' || a === 'long') {
+      var before = p.wsUsed || 0;
+      p.wsUsed = a === 'long' || r.ed === '2014' ? 0 : Math.max(0, before - 1);
+      if (c && !c.done) clog((a === 'long' ? 'Long' : 'Short') + ' rest: ' + (before - p.wsUsed) + ' use(s) back.');
+      save(); renderRules(r); return renderTracker();
+    }
+    if (!c || c.done) return;
+    if (a === 'round') { if (c.round < c.rounds) c.round++; if (c.round >= c.rounds) clog('Duration is up: you revert.'); }
+    if (a === 'dmg' || a === 'heal') {
+      if (!(n > 0)) { $('#trkAmt').focus(); return; }
+      if (a === 'dmg') {
+        if (c.ed === '2014') {
+          c.hp -= n;
+          if (c.hp <= 0) { var carry = -c.hp; c.hp = 0; c.done = true; clog('Took ' + n + ': dropped to 0 and reverted. ' + carry + ' damage carries over to your normal HP.'); }
+          else clog('Took ' + n + ' damage (' + c.hp + '/' + c.maxHp + ' left).');
+        } else {
+          var over = n - c.temp; c.temp = Math.max(0, c.temp - n);
+          clog('Took ' + n + ' damage' + (over > 0 ? ': temp HP gone, ' + over + ' comes off your own HP.' : ' (' + c.temp + ' temp HP left).'));
+        }
+      } else {
+        if (c.ed === '2014') { var was = c.hp; c.hp = Math.min(c.maxHp, c.hp + n); clog('Healed ' + (c.hp - was) + ' (' + c.hp + '/' + c.maxHp + ').'); }
+        else clog('Healing goes to your own HP; Wild Shape temp HP can\'t be healed.');
+      }
+      $('#trkAmt').value = '';
+    }
+    if (a === 'revert') { c.done = true; clog('Reverted to druid form.'); }
+    save(); renderTracker();
+  }
+  function rollAttack(i, kind) {
+    var c = prof().combat; if (!c || c.done) return;
+    var b = formBlock(c); if (!b) return;
+    var acts = (b.actions || []).concat(b.bonusActions || []).filter(function (a) { return !/^multiattack$/i.test(a.name); });
+    var at = attackParts(acts[i]); if (!at) return;
+    var msg = at.name + ': ', crit = false;
+    if (kind === 'hit' && at.bonus != null) {
+      var d20 = 1 + Math.floor(Math.random() * 20); crit = d20 === 20;
+      msg += (d20 + at.bonus) + ' to hit (d20 ' + d20 + (at.bonus >= 0 ? ' +' : ' ') + at.bonus + ')' + (crit ? ' CRITICAL' : d20 === 1 ? ' (natural 1)' : '');
+      if (d20 === 1) { clog(msg); save(); return renderTracker(); }
+      msg += '; ';
+    } else if (at.dc) msg += at.dc + ' save; ';
+    var parts = at.dmg.map(function (x) { var rr = rollDice(x.dice, crit); return rr ? { n: rr.total, t: x.type, s: rr.text } : null; }).filter(Boolean);
+    msg += parts.length ? parts.map(function (x) { return x.n + ' ' + x.t + ' (' + x.s + ')'; }).join(' + ') + (parts.length > 1 ? ' = ' + parts.reduce(function (a, x) { return a + x.n; }, 0) : '') : 'no damage roll';
+    clog(msg); save(); renderTracker();
+  }
+  function renderTracker() {
+    var el = $('#tracker'), p = prof(), c = p.combat, r = curRules();
+    document.body.classList.toggle('has-tracker', !!state.trackerOpen);
+    el.hidden = !state.trackerOpen;
+    if (!state.trackerOpen) return;
+    var live = c && !c.done, b = live ? formBlock(c) : null;
+    var head = '<div class="trk-head"><b>' + (live ? esc(c.name) : 'Druid form') + '</b>' +
+      (live ? (c.ed === '2014' ? '<span class="trk-pill' + (c.hp <= c.maxHp / 4 ? ' low' : '') + '">' + c.hp + ' / ' + c.maxHp + ' HP</span>' :
+        '<span class="trk-pill' + (c.temp === 0 ? ' low' : '') + '">' + c.temp + ' / ' + c.maxTemp + ' temp HP</span>') +
+        '<span class="trk-pill">Round ' + c.round + '</span>' : '') +
+      '<span class="trk-pill">Uses ' + usesText(r) + '</span>' +
+      '<span class="trk-sp"></span><button type="button" class="icon-btn sm" data-trk="min" aria-label="' + (state.trackerMin ? 'Expand' : 'Collapse') + ' tracker" title="' + (state.trackerMin ? 'Expand' : 'Collapse') + '">' + (state.trackerMin ? '&#9650;' : '&#9660;') + '</button>' +
+      '<button type="button" class="icon-btn sm" data-trk="close" aria-label="Close tracker" title="Close (your uses are kept)">&times;</button></div>';
+    var body = '';
+    if (!state.trackerMin) {
+      if (live && b) {
+        var r2 = rules(c.ed, state.circle, state.level, state.wis), acv = r2.moonAC ? Math.max(b.ac, r2.moonAC) : b.ac;
+        body += '<div class="trk-row"><span>AC <b>' + acv + '</b></span><span>' + moves(b.speed) + '</span>' +
+          '<span class="muted small">' + c.ed + ' rules &middot; ' + Math.floor(state.level / 2) + ' hr (' + c.rounds + ' rounds)</span></div>';
+        body += '<div class="trk-row trk-hp"><input type="number" id="trkAmt" min="1" max="999" inputmode="numeric" placeholder="Amount" aria-label="Damage or healing amount">' +
+          '<button type="button" class="btn" data-trk="dmg">Damage</button><button type="button" class="btn" data-trk="heal">Heal</button>' +
+          '<button type="button" class="btn" data-trk="round">Next round</button><button type="button" class="btn" data-trk="revert">Revert</button></div>';
+        var acts = (b.actions || []).concat(b.bonusActions || []).filter(function (a) { return !/^multiattack$/i.test(a.name); });
+        var ma = (b.actions || []).filter(function (a) { return /^multiattack$/i.test(a.name); })[0];
+        if (ma) body += '<p class="small trk-ma"><b>Multiattack:</b> ' + esc(ma.desc.replace(/^The [\w ]+? makes /, 'Makes ')) + '</p>';
+        body += '<div class="trk-atk">' + acts.map(function (a, i) {
+          var at = attackParts(a);
+          if (at.bonus == null && !at.dmg.length) return '';
+          return '<div class="trk-a"><b>' + esc(a.name) + '</b>' +
+            (at.bonus != null ? '<button type="button" class="btn sm" data-roll="' + i + '" data-kind="hit">Attack ' + sgn(at.bonus) + '</button>' : '<span class="small muted">' + esc(at.dc) + '</span>') +
+            (at.dmg.length ? '<button type="button" class="btn sm" data-roll="' + i + '" data-kind="dmg">Damage</button>' : '') + '</div>';
+        }).join('') + '</div>';
+      } else {
+        body += '<p class="small muted trk-empty">' + (c && c.done ? 'You are back in druid form. ' : '') + 'Open a beast and press <b>Transform</b> to start. Rests restore uses (2014: a short rest restores all; 2024: a short rest restores one, a long rest all).</p>' +
+          '<div class="trk-row"><button type="button" class="btn" data-trk="short">Short rest</button><button type="button" class="btn" data-trk="long">Long rest</button></div>';
+      }
+      if (c && c.log.length) body += '<ol class="trk-log">' + c.log.map(function (x) { return '<li><span class="muted">' + esc(x.t) + '</span> ' + esc(x.m) + '</li>'; }).join('') + '</ol>';
+    }
+    el.innerHTML = head + body;
   }
   function stat(v, l, warn) { return '<div class="stat' + (warn ? ' warn' : '') + '"><b>' + esc(v) + '</b><span>' + esc(l) + '</span></div>'; }
   function favKey(id) { return state.ed + ':' + id; }
@@ -386,6 +526,7 @@
     $('#empty').hidden = rows.length > 0;
     if (state.merge) $('#othersSec').hidden = true; else renderOthers(r, q);
     renderSources();
+    renderTracker();
     syncControls();
     writeURL();
   }
@@ -559,7 +700,8 @@
     var isFav = !!state.favs[favKey(e.id)], isHid = !!state.hidden[e.id];
     h += '<div class="mynotes"><label for="noteBox">My notes <span class="muted small">(' + esc(PROFILES.active) + ', saved in this browser)</span></label>' +
       '<textarea id="noteBox" data-note="' + e.id + '" rows="3" maxlength="5000" placeholder="Tactics, when you used it, DM rulings...">' + esc(state.notes[e.id] || '') + '</textarea>' +
-      '<div class="mn-actions"><button type="button" class="btn" data-fav="' + e.id + '" aria-pressed="' + isFav + '">' + (isFav ? '&#9733; Known form' : '&#9734; Mark as known form') + '</button>' +
+      '<div class="mn-actions"><button type="button" class="btn primary" data-transform="' + e.id + '" data-ted="' + dlgEd + '">Transform' + (e.elemental ? ' (2 uses)' : '') + '</button>' +
+      '<button type="button" class="btn" data-fav="' + e.id + '" aria-pressed="' + isFav + '">' + (isFav ? '&#9733; Known form' : '&#9734; Mark as known form') + '</button>' +
       '<button type="button" class="btn" data-hide="' + e.id + '" aria-pressed="' + isHid + '">' + (isHid ? 'Show in list again' : 'Hide from list') + '</button></div></div>';
     h += '<div class="statblock">' + sbBody(b, r) + '</div>';
     if (b.note) h += '<p class="small">' + esc(b.note) + '</p>';
@@ -618,6 +760,7 @@
     p.favs = state.favs; p.hidden = state.hidden; p.notes = state.notes;
     p.settings = { ed: state.ed, circle: state.circle, level: state.level, wis: state.wis };
     store.set('ws.profiles', PROFILES);
+    store.set('ws.trk', { open: state.trackerOpen, min: state.trackerMin });
   }
   function update(patch) { for (var k in patch) state[k] = patch[k]; save(); render(); }
 
@@ -627,6 +770,9 @@
     if (t.dataset.ed) return update({ ed: t.dataset.ed });
     if (t.dataset.circle) return update({ circle: t.dataset.circle });
     if (t.dataset.detail) return update({ detail: t.dataset.detail });
+    if (t.dataset.trk) return trkAction(t.dataset.trk);
+    if (t.dataset.roll) return rollAttack(+t.dataset.roll, t.dataset.kind);
+    if (t.dataset.transform) return startForm(t.dataset.transform, t.dataset.ted);
     if (t.dataset.feat) {
       var fs = state.feats.slice(), fi = fs.indexOf(t.dataset.feat);
       if (fi >= 0) fs.splice(fi, 1); else fs.push(t.dataset.feat);
@@ -664,6 +810,7 @@
     if (t.classList.contains('card') && !t.classList.contains('book')) return openDetail(t.dataset.id);
   });
   document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter' && ev.target.id === 'trkAmt') { ev.preventDefault(); return trkAction('dmg'); }
     if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.classList && ev.target.classList.contains('card')) { ev.preventDefault(); openDetail(ev.target.dataset.id); }
   });
   $('#detail').addEventListener('click', function (ev) { if (ev.target === this) this.close(); });

@@ -14,6 +14,7 @@ A searchable list of every beast a D&D 5e druid can Wild Shape into, for both th
 - Rough **damage per round** on every beast (every attack hits, every save fails), sortable.
 - Feature chips with live counts: Darkvision, Blindsight, Pack Tactics, Breathes water, Charge / pounce, Keen senses, Spider Climb, Multiattack.
 - The link keeps your filters, so a filtered list can be bookmarked or shared.
+- **Combat tracker**: Transform into a beast to track its HP or temp HP, rounds and Wild Shape uses, with Damage/Heal/Revert, attack and damage rolls, rests and a log (saved per profile).
 - **One list (all books)** merges the other-books beasts into the main list instead of a separate section.
 - Star your known forms, hide beasts you never use (eye icon, with a "Show hidden" toggle), and keep notes on any beast.
 - **Profiles**: one per druid, each with its own stars, hidden beasts, notes and settings. Everything is saved in your browser; **Export backup** / **Import backup** (the ⋯ menu next to Profile) move it to another device or restore it.

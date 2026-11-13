@@ -267,6 +267,29 @@ a.srctag:hover { text-decoration: underline; }
 .srcrow.core span:first-of-type { font-weight: 600; }
 .srcrow.core + .srcrow:not(.core) { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 8px; }
 
+/* combat tracker */
+.rules-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.sm { padding: 3px 9px; font-size: .8rem; }
+.icon-btn.sm { width: 30px; height: 30px; font-size: .9rem; color: var(--ink-2); }
+.tracker { position: fixed; z-index: 40; left: 50%; transform: translateX(-50%); bottom: 12px; width: min(720px, calc(100vw - 24px)); max-height: 62vh; overflow-y: auto;
+  background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--gold); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.25); padding: 10px 12px; }
+body.has-tracker .site-footer { padding-bottom: 260px; }
+.trk-head { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; }
+.trk-head b { font-family: Fraunces, Georgia, serif; font-size: 1.05rem; }
+.trk-sp { flex: 1; }
+.trk-pill { font-size: .8rem; background: var(--surface-2); border-radius: 999px; padding: 2px 9px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.trk-pill.low { background: #b4232a; color: #fff; }
+.trk-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 8px; font-size: .9rem; }
+.trk-hp input { width: 90px; font: inherit; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); padding: 6px 8px; }
+.trk-ma { margin: 8px 0 0; color: var(--ink-2); }
+.trk-atk { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 6px; }
+.trk-a { display: flex; align-items: center; gap: 6px; font-size: .88rem; }
+.trk-log { list-style: none; margin: 10px 0 0; padding: 8px 0 0; border-top: 1px solid var(--line); font-size: .82rem; max-height: 150px; overflow-y: auto; }
+.trk-log li { margin: 2px 0; }
+.trk-empty { margin: 8px 0 0; }
+@media (max-width: 640px) { .tracker { bottom: 0; width: 100vw; border-radius: 14px 14px 0 0; max-height: 70vh; } }
+
 /* === dnd-shared v1.1 (canonical copy: WernerCD/dnd shared/dnd-shared.css) === */
 /* Paste this block unchanged at the END of each site's styles.css. Do not edit it per site;
    change it in the hub repo and re-copy it to every site. It relies on the shared tokens
