@@ -673,7 +673,7 @@
   var th = store.get('ws.theme', null);
   if (th) document.documentElement.dataset.theme = th;
 
-  fetch('data/beasts.json').then(function (r) { return r.json(); }).then(function (d) {
+  fetch('data/beasts.json?v=dev').then(function (r) { return r.json(); }).then(function (d) {
     DATA = d;
     $('#generated').textContent = 'Data built ' + d.generated + ' · ' + d.beasts.length + ' creatures with stat blocks, ' + (d.others || []).length + ' more from other books.';
     renderSourceLinks();
