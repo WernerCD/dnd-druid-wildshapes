@@ -28,6 +28,7 @@
     level: +(params.get('lvl') || pset.level || store.get('ws.level', 2)),
     wis: +(pset.wis != null ? pset.wis : store.get('ws.wis', 3)),
     showHidden: false,
+    feats: [],
     q: '',
     moves: [],
     size: '',
@@ -128,7 +129,89 @@
     (DATA.others || []).forEach(function (x) { o[x.sourceName || x.source] = 1; });
     return Object.keys(o);
   }
-  var FILTER_DEFAULTS = { q: '', moves: [], size: '', favOnly: false, showHidden: false };
+  var FILTER_DEFAULTS = { q: '', moves: [], feats: [], size: '', favOnly: false, showHidden: false };
+
+  /* feature filters: tested against senses and trait names */
+  function hasTrait(b, re) { return (b.traits || []).some(function (t) { return re.test(t.name); }); }
+  function hasSense(b, re) { return (b.senses || []).some(function (x) { return re.test(x); }); }
+  var FEATS = [
+    ['darkvision', 'Darkvision', function (b) { return hasSense(b, /darkvision/i); }],
+    ['blindsight', 'Blindsight', function (b) { return hasSense(b, /blindsight|tremorsense/i); }],
+    ['pack', 'Pack Tactics', function (b) { return hasTrait(b, /pack tactics/i); }],
+    ['water', 'Breathes water', function (b) { return hasTrait(b, /water breathing|amphibious/i); }],
+    ['charge', 'Charge / pounce', function (b) { return hasTrait(b, /charge|pounce/i); }],
+    ['keen', 'Keen senses', function (b) { return hasTrait(b, /^keen /i); }],
+    ['spider', 'Spider Climb', function (b) { return hasTrait(b, /spider climb/i); }],
+    ['multi', 'Multiattack', function (b) { return !!b.multiattack; }]
+  ];
+  var FEAT_TEST = {}; FEATS.forEach(function (f) { FEAT_TEST[f[0]] = f[2]; });
+
+  /* rough damage per round: every attack hits, every save fails */
+  var NUMW = { one: 1, two: 2, three: 3, four: 4, five: 5 };
+  function diceAvg(expr) {
+    var m = String(expr).replace(/\s+/g, '').match(/^(\d+)d(\d+)([+-]\d+)?$/);
+    return m ? Math.floor(+m[1] * (+m[2] + 1) / 2 + (m[3] ? +m[3] : 0)) : 0;
+  }
+  function attackDmg(desc) {
+    var tot = 0, re = /(?:(\d+) \()?(\d+d\d+(?:\s*[+-]\s*\d+)?)\)? \w+ damage/gi, m, n = 0;
+    while ((m = re.exec(desc || '')) && n < 3) { tot += m[1] ? +m[1] : diceAvg(m[2]); n++; }
+    return tot;
+  }
+  function dpr(b) {
+    if (b._dpr != null) return b._dpr;
+    var acts = (b.actions || []).filter(function (a) { return !/^multiattack$/i.test(a.name); });
+    var dmg = {}; acts.forEach(function (a) { dmg[a.name.toLowerCase()] = attackDmg(a.desc); });
+    function find(word) {
+      word = word.toLowerCase().replace(/s$/, '');
+      for (var k in dmg) if (k.replace(/s$/, '') === word || k.indexOf(word) === 0) return dmg[k];
+      return 0;
+    }
+    var best = 0; for (var k in dmg) best = Math.max(best, dmg[k]);
+    var ma = (b.actions || []).filter(function (a) { return /^multiattack$/i.test(a.name); })[0], tot = 0;
+    if (ma) {
+      var d = ma.desc, m, re;
+      re = /\b(one|two|three|four|five) (?:with its )?(\w+)(?: attacks?)?/gi;
+      var parts = d.indexOf(':') >= 0 ? d.split(':')[1] : d;
+      while ((m = re.exec(parts))) {
+        if (/^attacks?$/i.test(m[2])) continue;
+        tot += (NUMW[m[1].toLowerCase()] || 1) * find(m[2]);
+      }
+      if (!tot && d.indexOf(':') >= 0) parts.split(/,|\band\b/).forEach(function (w) { w = w.replace(/[^a-z ]/gi, '').trim().split(' ').pop(); if (w) tot += find(w); });
+      if (/uses (\w+)/i.test(d)) tot += find(d.match(/uses (\w+)/i)[1]);
+      if (!tot) { var c = d.match(/makes (one|two|three|four|five)/i); tot = (c ? NUMW[c[1].toLowerCase()] : 1) * best; }
+    }
+    b._dpr = Math.max(tot, best);
+    return b._dpr;
+  }
+
+  /* filters in the link: ?q=&mv=&ft=&sz=&src=&view=&sort=&all=1 (ed, circle and lvl are always there) */
+  (function () {
+    var p = params, v;
+    if ((v = p.get('q'))) state.q = v.slice(0, 80);
+    if ((v = p.get('mv'))) state.moves = v.split(',').filter(function (m) { return ['fly', 'swim', 'climb', 'burrow'].indexOf(m) >= 0; });
+    if ((v = p.get('ft'))) state.feats = v.split(',').filter(function (f) { return FEAT_TEST[f]; });
+    if ((v = p.get('sz'))) state.size = v;
+    if ((v = p.get('src'))) { state.srcSel = {}; v.split('|').forEach(function (k) { if (k) state.srcSel[k] = true; }); }
+    if ((v = p.get('view'))) state.detail = v;
+    if ((v = p.get('sort'))) state.sort = v;
+    if (p.get('all') === '1') state.merge = true;
+    clampState();
+  })();
+  function sameSet(a, b) { var ka = Object.keys(a), kb = Object.keys(b); return ka.length === kb.length && ka.every(function (k) { return b[k]; }); }
+  function writeURL() {
+    var u = new URL(location.href), sp = u.searchParams;
+    sp.set('ed', state.ed); sp.set('circle', state.circle); sp.set('lvl', state.level);
+    function opt(k, val) { if (val) sp.set(k, val); else sp.delete(k); }
+    opt('q', state.q.trim());
+    opt('mv', state.moves.join(','));
+    opt('ft', state.feats.join(','));
+    opt('sz', state.size);
+    opt('src', sameSet(state.srcSel, coreSel()) ? '' : Object.keys(state.srcSel).sort().join('|'));
+    opt('view', state.detail === 'basic' ? '' : state.detail);
+    opt('sort', state.sort === 'cr-desc' ? '' : state.sort);
+    opt('all', state.merge ? '1' : '');
+    if (u.href !== location.href) history.replaceState(null, '', u);
+  }
 
   /* one hue per book; CSS turns it into a light- or dark-mode colour */
   var BOOK_HUE = {
@@ -257,18 +340,29 @@
       for (var i = 0; i < state.moves.length; i++) if (!sp[state.moves[i]]) return false;
       return !extra || !!sp[extra];
     }
-    var rows = cands.filter(function (x) { return (!state.size || x.b.size === state.size) && movesOK(x.b.speed); });
+    function featsOK(x, extra) {
+      var want = extra ? state.feats.concat([extra]) : state.feats;
+      if (!want.length) return true;
+      if (x.o) return false; /* other-book beasts have no trait data */
+      for (var i = 0; i < want.length; i++) if (!FEAT_TEST[want[i]](x.b)) return false;
+      return true;
+    }
+    var rows = cands.filter(function (x) { return (!state.size || x.b.size === state.size) && movesOK(x.b.speed) && featsOK(x); });
     /* counts follow every other filter, so a chip's number is what you get */
     document.querySelectorAll('[data-move]').forEach(function (btn) {
-      var m = btn.dataset.move, n = cands.filter(function (x) { return (!state.size || x.b.size === state.size) && movesOK(x.b.speed, m); }).length;
+      var m = btn.dataset.move, n = cands.filter(function (x) { return (!state.size || x.b.size === state.size) && movesOK(x.b.speed, m) && featsOK(x); }).length;
       btn.querySelector('.n').textContent = n;
       btn.classList.toggle('zero', !n);
     });
     Array.prototype.forEach.call($('#size').options, function (o) {
       if (!o.value) return;
-      var n = cands.filter(function (x) { return x.b.size === o.value && movesOK(x.b.speed); }).length;
+      var n = cands.filter(function (x) { return x.b.size === o.value && movesOK(x.b.speed) && featsOK(x); }).length;
       o.textContent = o.value + ' (' + n + ')';
     });
+    $('#featChips').innerHTML = FEATS.map(function (f) {
+      var n = cands.filter(function (x) { return (!state.size || x.b.size === state.size) && movesOK(x.b.speed) && featsOK(x, f[0]); }).length;
+      return '<button type="button" class="chip' + (n ? '' : ' zero') + '" data-feat="' + f[0] + '" aria-pressed="' + (state.feats.indexOf(f[0]) >= 0) + '">' + f[1] + ' <span class="n">' + n + '</span></button>';
+    }).join('');
     var s = state.sort;
     /* when searching, beasts whose name matches come before ones that only mention it */
     function nameHit(x) { return q && (x.b.name.toLowerCase().indexOf(q) >= 0 || (x.e && x.e.name.toLowerCase().indexOf(q) >= 0)) ? 0 : 1; }
@@ -280,6 +374,7 @@
       else if (s === 'hp') d = (c.hp == null ? -1 : c.hp) - (a.hp == null ? -1 : a.hp);
       else if (s === 'ac') d = (c.ac == null ? -1 : shownAC(c, r)) - (a.ac == null ? -1 : shownAC(a, r));
       else if (s === 'speed') d = maxSpeed(c.speed) - maxSpeed(a.speed);
+      else if (s === 'dpr') d = (y.o ? -1 : dpr(c)) - (x.o ? -1 : dpr(a));
       if (x.el.ok !== y.el.ok) return x.el.ok ? -1 : 1;
       return d || a.name.localeCompare(c.name);
     });
@@ -292,9 +387,7 @@
     if (state.merge) $('#othersSec').hidden = true; else renderOthers(r, q);
     renderSources();
     syncControls();
-    var u = new URL(location.href);
-    u.searchParams.set('ed', state.ed); u.searchParams.set('circle', state.circle); u.searchParams.set('lvl', state.level);
-    if (u.href !== location.href) history.replaceState(null, '', u);
+    writeURL();
   }
 
   function hideBtn(id, name) {
@@ -317,7 +410,8 @@
       '<div class="card-top"><div><h3>' + esc(b.name) + '</h3>' + alt + '</div><span class="cr">CR ' + b.crText + '</span></div>' +
       '<div class="meta">' + esc(b.size) + (b.multiattack ? ' &middot; Multiattack' : '') + (b.full ? '' : ' &middot; summary') + '</div>' +
       '<div class="nums"><div><span>AC</span><b>' + acv + '</b>' + (acv !== b.ac ? '<span class="small"> (' + b.ac + ')</span>' : '') + '</div><div><span>HP</span><b>' + (b.hp == null ? '?' : b.hp) + '</b></div>' +
-      (b.pp ? '<div><span>PP</span><b>' + b.pp + '</b></div>' : '') + '</div>' +
+      (b.pp ? '<div><span>PP</span><b>' + b.pp + '</b></div>' : '') +
+      (dpr(b) ? '<div title="Average damage per round if every attack hits (and every save fails)"><span>DPR</span><b>' + dpr(b) + '</b></div>' : '') + '</div>' +
       '<div class="moves">' + moves(b.speed) + '</div>' +
       '<div class="src">' + srcTag(b.source) + '</div>' +
       (el.ok ? '' : '<div class="why">' + esc(el.why.join(' · ')) + '</div>') +
@@ -482,7 +576,8 @@
     h += '<p><b>Armor Class</b> ' + b.ac + (b.acNote ? ' (' + esc(b.acNote) + ')' : '') +
       (r.moonAC && b.type === 'Beast' ? ' <span class="small">&rarr; ' + Math.max(b.ac, r.moonAC) + ' with Circle Forms</span>' : '') +
       (b.init != null ? ' &nbsp; <b>Initiative</b> ' + sgn(b.init) : '') + '</p>';
-    h += '<p><b>Hit Points</b> ' + (b.hp == null ? '?' : b.hp) + (b.hd ? ' (' + esc(b.hd) + ')' : '') + '</p>';
+    h += '<p><b>Hit Points</b> ' + (b.hp == null ? '?' : b.hp) + (b.hd ? ' (' + esc(b.hd) + ')' : '') +
+      (dpr(b) ? ' &nbsp; <b>Damage per round</b> ~' + dpr(b) + ' <span class="small muted">(all attacks hit)</span>' : '') + '</p>';
     h += '<p><b>Speed</b> ' + ['walk', 'climb', 'swim', 'fly', 'burrow'].filter(function (k) { return b.speed[k]; }).map(function (k) {
       return (k === 'walk' ? '' : k + ' ') + b.speed[k] + ' ft.' + (k === 'fly' && b.speed.hover ? ' (hover)' : '');
     }).join(', ') + '</p><hr>';
@@ -532,6 +627,11 @@
     if (t.dataset.ed) return update({ ed: t.dataset.ed });
     if (t.dataset.circle) return update({ circle: t.dataset.circle });
     if (t.dataset.detail) return update({ detail: t.dataset.detail });
+    if (t.dataset.feat) {
+      var fs = state.feats.slice(), fi = fs.indexOf(t.dataset.feat);
+      if (fi >= 0) fs.splice(fi, 1); else fs.push(t.dataset.feat);
+      return update({ feats: fs });
+    }
     if (t.id === 'srcAll') return setSources(allBooks(), true);
     if (t.id === 'srcNone') return setSources(allBooks(), false);
     if (t.id === 'srcCore') return update({ srcSel: coreSel() });
@@ -682,6 +782,7 @@
   renderProfiles();
   $('#level').addEventListener('input', function () { update({ level: +this.value }); });
   $('#wis').addEventListener('input', function () { var v = parseInt(this.value, 10); if (!isNaN(v)) update({ wis: Math.max(-1, Math.min(7, v)) }); });
+  $('#search').value = state.q;
   $('#search').addEventListener('input', function () { update({ q: this.value }); });
   $('#size').addEventListener('change', function () { update({ size: this.value }); });
   $('#sort').addEventListener('change', function () { update({ sort: this.value }); });

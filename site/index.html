@@ -78,6 +78,7 @@
     </div>
   </div>
   <div class="wrap filters">
+    <div class="chips" id="featChips" role="group" aria-label="Feature filter"></div>
     <div class="chips" role="group" aria-label="Movement filter">
       <button type="button" class="chip" data-move="fly">Fly <span class="n"></span></button>
       <button type="button" class="chip" data-move="swim">Swim <span class="n"></span></button>
@@ -127,6 +128,7 @@
           <option value="hp">Hit points</option>
           <option value="ac">Armor class</option>
           <option value="speed">Fastest</option>
+          <option value="dpr">Damage per round</option>
         </select>
       </div>
     </div>
@@ -158,6 +160,7 @@
   <section class="about changelog" id="changelog">
     <h2>Change log</h2>
     <ol class="clog" reversed>
+      <li><time datetime="2026-11-13">2026-11-13</time> <b>Damage, features, shareable filters.</b> Every beast shows a rough <b>damage per round</b> (DPR: every attack hits, every save fails), and the list can be sorted by it. New feature chips filter by Darkvision, Blindsight, Pack Tactics, Breathes water, Charge / pounce, Keen senses, Spider Climb and Multiattack, with live counts. The link now keeps your filters (search, movement, features, size, books, view and sort), so a filtered list can be bookmarked or shared.</li>
       <li><time datetime="2026-11-13">2026-11-13</time> <b>Core books first, live counts.</b> The Sources picker lists the core books first (the SRDs and the Monster Manuals) and starts with only those selected; a <b>Core books</b> button goes back to that. The movement chips and size menu show how many beasts each would give you. Searching lists name matches first. A <b>Reset filters</b> button clears search, movement, size and the book selection. Filter menus stay above the cards on phones, and each update loads fresh instead of an old cached copy.</li>
       <li><time datetime="2026-11-13">2026-11-13</time> <b>Phone fix.</b> On narrow screens the Sources and profile menus no longer slip behind the beast cards.</li>
       <li><time datetime="2026-11-13">2026-11-13</time> <b>New address.</b> The site moved to wernercd.github.io/dnd-druid-wildshapes. Your saved profiles and notes carry over.</li>
