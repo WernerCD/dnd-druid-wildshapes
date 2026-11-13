@@ -96,6 +96,25 @@
   function srcKey(x) { return String(x || '').replace(/\s+p\.\s*\d+$/, ''); }
   function srcOn(k) { return !state.srcOff[k]; }
 
+  /* one hue per book; CSS turns it into a light- or dark-mode colour */
+  var BOOK_HUE = {
+    'SRD 5.1': 145, 'SRD 5.2': 165,
+    'Monster Manual (2014)': 0, 'Monster Manual (2025)': 0,
+    "Fizban's Treasury of Dragons": 18, 'Bigby Presents: Glory of the Giants': 34,
+    'Tomb of Annihilation': 48, 'Tales from the Yawning Portal': 62, "Storm King's Thunder": 78,
+    "Explorer's Guide to Wildemount": 100, 'Ghosts of Saltmarsh': 186, 'Icewind Dale: Rime of the Frostmaiden': 200,
+    'Eberron: Rising from the Last War': 216, 'Out of the Abyss': 234, 'Strixhaven: A Curriculum of Chaos': 250,
+    'Mordenkainen Presents: Monsters of the Multiverse': 268, "Volo's Guide to Monsters": 284,
+    'The Wild Beyond the Witchlight': 304, "Boo's Astral Menagerie": 324
+  };
+  function srcHue(k) {
+    if (BOOK_HUE[k] != null) return BOOK_HUE[k];
+    var h = 0; for (var i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) % 360;
+    return h;
+  }
+  function hueAttr(k) { return ' style="--h:' + srcHue(srcKey(k)) + '"'; }
+  function srcTag(label, key) { return '<span class="srctag"' + hueAttr(key || label) + '>' + esc(label) + '</span>'; }
+
   function block(entry) { return entry.editions[state.ed]; }
 
   function eligibility(entry, b, r) {
@@ -200,7 +219,7 @@
     var fav = !!state.favs[favKey(e.id)];
     var alt = b.name !== e.name ? '<div class="alt">' + esc(e.name) + ' in 2014</div>' : '';
     var acv = shownAC(b, r);
-    return '<article class="card' + (el.ok ? '' : ' locked') + '" data-id="' + e.id + '" tabindex="0" role="button" aria-label="' + esc(b.name) + ' details">' +
+    return '<article class="card' + (el.ok ? '' : ' locked') + '"' + hueAttr(b.source) + ' data-id="' + e.id + '" tabindex="0" role="button" aria-label="' + esc(b.name) + ' details">' +
       '<button type="button" class="fav" data-fav="' + e.id + '" aria-pressed="' + fav + '" aria-label="Star ' + esc(b.name) + ' as a known form" title="Known form">' +
       '<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>' +
       '<div class="card-top"><div><h3>' + esc(b.name) + '</h3>' + alt + '</div><span class="cr">CR ' + b.crText + '</span></div>' +
@@ -208,7 +227,7 @@
       '<div class="nums"><div><span>AC</span><b>' + acv + '</b>' + (acv !== b.ac ? '<span class="small"> (' + b.ac + ')</span>' : '') + '</div><div><span>HP</span><b>' + (b.hp == null ? '?' : b.hp) + '</b></div>' +
       (b.pp ? '<div><span>PP</span><b>' + b.pp + '</b></div>' : '') + '</div>' +
       '<div class="moves">' + moves(b.speed) + '</div>' +
-      '<div class="src">' + esc(b.source) + '</div>' +
+      '<div class="src">' + srcTag(b.source) + '</div>' +
       (el.ok ? '' : '<div class="why">' + esc(el.why.join(' · ')) + '</div>') +
       (state.detail === 'stats' ? cardStats(b) : state.detail === 'full' ? '<div class="statblock mini">' + sbBody(b, r) + '</div>' : '') +
       '</article>';
@@ -265,13 +284,13 @@
   }
   function otherCard(o, el) {
     var fav = !!state.favs[favKey(o.id)], book = o.sourceName || o.source;
-    return '<article class="card book' + (el.ok ? '' : ' locked') + '">' +
+    return '<article class="card book' + (el.ok ? '' : ' locked') + '"' + hueAttr(book) + '>' +
       '<button type="button" class="fav" data-fav="' + o.id + '" aria-pressed="' + fav + '" aria-label="Star ' + esc(o.name) + ' as a known form" title="Known form">' +
       '<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>' +
       '<div class="card-top"><div><h3>' + esc(o.name) + '</h3></div><span class="cr">CR ' + esc(o.crText) + '</span></div>' +
       '<div class="meta">' + esc(o.size || '') + ' &middot; basics only</div>' +
       '<div class="moves">' + moves(o.speed) + '</div>' +
-      '<div class="src">' + esc(book) + '</div>' +
+      '<div class="src">' + srcTag(book) + '</div>' +
       (el.ok ? '' : '<div class="why">' + esc(el.why.join(' · ')) + '</div>') +
       (state.detail !== 'basic' ? '<p class="small muted nostats">Full stats are in ' + esc(book) + '.</p>' : '') +
       '</article>';
@@ -300,7 +319,7 @@
     $('#srcSum').textContent = 'Sources' + (on === keys.length ? '' : ' (' + on + ' of ' + keys.length + ')');
     $('#srcPick').classList.toggle('filtered', on !== keys.length);
     $('#srcList').innerHTML = keys.filter(function (k) { return !q || k.toLowerCase().indexOf(q) >= 0; }).map(function (k) {
-      return '<label class="srcrow"><input type="checkbox" data-src="' + esc(k) + '"' + (srcOn(k) ? ' checked' : '') + '> <span>' + esc(k) + '</span><span class="n">' + c[k] + '</span></label>';
+      return '<label class="srcrow"' + hueAttr(k) + '><input type="checkbox" data-src="' + esc(k) + '"' + (srcOn(k) ? ' checked' : '') + '> <i class="dot" aria-hidden="true"></i><span>' + esc(k) + '</span><span class="n">' + c[k] + '</span></label>';
     }).join('') || '<p class="small muted">No book matches.</p>';
   }
   function setSources(keys, on) {
@@ -328,9 +347,9 @@
     $('#othersSec').hidden = !list.length;
     $('#others').innerHTML = list.map(function (x) {
       var o = x.o;
-      return '<div class="other' + (x.ok ? '' : ' locked') + '"><b>' + esc(o.name) + '</b> <span class="cr">CR ' + esc(o.crText) + '</span>' +
+      return '<div class="other' + (x.ok ? '' : ' locked') + '"' + hueAttr(o.sourceName || o.source) + '><b>' + esc(o.name) + '</b> <span class="cr">CR ' + esc(o.crText) + '</span>' +
         '<div class="meta">' + esc(o.size || '') + '</div><div class="moves">' + moves(o.speed) + '</div>' +
-        '<div class="src">' + esc(o.sourceName || o.source) + (o.verified ? '' : ' &middot; unverified') + '</div></div>';
+        '<div class="src">' + srcTag(o.sourceName || o.source) + (o.verified ? '' : ' &middot; unverified') + '</div></div>';
     }).join('');
   }
 
@@ -345,7 +364,7 @@
     var el = eligibility(e, b, r);
     var eds = Object.keys(e.editions).sort();
     var h = '<div class="sb-head"><h2 id="dTitle">' + esc(b.name) + '</h2>' +
-      '<p class="sb-sub">' + esc(b.size + ' ' + b.type + (b.swarm ? ' (swarm)' : '')) + ', CR ' + b.crText + ' &middot; ' + esc(b.source) + '</p></div>';
+      '<p class="sb-sub">' + esc(b.size + ' ' + b.type + (b.swarm ? ' (swarm)' : '')) + ', CR ' + b.crText + ' ' + srcTag(b.source) + '</p></div>';
     if (eds.length > 1) {
       h += '<div class="ed-tabs" role="tablist">' + eds.map(function (x) {
         return '<button type="button" role="tab" data-ed-tab="' + x + '" aria-selected="' + (x === dlgEd) + '">' + x + ' rules' + (e.names[x] !== b.name ? '' : '') + '</button>';
