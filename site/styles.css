@@ -216,7 +216,7 @@ dialog::backdrop { background: rgba(10, 14, 12, .55); }
 .srcrow span:first-of-type { flex: 1; }
 .srcrow .n { color: var(--muted); font-size: .8rem; }
 @media (max-width: 640px) {
-  .controls { position: static; }
+  .controls { position: relative; z-index: 6; } /* keeps the Sources and profile popups above the cards */
   .controls-grid { gap: 10px 12px; }
   .ctl-level { max-width: none; }
   .abil { grid-template-columns: repeat(3, 1fr); }
