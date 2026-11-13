@@ -2,7 +2,7 @@
 
 A searchable list of every beast a D&D 5e druid can Wild Shape into, for both the **2014** and **2024** rules, for **standard** and **Circle of the Moon** druids at any level.
 
-**Live site:** https://wernercd.github.io/druid-wildshape/
+**Live site:** https://wernercd.github.io/dnd-druid-wildshapes/
 
 ## Features
 - Pick the rules edition, the circle and the druid level. The list shows only forms you can use: max CR, the fly limit, the 2014 swim limit, and 2014 Moon elementals at level 10.
