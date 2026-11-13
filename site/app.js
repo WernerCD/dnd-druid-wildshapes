@@ -294,7 +294,8 @@
       '</div><ul>' + r.extras.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
       r.notes.map(function (n) { return '<div class="notice">' + esc(n) + '</div>'; }).join('') +
       '<div class="rules-actions"><button type="button" class="btn" data-trk="open">Combat tracker</button>' +
-      '<button type="button" class="btn" data-trk="short">Short rest</button><button type="button" class="btn" data-trk="long">Long rest</button></div>';
+      '<button type="button" class="btn" data-trk="short">Short rest</button><button type="button" class="btn" data-trk="long">Long rest</button>' +
+      '<button type="button" class="btn" id="printForms" title="Print your starred forms with their stats">Print my forms</button></div>';
     $('#rules').innerHTML = h;
   }
 
@@ -391,6 +392,18 @@
     var parts = at.dmg.map(function (x) { var rr = rollDice(x.dice, crit); return rr ? { n: rr.total, t: x.type, s: rr.text } : null; }).filter(Boolean);
     msg += parts.length ? parts.map(function (x) { return x.n + ' ' + x.t + ' (' + x.s + ')'; }).join(' + ') + (parts.length > 1 ? ' = ' + parts.reduce(function (a, x) { return a + x.n; }, 0) : '') : 'no damage roll';
     clog(msg); save(); renderTracker();
+  }
+  /* print the starred forms with the Stats view, then put the view back */
+  function printForms() {
+    if (!favCount()) return alert('Star some forms first (the star on each card), then print them.');
+    var prev = { favOnly: state.favOnly, detail: state.detail };
+    state.favOnly = true; if (state.detail === 'basic') state.detail = 'stats';
+    render();
+    var done = false;
+    function restore() { if (done) return; done = true; state.favOnly = prev.favOnly; state.detail = prev.detail; render(); }
+    window.addEventListener('afterprint', restore, { once: true });
+    window.print();
+    setTimeout(restore, 1000);
   }
   function renderTracker() {
     var el = $('#tracker'), p = prof(), c = p.combat, r = curRules();
@@ -771,6 +784,7 @@
     if (t.dataset.circle) return update({ circle: t.dataset.circle });
     if (t.dataset.detail) return update({ detail: t.dataset.detail });
     if (t.dataset.trk) return trkAction(t.dataset.trk);
+    if (t.id === 'printForms') return printForms();
     if (t.dataset.roll) return rollAttack(+t.dataset.roll, t.dataset.kind);
     if (t.dataset.transform) return startForm(t.dataset.transform, t.dataset.ted);
     if (t.dataset.feat) {
