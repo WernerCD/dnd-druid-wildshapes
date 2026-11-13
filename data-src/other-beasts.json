@@ -1,0 +1,1838 @@
+[
+  {
+    "name": "Birdsquirrel",
+    "source": "AWM",
+    "sourceName": "Adventure with Muk",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Tiny",
+    "speed": {
+      "walk": 20,
+      "climb": 20,
+      "swim": null,
+      "fly": 30,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Alternate/partner product (supplement-alt)"
+  },
+  {
+    "name": "Boontu Monkey",
+    "source": "AWM",
+    "sourceName": "Adventure with Muk",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Medium",
+    "speed": {
+      "walk": 20,
+      "climb": 20,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Alternate/partner product (supplement-alt)"
+  },
+  {
+    "name": "Giant Space Hamster",
+    "source": "BAM",
+    "sourceName": "Boo's Astral Menagerie",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": 10
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Space Eel",
+    "source": "BAM",
+    "sourceName": "Boo's Astral Menagerie",
+    "edition": "2014",
+    "cr": "1/2",
+    "size": "Small",
+    "speed": {
+      "walk": 10,
+      "climb": null,
+      "swim": null,
+      "fly": 30,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Space Guppy",
+    "source": "BAM",
+    "sourceName": "Boo's Astral Menagerie",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Small",
+    "speed": {
+      "walk": 0,
+      "climb": null,
+      "swim": null,
+      "fly": 30,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Space Mollymawk",
+    "source": "BAM",
+    "sourceName": "Boo's Astral Menagerie",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Small",
+    "speed": {
+      "walk": 10,
+      "climb": null,
+      "swim": null,
+      "fly": 50,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Space Swine",
+    "source": "BAM",
+    "sourceName": "Boo's Astral Menagerie",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": 40,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Spotted Lion",
+    "source": "BGG",
+    "sourceName": "Bigby Presents: Glory of the Giants",
+    "edition": "2014",
+    "cr": "3",
+    "size": "Huge",
+    "speed": {
+      "walk": 60,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Titanothere",
+    "source": "BGG",
+    "sourceName": "Bigby Presents: Glory of the Giants",
+    "edition": "2014",
+    "cr": "5",
+    "size": "Huge",
+    "speed": {
+      "walk": 50,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Young Horizonback Tortoise",
+    "source": "CRCotN",
+    "sourceName": "Critical Role: Call of the Netherdeep",
+    "edition": "2014",
+    "cr": "3",
+    "size": "Huge",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Named/unique creature from an adventure; Alternate/partner product (supplement-alt)"
+  },
+  {
+    "name": "Rothé",
+    "source": "CoA",
+    "sourceName": "Chains of Asmodeus",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Alternate/partner product (supplement-alt)"
+  },
+  {
+    "name": "Bristled Moorbounder",
+    "source": "EGW",
+    "sourceName": "Explorer's Guide to Wildemount",
+    "edition": "2014",
+    "cr": "3",
+    "size": "Large",
+    "speed": {
+      "walk": 70,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Moorbounder",
+    "source": "EGW",
+    "sourceName": "Explorer's Guide to Wildemount",
+    "edition": "2014",
+    "cr": "1",
+    "size": "Large",
+    "speed": {
+      "walk": 70,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Clawfoot",
+    "source": "ERLW",
+    "sourceName": "Eberron: Rising from the Last War",
+    "edition": "2014",
+    "cr": "1",
+    "size": "Medium",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Fastieth",
+    "source": "ERLW",
+    "sourceName": "Eberron: Rising from the Last War",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 50,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Giant Canary",
+    "source": "FTD",
+    "sourceName": "Fizban's Treasury of Dragons",
+    "edition": "2014",
+    "cr": "1/2",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": 60,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Giant Coral Snake",
+    "source": "GoS",
+    "sourceName": "Ghosts of Saltmarsh",
+    "edition": "2014",
+    "cr": "4",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": 30,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Giant Sea Eel",
+    "source": "GoS",
+    "sourceName": "Ghosts of Saltmarsh",
+    "edition": "2014",
+    "cr": "1/2",
+    "size": "Large",
+    "speed": {
+      "walk": 0,
+      "climb": null,
+      "swim": 40,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Sahuagin Hatchling Swarm",
+    "source": "GoS",
+    "sourceName": "Ghosts of Saltmarsh",
+    "edition": "2014",
+    "cr": "3",
+    "size": "Large",
+    "speed": {
+      "walk": 0,
+      "climb": null,
+      "swim": 40,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Swarm of Tiny beasts (not a normal Wild Shape target)"
+  },
+  {
+    "name": "Awakened White Moose",
+    "source": "IDRotF",
+    "sourceName": "Icewind Dale: Rime of the Frostmaiden",
+    "edition": "2014",
+    "cr": "3",
+    "size": "Large",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Named/unique creature from an adventure"
+  },
+  {
+    "name": "Chimeric Fox",
+    "source": "IDRotF",
+    "sourceName": "Icewind Dale: Rime of the Frostmaiden",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Tiny",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": 5
+    },
+    "verified": true,
+    "notes": "Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Chimeric Hare",
+    "source": "IDRotF",
+    "sourceName": "Icewind Dale: Rime of the Frostmaiden",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Tiny",
+    "speed": {
+      "walk": 20,
+      "climb": null,
+      "swim": null,
+      "fly": 30,
+      "burrow": 5
+    },
+    "verified": true,
+    "notes": "Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Fox",
+    "source": "IDRotF",
+    "sourceName": "Icewind Dale: Rime of the Frostmaiden",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Tiny",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": 5
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Giant Walrus",
+    "source": "IDRotF",
+    "sourceName": "Icewind Dale: Rime of the Frostmaiden",
+    "edition": "2014",
+    "cr": "4",
+    "size": "Huge",
+    "speed": {
+      "walk": 20,
+      "climb": null,
+      "swim": 40,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Hare",
+    "source": "IDRotF",
+    "sourceName": "Icewind Dale: Rime of the Frostmaiden",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Tiny",
+    "speed": {
+      "walk": 20,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": 5
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Kingsport",
+    "source": "IDRotF",
+    "sourceName": "Icewind Dale: Rime of the Frostmaiden",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Medium",
+    "speed": {
+      "walk": 20,
+      "climb": null,
+      "swim": 40,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Named/unique creature from an adventure"
+  },
+  {
+    "name": "Knucklehead Trout",
+    "source": "IDRotF",
+    "sourceName": "Icewind Dale: Rime of the Frostmaiden",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Small",
+    "speed": {
+      "walk": 0,
+      "climb": null,
+      "swim": 30,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Mountain Goat",
+    "source": "IDRotF",
+    "sourceName": "Icewind Dale: Rime of the Frostmaiden",
+    "edition": "2014",
+    "cr": "1/8",
+    "size": "Medium",
+    "speed": {
+      "walk": 40,
+      "climb": 30,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Seal",
+    "source": "IDRotF",
+    "sourceName": "Icewind Dale: Rime of the Frostmaiden",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Medium",
+    "speed": {
+      "walk": 20,
+      "climb": null,
+      "swim": 40,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Walrus",
+    "source": "IDRotF",
+    "sourceName": "Icewind Dale: Rime of the Frostmaiden",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 20,
+      "climb": null,
+      "swim": 40,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Two-Headed Crocodile",
+    "source": "IMR",
+    "sourceName": "Infernal Machine Rebuild",
+    "edition": "2014",
+    "cr": "1",
+    "size": "Large",
+    "speed": {
+      "walk": 20,
+      "climb": null,
+      "swim": 30,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Alternate/partner product (supplement-alt)"
+  },
+  {
+    "name": "Wolf of the Overworld",
+    "source": "MCV3MC",
+    "sourceName": "Monstrous Compendium Vol. 3: Minecraft Creatures",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Alternate/partner product (supplement-alt)"
+  },
+  {
+    "name": "Spiderfrog",
+    "source": "MGELFT",
+    "sourceName": "Muk's Guide to Everything He Learned From Tasha",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Small",
+    "speed": {
+      "walk": 30,
+      "climb": 30,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Alternate/partner product (supplement-alt)"
+  },
+  {
+    "name": "Aurochs",
+    "source": "MPMM",
+    "sourceName": "Mordenkainen Presents: Monsters of the Multiverse",
+    "edition": "2014",
+    "cr": "2",
+    "size": "Large",
+    "speed": {
+      "walk": 50,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Brontosaurus",
+    "source": "MPMM",
+    "sourceName": "Mordenkainen Presents: Monsters of the Multiverse",
+    "edition": "2014",
+    "cr": "5",
+    "size": "Gargantuan",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Deep Rothé",
+    "source": "MPMM",
+    "sourceName": "Mordenkainen Presents: Monsters of the Multiverse",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Deinonychus",
+    "source": "MPMM",
+    "sourceName": "Mordenkainen Presents: Monsters of the Multiverse",
+    "edition": "2014",
+    "cr": "1",
+    "size": "Medium",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Dimetrodon",
+    "source": "MPMM",
+    "sourceName": "Mordenkainen Presents: Monsters of the Multiverse",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": 20,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Dolphin",
+    "source": "MPMM",
+    "sourceName": "Mordenkainen Presents: Monsters of the Multiverse",
+    "edition": "2014",
+    "cr": "1/8",
+    "size": "Medium",
+    "speed": {
+      "walk": 0,
+      "climb": null,
+      "swim": 60,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Hadrosaurus",
+    "source": "MPMM",
+    "sourceName": "Mordenkainen Presents: Monsters of the Multiverse",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Ox",
+    "source": "MPMM",
+    "sourceName": "Mordenkainen Presents: Monsters of the Multiverse",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Quetzalcoatlus",
+    "source": "MPMM",
+    "sourceName": "Mordenkainen Presents: Monsters of the Multiverse",
+    "edition": "2014",
+    "cr": "2",
+    "size": "Huge",
+    "speed": {
+      "walk": 10,
+      "climb": null,
+      "swim": null,
+      "fly": 80,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Stegosaurus",
+    "source": "MPMM",
+    "sourceName": "Mordenkainen Presents: Monsters of the Multiverse",
+    "edition": "2014",
+    "cr": "4",
+    "size": "Huge",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Swarm of Rot Grubs",
+    "source": "MPMM",
+    "sourceName": "Mordenkainen Presents: Monsters of the Multiverse",
+    "edition": "2014",
+    "cr": "1/2",
+    "size": "Medium",
+    "speed": {
+      "walk": 5,
+      "climb": 5,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Swarm of Tiny beasts (not a normal Wild Shape target)"
+  },
+  {
+    "name": "Velociraptor",
+    "source": "MPMM",
+    "sourceName": "Mordenkainen Presents: Monsters of the Multiverse",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Tiny",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Sword Spider",
+    "source": "MaBJoV",
+    "sourceName": "Minsc and Boo's Journal of Villainy",
+    "edition": "2014",
+    "cr": "3",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": 30,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Alternate/partner product (supplement-alt)"
+  },
+  {
+    "name": "Chimeric Fox",
+    "source": "NRH-AVitW",
+    "sourceName": "NERDS Restoring Harmony: A Voice in the Wilderness",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Tiny",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": 5
+    },
+    "verified": true,
+    "notes": "Alternate/partner product (supplement-alt)"
+  },
+  {
+    "name": "Female Steeder",
+    "source": "OotA",
+    "sourceName": "Out of the Abyss",
+    "edition": "2014",
+    "cr": "1",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": 30,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted in MTF/MPMM as monstrosity"
+  },
+  {
+    "name": "Giant Riding Lizard",
+    "source": "OotA",
+    "sourceName": "Out of the Abyss",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": 30,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Male Steeder",
+    "source": "OotA",
+    "sourceName": "Out of the Abyss",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 30,
+      "climb": 30,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted in MTF/MPMM as monstrosity"
+  },
+  {
+    "name": "Serpopard",
+    "source": "PSA",
+    "sourceName": "Plane Shift: Amonkhet",
+    "edition": "2014",
+    "cr": "3",
+    "size": "Large",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement)"
+  },
+  {
+    "name": "Small Drake",
+    "source": "PSA",
+    "sourceName": "Plane Shift: Amonkhet",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 10,
+      "climb": null,
+      "swim": null,
+      "fly": 60,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement); Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Kavu Predator",
+    "source": "PSD",
+    "sourceName": "Plane Shift: Dominaria",
+    "edition": "2014",
+    "cr": "2",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": 30,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement)"
+  },
+  {
+    "name": "Steel Leaf Kavu",
+    "source": "PSD",
+    "sourceName": "Plane Shift: Dominaria",
+    "edition": "2014",
+    "cr": "4",
+    "size": "Large",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement)"
+  },
+  {
+    "name": "Drake (Small)",
+    "source": "PSK",
+    "sourceName": "Plane Shift: Kaladesh",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 10,
+      "climb": null,
+      "swim": null,
+      "fly": 60,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement); Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Gremlin",
+    "source": "PSK",
+    "sourceName": "Plane Shift: Kaladesh",
+    "edition": "2014",
+    "cr": "1/2",
+    "size": "Small",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement)"
+  },
+  {
+    "name": "Aegisaur",
+    "source": "PSX",
+    "sourceName": "Plane Shift: Ixalan",
+    "edition": "2014",
+    "cr": "3",
+    "size": "Huge",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement); Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Aerosaur (Large)",
+    "source": "PSX",
+    "sourceName": "Plane Shift: Ixalan",
+    "edition": "2014",
+    "cr": "2",
+    "size": "Huge",
+    "speed": {
+      "walk": 10,
+      "climb": null,
+      "swim": null,
+      "fly": 80,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement); Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Aerosaur (Small)",
+    "source": "PSX",
+    "sourceName": "Plane Shift: Ixalan",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 10,
+      "climb": null,
+      "swim": null,
+      "fly": 60,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement); Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Altisaur",
+    "source": "PSX",
+    "sourceName": "Plane Shift: Ixalan",
+    "edition": "2014",
+    "cr": "5",
+    "size": "Gargantuan",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement); Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Armasaur",
+    "source": "PSX",
+    "sourceName": "Plane Shift: Ixalan",
+    "edition": "2014",
+    "cr": "4",
+    "size": "Huge",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement); Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Brontodon",
+    "source": "PSX",
+    "sourceName": "Plane Shift: Ixalan",
+    "edition": "2014",
+    "cr": "5",
+    "size": "Gargantuan",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement); Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Ferocidon",
+    "source": "PSX",
+    "sourceName": "Plane Shift: Ixalan",
+    "edition": "2014",
+    "cr": "2",
+    "size": "Large",
+    "speed": {
+      "walk": 60,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement); Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Frilled Deathspitter",
+    "source": "PSX",
+    "sourceName": "Plane Shift: Ixalan",
+    "edition": "2014",
+    "cr": "1/2",
+    "size": "Small",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement)"
+  },
+  {
+    "name": "Hadrosaur",
+    "source": "PSX",
+    "sourceName": "Plane Shift: Ixalan",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement); Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Drake (Small)",
+    "source": "PSZ",
+    "sourceName": "Plane Shift: Zendikar",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 10,
+      "climb": null,
+      "swim": null,
+      "fly": 60,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Plane Shift free PDF (Magic setting supplement); Stat block derived from another entry in the source data"
+  },
+  {
+    "name": "Swarm of Infesting Insects",
+    "source": "RHW",
+    "sourceName": "Ravenloft: The Horrors Within",
+    "edition": "2024",
+    "cr": "2",
+    "size": "Medium",
+    "speed": {
+      "walk": 20,
+      "climb": 20,
+      "swim": 20,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Swarm of Tiny beasts (not a normal Wild Shape target)"
+  },
+  {
+    "name": "Swarm of Ravenous Insects",
+    "source": "RHW",
+    "sourceName": "Ravenloft: The Horrors Within",
+    "edition": "2024",
+    "cr": "3",
+    "size": "Medium",
+    "speed": {
+      "walk": 30,
+      "climb": 30,
+      "swim": null,
+      "fly": null,
+      "burrow": 30
+    },
+    "verified": true,
+    "notes": "Swarm of Tiny beasts (not a normal Wild Shape target)"
+  },
+  {
+    "name": "Relic Sloth",
+    "source": "SCC",
+    "sourceName": "Strixhaven: A Curriculum of Chaos",
+    "edition": "2014",
+    "cr": "2",
+    "size": "Huge",
+    "speed": {
+      "walk": 20,
+      "climb": 20,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Hulking Crab",
+    "source": "SKT",
+    "sourceName": "Storm King's Thunder",
+    "edition": "2014",
+    "cr": "5",
+    "size": "Huge",
+    "speed": {
+      "walk": 20,
+      "climb": null,
+      "swim": 30,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Giant Crayfish",
+    "source": "TftYP",
+    "sourceName": "Tales from the Yawning Portal",
+    "edition": "2014",
+    "cr": "2",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": 30,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Giant Lightning Eel",
+    "source": "TftYP",
+    "sourceName": "Tales from the Yawning Portal",
+    "edition": "2014",
+    "cr": "3",
+    "size": "Large",
+    "speed": {
+      "walk": 5,
+      "climb": null,
+      "swim": 30,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Giant Subterranean Lizard",
+    "source": "TftYP",
+    "sourceName": "Tales from the Yawning Portal",
+    "edition": "2014",
+    "cr": "4",
+    "size": "Huge",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": 50,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Guthash",
+    "source": "TftYP",
+    "sourceName": "Tales from the Yawning Portal",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Named/unique creature from an adventure"
+  },
+  {
+    "name": "Almiraj",
+    "source": "ToA",
+    "sourceName": "Tomb of Annihilation",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Small",
+    "speed": {
+      "walk": 50,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Flying Monkey",
+    "source": "ToA",
+    "sourceName": "Tomb of Annihilation",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Small",
+    "speed": {
+      "walk": 30,
+      "climb": 20,
+      "swim": null,
+      "fly": 30,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Giant Snapping Turtle",
+    "source": "ToA",
+    "sourceName": "Tomb of Annihilation",
+    "edition": "2014",
+    "cr": "3",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": 40,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Jaculi",
+    "source": "ToA",
+    "sourceName": "Tomb of Annihilation",
+    "edition": "2014",
+    "cr": "1/2",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": 20,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Aurochs",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "2",
+    "size": "Large",
+    "speed": {
+      "walk": 50,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM"
+  },
+  {
+    "name": "Brontosaurus",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "5",
+    "size": "Gargantuan",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM"
+  },
+  {
+    "name": "Cow",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Cranium Rat",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Tiny",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM; MPMM reprint is Aberration"
+  },
+  {
+    "name": "Deep Rothé",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM"
+  },
+  {
+    "name": "Deinonychus",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "1",
+    "size": "Medium",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM"
+  },
+  {
+    "name": "Dimetrodon",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Medium",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": 20,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM"
+  },
+  {
+    "name": "Dolphin",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "1/8",
+    "size": "Medium",
+    "speed": {
+      "walk": 0,
+      "climb": null,
+      "swim": 60,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM"
+  },
+  {
+    "name": "Hadrosaurus",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM"
+  },
+  {
+    "name": "Ox",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM"
+  },
+  {
+    "name": "Quetzalcoatlus",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "2",
+    "size": "Huge",
+    "speed": {
+      "walk": 10,
+      "climb": null,
+      "swim": null,
+      "fly": 80,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM"
+  },
+  {
+    "name": "Rothé",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Stegosaurus",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "4",
+    "size": "Huge",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM"
+  },
+  {
+    "name": "Stench Kow",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM; MPMM reprint is Fiend (CR 1/2)"
+  },
+  {
+    "name": "Swarm of Cranium Rats",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "5",
+    "size": "Medium",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Swarm of Tiny beasts (not a normal Wild Shape target); Reprinted/updated in MPMM; MPMM reprint is Aberration"
+  },
+  {
+    "name": "Swarm of Rot Grubs",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "1/2",
+    "size": "Medium",
+    "speed": {
+      "walk": 5,
+      "climb": 5,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Swarm of Tiny beasts (not a normal Wild Shape target); Reprinted/updated in MPMM"
+  },
+  {
+    "name": "Velociraptor",
+    "source": "VGM",
+    "sourceName": "Volo's Guide to Monsters",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Tiny",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Reprinted/updated in MPMM"
+  },
+  {
+    "name": "Swarm of Maggots",
+    "source": "VRGR",
+    "sourceName": "Van Richten's Guide to Ravenloft",
+    "edition": "2014",
+    "cr": "2",
+    "size": "Medium",
+    "speed": {
+      "walk": 20,
+      "climb": null,
+      "swim": 20,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Swarm of Tiny beasts (not a normal Wild Shape target)"
+  },
+  {
+    "name": "Swarm of Scarabs",
+    "source": "VRGR",
+    "sourceName": "Van Richten's Guide to Ravenloft",
+    "edition": "2014",
+    "cr": "3",
+    "size": "Medium",
+    "speed": {
+      "walk": 30,
+      "climb": 30,
+      "swim": null,
+      "fly": null,
+      "burrow": 30
+    },
+    "verified": true,
+    "notes": "Swarm of Tiny beasts (not a normal Wild Shape target)"
+  },
+  {
+    "name": "Giant Dragonfly",
+    "source": "WBtW",
+    "sourceName": "The Wild Beyond the Witchlight",
+    "edition": "2014",
+    "cr": "1/2",
+    "size": "Large",
+    "speed": {
+      "walk": 10,
+      "climb": null,
+      "swim": null,
+      "fly": 60,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Giant Snail",
+    "source": "WBtW",
+    "sourceName": "The Wild Beyond the Witchlight",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 10,
+      "climb": 10,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Giant Swan",
+    "source": "WBtW",
+    "sourceName": "The Wild Beyond the Witchlight",
+    "edition": "2014",
+    "cr": "1",
+    "size": "Large",
+    "speed": {
+      "walk": 10,
+      "climb": null,
+      "swim": null,
+      "fly": 80,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  },
+  {
+    "name": "Pollenella the Honeybee",
+    "source": "WBtW",
+    "sourceName": "The Wild Beyond the Witchlight",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Tiny",
+    "speed": {
+      "walk": 5,
+      "climb": null,
+      "swim": null,
+      "fly": 30,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Named/unique creature from an adventure"
+  },
+  {
+    "name": "Awakened Rat",
+    "source": "WDH",
+    "sourceName": "Waterdeep: Dragon Heist",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Tiny",
+    "speed": {
+      "walk": 20,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Named/unique creature from an adventure"
+  },
+  {
+    "name": "Maxeene",
+    "source": "WDH",
+    "sourceName": "Waterdeep: Dragon Heist",
+    "edition": "2014",
+    "cr": "1/4",
+    "size": "Large",
+    "speed": {
+      "walk": 40,
+      "climb": null,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Named/unique creature from an adventure"
+  },
+  {
+    "name": "Obliteros",
+    "source": "WDH",
+    "sourceName": "Waterdeep: Dragon Heist",
+    "edition": "2014",
+    "cr": "5",
+    "size": "Huge",
+    "speed": {
+      "walk": 0,
+      "climb": null,
+      "swim": 50,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Named/unique creature from an adventure"
+  },
+  {
+    "name": "Sylgar",
+    "source": "WDH",
+    "sourceName": "Waterdeep: Dragon Heist",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Tiny",
+    "speed": {
+      "walk": 0,
+      "climb": null,
+      "swim": 40,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Named/unique creature from an adventure"
+  },
+  {
+    "name": "Haungharassk",
+    "source": "WDMM",
+    "sourceName": "Waterdeep: Dungeon of the Mad Mage",
+    "edition": "2014",
+    "cr": "0",
+    "size": "Huge",
+    "speed": {
+      "walk": 10,
+      "climb": 10,
+      "swim": null,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": "Named/unique creature from an adventure"
+  },
+  {
+    "name": "Pandarian Dragon Turtle",
+    "source": "WoW",
+    "sourceName": "World of Warcraft",
+    "edition": "2024",
+    "cr": "1/2",
+    "size": "Large",
+    "speed": {
+      "walk": 30,
+      "climb": null,
+      "swim": 60,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": false,
+    "notes": "Alternate/partner product (setting); Book release date after data snapshot; verify against print"
+  },
+  {
+    "name": "Giant Squid",
+    "source": "XMM",
+    "sourceName": "Monster Manual (2025)",
+    "edition": "2024",
+    "cr": "6",
+    "size": "Huge",
+    "speed": {
+      "walk": 5,
+      "climb": null,
+      "swim": 80,
+      "fly": null,
+      "burrow": null
+    },
+    "verified": true,
+    "notes": ""
+  }
+]

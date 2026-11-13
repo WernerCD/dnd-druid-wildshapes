@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Giant Eagle",
+    "type2014": "beast",
+    "type2024": "celestial",
+    "verified": true
+  },
+  {
+    "name": "Giant Owl",
+    "type2014": "beast",
+    "type2024": "celestial",
+    "verified": true
+  },
+  {
+    "name": "Giant Elk",
+    "type2014": "beast",
+    "type2024": "celestial",
+    "verified": true
+  },
+  {
+    "name": "Axe Beak",
+    "type2014": "beast",
+    "type2024": "monstrosity",
+    "verified": true
+  },
+  {
+    "name": "Stirge",
+    "type2014": "beast",
+    "type2024": "monstrosity",
+    "verified": true
+  },
+  {
+    "name": "Flying Snake",
+    "type2014": "beast",
+    "type2024": "monstrosity",
+    "verified": true
+  },
+  {
+    "name": "Giant Vulture",
+    "type2014": "beast",
+    "type2024": "monstrosity",
+    "verified": true
+  },
+  {
+    "name": "Worg",
+    "type2014": "monstrosity",
+    "type2024": "fey",
+    "verified": true
+  }
+]

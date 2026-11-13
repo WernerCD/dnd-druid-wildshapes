@@ -1,0 +1,430 @@
+{
+ "Allosaurus": {
+  "desc": "A towering two-legged predator with a long, counterbalancing tail and a skull lined with serrated, backward-curving teeth. It stalks open floodplains and lost-world jungles, closing on prey in a short burst before slamming into it jaws-first.",
+  "tip": "Use its charge-and-pounce style to knock a dangerous foe prone so the rest of the party gets easier hits."
+ },
+ "Ankylosaurus": {
+  "desc": "A squat, broad-bodied plant eater covered from snout to tail in bony plates and studs, ending in a heavy club of fused bone. It grazes slowly through ferny lowlands and answers any threat by swinging that tail with bone-cracking force.",
+  "tip": "Pick this form when you need to stand in a chokepoint and soak blows while hitting back hard."
+ },
+ "Ape": {
+  "desc": "A powerful, long-armed primate with a thick coat and expressive face, equally at home climbing trees or knuckle-walking across the forest floor. Apes live in close family troops and are clever enough to hurl rocks or branches at intruders.",
+  "tip": "Ape hands and climbing let you scale walls, carry objects, and throw rocks -- handy when you need a body that can manipulate the world."
+ },
+ "Archelon": {
+  "desc": "An enormous ancient sea turtle with a leathery, ridged shell and flipper-like limbs built for long ocean crossings. It glides through warm coastal waters snapping up jellyfish and squid with a hooked, beak-like mouth.",
+  "tip": "Great for long underwater travel or ferrying a small ally, and its shell makes it a sturdy swimmer in a fight."
+ },
+ "Axe Beak": {
+  "desc": "A tall, flightless bird with stubby wings, powerful running legs, and a hatchet-shaped beak that can split bone. Herds of them roam dry plains and scrubland, and frontier folk sometimes tame them as fast, ill-tempered mounts.",
+  "tip": "A quick ground runner for crossing open country or chasing down a fleeing target."
+ },
+ "Baboon": {
+  "desc": "A dog-faced monkey with a long muzzle, sharp canines, and a loud bark, living in boisterous troops on savannas and rocky hills. Baboons are bold, curious foragers that will gang up to drive off a much larger animal.",
+  "tip": "A small, unremarkable climber that blends in near ruins or wild country -- useful for low-key scouting with working hands."
+ },
+ "Badger": {
+  "desc": "A low, stocky burrower with a striped face, short legs, and long digging claws. It is famously stubborn, tunnelling under meadows and woodland edges and fighting ferociously when cornered.",
+  "tip": "Its burrowing speed lets you dig under a fence or into soft earth to escape or sneak past a barrier."
+ },
+ "Bat": {
+  "desc": "A small, leather-winged mammal that flits through the night air hunting insects by bouncing high-pitched calls off its surroundings. Bats roost upside down in caves, attics, and hollow trees, often by the thousands.",
+  "tip": "Echolocation lets you scout pitch-black caves and dungeons without any light at all."
+ },
+ "Black Bear": {
+  "desc": "A medium-sized bear with glossy dark fur and a pale muzzle, found throughout temperate forests and mountains. It is an opportunistic omnivore that climbs well and raids beehives, berry patches, and careless campsites alike.",
+  "tip": "A solid early tank that can also climb trees, so it works both as a brawler and a lookout."
+ },
+ "Blood Hawk": {
+  "desc": "A crimson-feathered raptor with a needle-sharp beak, notorious for hunting in screaming flocks that strip large prey to the bone. They nest on sea cliffs and rocky crags and show no fear of armed travelers.",
+  "tip": "Pair this form with allies to gang up on a target, since these hawks thrive when they fight together."
+ },
+ "Boar": {
+  "desc": "A bristly, barrel-chested wild pig with curved tusks and a short temper. Boars root through oak forests and marshy thickets, and a wounded one keeps fighting long after it should have dropped.",
+  "tip": "A charging boar can bowl an enemy over, and its relentless toughness keeps you standing a little longer."
+ },
+ "Brown Bear": {
+  "desc": "A massive, shaggy bear with a muscular shoulder hump and long claws, roaming forests, tundra, and salmon rivers. It is usually wary of people but becomes a terrifying force when protecting cubs or a kill.",
+  "tip": "One of the best general melee forms early on -- a big health pool, claw-and-bite attacks, and enough bulk to hold the line."
+ },
+ "Camel": {
+  "desc": "A long-legged desert mammal with a humped back, broad padded feet, and thick lashes that keep out blowing sand. Camels can go for days without water and carry heavy loads across dunes and stony wastes.",
+  "tip": "Use it for long overland hauls through deserts, carrying a companion or gear where horses would struggle."
+ },
+ "Cat": {
+  "desc": "A small, agile hunter with keen night vision, soft paws, and a flexible spine, found anywhere people keep homes or barns. Cats are patient stalkers that slip through narrow gaps and rarely draw a second glance.",
+  "tip": "The classic town infiltrator -- nobody questions a cat wandering through a tavern, manor, or market."
+ },
+ "Cave Bear": {
+  "desc": "A hulking prehistoric bear with a broad, domed skull, built to winter deep in caverns. It wanders cold highlands and cave country, and its sheer bulk dwarfs ordinary bears.",
+  "tip": "A heavier-hitting bear for when you want to tank and brawl, and its swimming lets you follow foes into water."
+ },
+ "Constrictor Snake": {
+  "desc": "A thick, muscular snake that ambushes prey from branches or shallow water and squeezes it in tightening coils. It lives in humid forests and swamps, moving slowly but striking with surprising speed.",
+  "tip": "Grapple and restrain an enemy spellcaster or runner so your party can pile on."
+ },
+ "Crab": {
+  "desc": "A small, hard-shelled crustacean that scuttles sideways along beaches and tide pools, pinching at anything that bothers it. It can breathe both air and water and hides easily among rocks and seaweed.",
+  "tip": "Amphibious and inconspicuous, a crab can slip into harbors, sewers, or tide pools to eavesdrop unnoticed."
+ },
+ "Crocodile": {
+  "desc": "A long, armored reptile with a powerful tail and jaws that lock shut on anything they catch. Crocodiles lurk motionless in rivers and swamps with only their eyes above the surface, waiting for prey to come drink.",
+  "tip": "Bite to grab a foe and drag them into the water, where you have the advantage and they do not."
+ },
+ "Deer": {
+  "desc": "A slender, graceful grazer with large ears and a white-flagged tail, living along forest edges and meadows. Deer are alert and skittish, bounding away at the first unfamiliar sound.",
+  "tip": "A fast, harmless-looking form for crossing woodland quickly or passing as ordinary wildlife."
+ },
+ "Dire Wolf": {
+  "desc": "A wolf of enormous size with a heavy jaw and a coarse, shaggy coat, hunting in packs across cold forests and steppes. Its howl carries for miles, and it can bring down prey as large as a horse.",
+  "tip": "Excellent for knocking enemies prone, especially when allies are next to the target to help you."
+ },
+ "Donkey": {
+  "desc": "A small, sturdy relative of the horse with long ears, a bristly mane, and a famously loud bray. Donkeys are patient, sure-footed workers in farms and hill towns, and they can be remarkably stubborn.",
+  "tip": "Blend in on roads and in villages as a pack animal, or haul gear for the party."
+ },
+ "Draft Horse": {
+  "desc": "A heavy, broad-chested horse with feathered hooves, bred to pull plows, wagons, and logs. It is calm and immensely strong, a common sight on farms and along trade roads.",
+  "tip": "Pull a cart or carry heavy loads, and travel roads without drawing any attention."
+ },
+ "Eagle": {
+  "desc": "A large bird of prey with a hooked beak, powerful talons, and eyesight sharp enough to spot a rabbit from high above. Eagles nest on cliffs and tall trees and soar for hours on rising currents of air.",
+  "tip": "Fly high to scout terrain and spot enemies from far away with its keen eyesight."
+ },
+ "Elephant": {
+  "desc": "A colossal grey mammal with a flexible trunk, curved ivory tusks, and great fan-shaped ears. Elephants travel in close-knit herds across grasslands and forests, and they remember their routes and their enemies for years.",
+  "tip": "Trample through groups of smaller foes and knock them down with a charging attack."
+ },
+ "Elk": {
+  "desc": "A tall, long-legged deer with a dark neck mane and, in males, sweeping antlers. Elk graze mountain meadows and forest clearings, and bulls fight fiercely during the autumn rut.",
+  "tip": "Charge in to knock a foe prone, then follow up with hooves while they are down."
+ },
+ "Flying Snake": {
+  "desc": "A slender, brightly scaled serpent with feathered wings, darting through jungle canopies and warm coastal cliffs. Wizards and nobles sometimes keep them as messengers because they are fast and hard to catch.",
+  "tip": "A tiny flyer that can slip in and out of reach without provoking attacks, great for quick scouting runs."
+ },
+ "Frog": {
+  "desc": "A small, smooth-skinned amphibian with long hind legs and bulging eyes, living around ponds, streams, and marshes. It catches insects with a quick tongue and can leap many times its own length.",
+  "tip": "Tiny and amphibious, a frog can hide in plain sight near water or slip through narrow gaps."
+ },
+ "Giant Badger": {
+  "desc": "A badger the size of a large dog, with long digging claws and the same bad temper as its smaller kin. Giant badgers dig sprawling burrows under hills and forests and defend them viciously.",
+  "tip": "Burrow under obstacles or into soft ground to escape, set an ambush, or reach a hidden spot."
+ },
+ "Giant Bat": {
+  "desc": "A bat with a wingspan wider than a man is tall, hunting large prey through underground caverns and moonlit forests. Some subterranean folk train them as flying mounts.",
+  "tip": "Fly and echolocate through dark caves, giving you both blindsight-style awareness and mobility."
+ },
+ "Giant Boar": {
+  "desc": "A boar as large as a pony, with thick bristles, a hump of muscle, and tusks like curved daggers. It ranges through deep forests, and its charge can shatter a shield.",
+  "tip": "Charge to knock foes prone and rely on its stubborn toughness to stay up through punishing hits."
+ },
+ "Giant Centipede": {
+  "desc": "A many-legged arthropod as long as a person, with segmented armor plating and venomous pincers. It hunts in damp caves, rotting logs, and sewers, skittering across walls and ceilings.",
+  "tip": "Climb walls and ceilings in tight underground spaces and poison enemies that come close."
+ },
+ "Giant Constrictor Snake": {
+  "desc": "A serpent long enough to coil around a horse, with a body thick as a tree trunk. It lurks in steaming jungles and swamps and crushes its prey before swallowing it whole.",
+  "tip": "A grappler that can restrain a big threat and keep it out of the fight while your allies attack."
+ },
+ "Giant Crab": {
+  "desc": "A crab the size of a large dog, with heavy armored plates and claws that can snap a spear shaft. Giant crabs patrol coastlines and reefs and bury themselves in sand to ambush passing prey.",
+  "tip": "Grab foes with its claws and use its amphibious nature to fight along shorelines and shallows."
+ },
+ "Giant Crocodile": {
+  "desc": "A monstrous crocodile long enough to swallow a cow, lurking in great rivers and tropical swamps. Its tail sweep and crushing bite make it the undisputed ruler of the waters it hunts.",
+  "tip": "Grab a dangerous enemy in its jaws and drag it underwater, while tail swipes keep others back."
+ },
+ "Giant Eagle": {
+  "desc": "A majestic raptor large enough to carry a person, with gleaming plumage and a fierce, intelligent gaze. Giant eagles nest atop remote peaks and are known to ally with those who protect wild places.",
+  "tip": "Fly over obstacles, scout from the sky, and carry a smaller ally out of danger."
+ },
+ "Giant Elk": {
+  "desc": "A regal elk of immense size with antlers spreading wider than a cart, said to roam ancient forests and high meadows. It is wary of strangers but shows a calm nobility among those who respect the wild.",
+  "tip": "Charge and trample foes, and its big frame makes it a good mount for a smaller ally."
+ },
+ "Giant Fire Beetle": {
+  "desc": "A dog-sized beetle with a hard shell and glowing glands that shed a steady reddish light. Miners and cave dwellers sometimes harvest those glands, which keep glowing for days after removal.",
+  "tip": "Its glowing glands give you a free light source in dark caves without needing a torch or spell."
+ },
+ "Giant Fly": {
+  "desc": "A buzzing fly the size of a horse, with bristly legs, multifaceted eyes, and filmy wings. Some mages summon or tame these creatures as flying steeds, though they are noisy and unnerving.",
+  "tip": "A flying form useful for carrying an ally or crossing chasms, though it is too loud for stealth."
+ },
+ "Giant Frog": {
+  "desc": "A frog the size of a large dog with a cavernous mouth and a long, sticky tongue. Giant frogs lurk in swamps and lake shallows and can swallow small creatures whole.",
+  "tip": "Swallow a small enemy whole to remove it from the fight, and leap across gaps or water."
+ },
+ "Giant Goat": {
+  "desc": "A goat the size of an ox with thick, curled horns and hooves that grip sheer rock. It thrives on mountain slopes and cliffs where few predators can follow.",
+  "tip": "Climb steep mountain terrain with ease and ram enemies off ledges or onto their backs."
+ },
+ "Giant Hyena": {
+  "desc": "A hulking hyena with a sloped back, powerful jaws, and an eerie cackling laugh. Giant hyenas run in packs across dry plains, scavenging and hunting with equal hunger.",
+  "tip": "Its frenzied hunting style lets you keep moving and biting after taking an enemy down."
+ },
+ "Giant Lizard": {
+  "desc": "A lizard as large as a pony, with tough scales, sticky toe pads, and a lashing tail. Underground peoples sometimes saddle them as mounts or pack animals for cave travel.",
+  "tip": "Climb walls in caverns and serve as a sturdy mount or pack animal in underground expeditions."
+ },
+ "Giant Octopus": {
+  "desc": "A huge, many-armed sea creature with suckered tentacles and intelligent, unblinking eyes. It hides in reefs and wrecks, changing color to blend in before seizing passing prey.",
+  "tip": "Grapple foes underwater and use its ink cloud to escape or confuse enemies."
+ },
+ "Giant Owl": {
+  "desc": "A silent-winged owl large enough to carry a rider, with luminous eyes and a calm, knowing manner. Giant owls dwell in old forests and often befriend druids and woodland folk.",
+  "tip": "Fly silently at night, see in the dark, and swoop in and out without drawing attacks."
+ },
+ "Giant Poisonous Snake": {
+  "desc": "A serpent longer than a person, with brilliant warning patterns and fangs dripping with venom. It hides in tall grass, ruins, and jungle undergrowth and strikes faster than the eye can follow.",
+  "tip": "Swim and strike with venom, making it a good aquatic or ambush form."
+ },
+ "Giant Rat": {
+  "desc": "A rat the size of a small dog, with matted fur, yellowed teeth, and a constant hunger. Giant rats infest sewers, dungeons, and ruins, swarming over anything they can eat.",
+  "tip": "Sneak through sewers and dungeons, and fight alongside allies to overwhelm enemies."
+ },
+ "Giant Rat (Diseased)": {
+  "desc": "A mangy, sore-covered giant rat whose bite carries sickness from the filth it lives in. These plague-carriers lurk in the worst sewers and corpse pits and are shunned even by other vermin.",
+  "tip": "Use its sickening bite to weaken enemies in a long fight while hiding in dark tunnels."
+ },
+ "Giant Scorpion": {
+  "desc": "A scorpion the size of a horse, with crushing pincers and a stinger dripping with lethal poison. It hunts across deserts and in deep caverns, hiding in sand or shadow until prey wanders near.",
+  "tip": "Grab an enemy with a claw, then hit it hard with your poison sting while it is held."
+ },
+ "Giant Sea Horse": {
+  "desc": "A sea horse large enough to carry a rider, with a curled tail and a ridged, armored body. Merfolk and sea elves tame them as steeds for patrolling reefs and kelp forests.",
+  "tip": "Carry an ally underwater or move quickly through the sea while staying inconspicuous."
+ },
+ "Giant Shark": {
+  "desc": "A colossal shark with rows of serrated teeth and a body long as a ship's hull, ruling the deep open ocean. It can sense blood from miles away and attacks with relentless ferocity.",
+  "tip": "Dominate underwater fights with a huge bite and the ability to sense blood in the water."
+ },
+ "Giant Spider": {
+  "desc": "A spider the size of a horse, with bristling legs, multiple glittering eyes, and venomous fangs. It spins vast webs in dark forests and caverns and waits for prey to blunder in.",
+  "tip": "Climb walls, sense through your webs, and restrain enemies with sticky webbing."
+ },
+ "Giant Toad": {
+  "desc": "A bloated toad the size of a pony, with warty skin and a wide mouth that can engulf smaller creatures. It squats in muddy marshes and damp caves, croaking with a deep, rumbling voice.",
+  "tip": "Swallow a smaller foe to take it out of the fight and leap to reposition."
+ },
+ "Giant Vulture": {
+  "desc": "A huge, bald-headed vulture with ragged wings and a hooked beak, circling over battlefields and wastelands. Some are cunning enough to understand speech and bargain with evil masters.",
+  "tip": "Soar high to scout the battlefield and use pack tactics alongside allies."
+ },
+ "Giant Wasp": {
+  "desc": "A wasp the size of a large dog, with gleaming black-and-yellow stripes and a stinger as long as a dagger. Giant wasps build enormous paper nests in forests and fiercely defend them.",
+  "tip": "Fly quickly and poison targets with its sting, good for harassing and retreating."
+ },
+ "Giant Weasel": {
+  "desc": "A sleek, long-bodied weasel the size of a large dog, with sharp teeth and an insatiable appetite for blood. It hunts in dense woodland and slips into burrows to catch prey.",
+  "tip": "A fast, sneaky hunter with keen senses -- great for tracking and stealthy ambushes."
+ },
+ "Giant Wolf Spider": {
+  "desc": "A large, hairy spider that hunts by running down prey instead of spinning webs. It lurks in open grasslands and dry caves, pouncing with startling speed.",
+  "tip": "Climb walls and use its keen senses to ambush prey, a strong stealth-and-strike form."
+ },
+ "Goat": {
+  "desc": "A nimble, bearded ruminant with backward-curving horns and cloven hooves that grip steep rock. Goats live in hill farms and mountain slopes, browsing on nearly anything.",
+  "tip": "Climb rough terrain and ram foes, or blend in near farms and mountain villages."
+ },
+ "Hawk": {
+  "desc": "A swift, sharp-eyed bird of prey with a hooked beak and taloned feet, hunting small animals in open country. Hawks perch on high branches and dive with sudden, precise speed.",
+  "tip": "Scout from above with keen sight, then return to report what you saw."
+ },
+ "Hippopotamus": {
+  "desc": "A massive, barrel-shaped mammal with a huge mouth, thick hide, and short legs, spending its days in rivers and lakes. Despite its sleepy look it is fiercely territorial and surprisingly fast.",
+  "tip": "Hold the line in rivers and lakes with a heavy bite and enough bulk to absorb punishment."
+ },
+ "Hunter Shark": {
+  "desc": "A sleek, grey shark with cold eyes and powerful jaws, prowling coastal waters and open seas. It circles its prey before striking in a sudden, savage rush.",
+  "tip": "Excellent underwater hunter that can smell blood and attack wounded foes with fury."
+ },
+ "Hyena": {
+  "desc": "A spotted, sloped-backed scavenger with powerful jaws and a cackling call, roaming savannas in clans. Hyenas steal kills from bigger predators and hunt in coordinated groups.",
+  "tip": "Gang up on targets with allies and look like ordinary wildlife on open plains."
+ },
+ "Jackal": {
+  "desc": "A small, lean wild dog with large ears and a bushy tail, trotting across deserts and scrublands. Jackals hunt in pairs or small packs and scavenge around settlements.",
+  "tip": "A cheap, unremarkable scout with keen senses, great for sneaking near camps."
+ },
+ "Killer Whale": {
+  "desc": "A huge black-and-white whale with a tall dorsal fin, hunting seals, fish, and even sharks in cold seas. Orcas travel in family pods and coordinate their hunts with clicks and whistles.",
+  "tip": "Use echolocation and a powerful bite to dominate any underwater fight."
+ },
+ "Lion": {
+  "desc": "A great tawny cat with a powerful build, the males crowned with shaggy manes. Lions live in prides on open grasslands and hunt as a team, ambushing prey from the tall grass.",
+  "tip": "Pounce to knock foes prone and fight alongside allies to tear through enemies."
+ },
+ "Lizard": {
+  "desc": "A small, quick reptile with dry scales and a whip-like tail, basking on warm stones and walls. It scurries into cracks at the first sign of danger.",
+  "tip": "Climb walls and slip through tiny crevices to spy where others cannot go."
+ },
+ "Mammoth": {
+  "desc": "A colossal shaggy elephant with long curved tusks and a thick coat built for icy plains. Mammoths roam frozen tundras in herds, trampling snowdrifts as they forage.",
+  "tip": "Trample groups of enemies and absorb enormous punishment as a frontline tank."
+ },
+ "Mastiff": {
+  "desc": "A large, heavy-jawed dog bred for guarding and hunting, with a short coat and loyal temperament. Mastiffs protect farms, estates, and caravans, and are trusted companions of soldiers and hunters.",
+  "tip": "Track scents and knock enemies prone, and pass easily as someone's guard dog."
+ },
+ "Mule": {
+  "desc": "A hardy cross between horse and donkey, with long ears and a sure-footed gait. Mules carry heavy packs over mountain trails and are prized for their stamina and stubborn reliability.",
+  "tip": "Haul gear across difficult terrain and blend in with any caravan."
+ },
+ "Octopus": {
+  "desc": "A soft-bodied, eight-armed sea creature with suckered tentacles and keen, curious eyes. It hides in rocky crevices, changes color to match its surroundings, and squirts ink when threatened.",
+  "tip": "Squeeze through tiny gaps, hide by changing color, and use ink to escape danger underwater."
+ },
+ "Owl": {
+  "desc": "A round-faced nocturnal bird with large eyes and silent, soft-feathered wings. Owls hunt mice and insects by night and roost quietly in hollow trees by day.",
+  "tip": "Fly silently at night with keen sight and hearing, then glide away without being caught."
+ },
+ "Panther": {
+  "desc": "A sleek, dark-coated big cat with powerful limbs and a stealthy, padding walk. Panthers hunt in thick forests and jungles, often dragging their kills into trees.",
+  "tip": "Stalk quietly, pounce to knock foes prone, and climb trees for an ambush."
+ },
+ "Plesiosaurus": {
+  "desc": "A long-necked marine reptile with four broad flippers and a mouth full of needle-like teeth. It glides through warm prehistoric seas, snapping up fish with sudden twists of its neck.",
+  "tip": "Swim fast and hold your breath a long time, making it a strong underwater scouting and combat form."
+ },
+ "Polar Bear": {
+  "desc": "A massive white-furred bear built for frozen coasts and drifting sea ice. Polar bears swim long distances and hunt seals at breathing holes in the ice.",
+  "tip": "A powerful melee bruiser that can also swim, ideal for cold or coastal adventures."
+ },
+ "Pony": {
+  "desc": "A small, sturdy horse with a thick mane and gentle temperament, often ridden by children and smaller folk. Ponies are hardy and sure-footed, thriving in rough hill country.",
+  "tip": "Carry a small ally or blend into farms and villages as a common riding animal."
+ },
+ "Pteranodon": {
+  "desc": "A large flying reptile with leathery wings, a toothless beak, and a long crest on its head. Pteranodons glide over seacoasts and cliffs, diving to snatch fish from the water.",
+  "tip": "Fly over obstacles and use its flyby attacks to strike and retreat safely."
+ },
+ "Quipper": {
+  "desc": "A small, aggressive fish with razor teeth that feeds in frenzied schools. Quippers infest rivers and lakes, stripping prey to the bone in moments.",
+  "tip": "A tiny underwater scout that can slip into water passages and frenzy on bleeding foes."
+ },
+ "Rat": {
+  "desc": "A common rodent with a long tail, sharp incisors, and an instinct for survival. Rats thrive in cities, sewers, and granaries wherever people leave scraps.",
+  "tip": "Blend in anywhere in town and sneak through tight spaces for eavesdropping and scouting."
+ },
+ "Raven": {
+  "desc": "A large, glossy-black bird with a heavy beak and a curious, intelligent mind. Ravens mimic sounds and voices and gather in forests, cliffs, and towns.",
+  "tip": "Mimic voices and sounds to create distractions while scouting from the sky."
+ },
+ "Reef Shark": {
+  "desc": "A medium-sized shark with a grey body and dark-tipped fins, prowling coral reefs and shallow seas. It hunts in loose groups, circling prey before darting in.",
+  "tip": "Team up with allies underwater and use pack tactics to wear enemies down."
+ },
+ "Rhinoceros": {
+  "desc": "A heavy, thick-skinned beast with a massive horn on its snout and poor eyesight. Rhinos graze on grasslands and charge headlong at anything that startles them.",
+  "tip": "Charge into enemies for heavy damage and absorb hits with its thick hide."
+ },
+ "Riding Horse": {
+  "desc": "A lean, swift horse bred for riding, with a glossy coat and a spirited temperament. Riding horses are common along roads and in towns across the land.",
+  "tip": "Travel quickly over roads or carry an ally while looking like any traveler's mount."
+ },
+ "Saber-Toothed Tiger": {
+  "desc": "A muscular prehistoric cat with dagger-length fangs curving from its upper jaw. It stalks icy plains and forests, ambushing prey and delivering deep, slashing bites.",
+  "tip": "Pounce from stealth to knock foes prone and deal heavy damage in melee."
+ },
+ "Scorpion": {
+  "desc": "A small arachnid with grasping pincers and a curled stinger at the end of its tail. Scorpions hide under rocks and sand in deserts and caves, emerging at night to hunt.",
+  "tip": "Hide in tiny spaces and sting enemies with poison when they least expect it."
+ },
+ "Sea Horse": {
+  "desc": "A tiny, curl-tailed fish with a horse-like head that drifts among seagrass and corals. Sea horses cling to plants with their tails and feed by sucking in tiny shrimp.",
+  "tip": "Stay hidden in water to scout or eavesdrop without being noticed."
+ },
+ "Spider": {
+  "desc": "A small, eight-legged arachnid that spins silk webs to catch insects. Spiders dwell in corners, caves, and forest undergrowth, waiting patiently for prey.",
+  "tip": "Climb walls and ceilings to scout or spy, and sense vibrations through webs."
+ },
+ "Stirge": {
+  "desc": "A bat-winged, mosquito-like creature with a long needle proboscis that drinks blood. Stirges nest in dark caves and ruins and swarm unwary travelers.",
+  "tip": "Attach to a foe and drain their blood, then fly off before they can retaliate."
+ },
+ "Swarm of Bats": {
+  "desc": "A whirling cloud of bats that pours out of caves at dusk to hunt insects. Their chaotic flight and shrieking calls overwhelm anyone caught in their path.",
+  "tip": "Fly into crowds of foes and harass them, using echolocation in the dark."
+ },
+ "Swarm of Beetles": {
+  "desc": "A seething mass of hard-shelled beetles crawling over each other in a living carpet. They boil out of tombs and rotting logs, chewing through anything soft.",
+  "tip": "Burrow and squeeze through tight spaces while chewing through enemies."
+ },
+ "Swarm of Centipedes": {
+  "desc": "A writhing knot of venomous centipedes that pours out of cracks and crevices. They swarm prey and deliver dozens of painful, paralyzing bites.",
+  "tip": "Climb walls and swarm enemies to wear them down with constant bites."
+ },
+ "Swarm of Insects": {
+  "desc": "A droning cloud of biting insects that rises from swamps and marshes. It harasses everything in its path, stinging and biting relentlessly.",
+  "tip": "Swarm over foes and fly or climb into hard-to-reach places."
+ },
+ "Swarm of Poisonous Snakes": {
+  "desc": "A slithering tangle of venomous snakes that pours across the ground. They hide in ruins and jungle undergrowth, striking anything that disturbs them.",
+  "tip": "Swarm into enemy groups and poison many targets with repeated bites."
+ },
+ "Swarm of Quippers": {
+  "desc": "A churning frenzy of tiny, razor-toothed fish that turns the water red. They infest rivers and lakes and strip prey to bone in seconds.",
+  "tip": "Shred enemies in the water and overwhelm swimmers with relentless bites."
+ },
+ "Swarm of Rats": {
+  "desc": "A squealing tide of rats pouring through sewers and alleys. They overwhelm prey with sheer numbers, biting and clawing.",
+  "tip": "Swarm enemies and squeeze through cracks to reach hidden areas."
+ },
+ "Swarm of Ravens": {
+  "desc": "A cawing storm of black-feathered birds that wheels through the sky. Ravens flock above battlefields and forests, pecking at anything that moves.",
+  "tip": "Fly over foes and peck at them while staying mobile above the fight."
+ },
+ "Swarm of Spiders": {
+  "desc": "A crawling wave of small spiders that spills out of webs and crevices. They cover their prey with bites and silk, moving with eerie coordination.",
+  "tip": "Climb walls and swarm enemies, sensing vibrations through webs."
+ },
+ "Swarm of Wasps": {
+  "desc": "A buzzing cloud of angry wasps that boils out of a disturbed nest. They sting relentlessly, chasing intruders far from their home.",
+  "tip": "Fly over enemies and sting them repeatedly while staying hard to hit."
+ },
+ "Tiger": {
+  "desc": "A powerful striped big cat that stalks jungles and grasslands alone. Tigers ambush prey with explosive bursts of speed and strength.",
+  "tip": "Pounce from cover to knock foes prone and deal heavy melee damage."
+ },
+ "Triceratops": {
+  "desc": "A massive horned dinosaur with a bony frill and three sharp horns on its face. It grazes on plains and charges anything it sees as a threat.",
+  "tip": "Charge into enemies to knock them down and trample them under its weight."
+ },
+ "Vulture": {
+  "desc": "A bald-headed carrion bird with broad wings and a hooked beak. Vultures circle over battlefields and deserts, waiting for the dying to fall.",
+  "tip": "Fly over areas to scout and use pack tactics with allies to finish off weakened foes."
+ },
+ "Warhorse": {
+  "desc": "A large, muscular horse bred and trained for battle, fearless amid clashing steel. Warhorses carry knights and cavalry into the heart of combat.",
+  "tip": "Trample enemies and carry an armored ally into the thick of battle."
+ },
+ "Weasel": {
+  "desc": "A small, slender carnivore with a long body and keen senses. Weasels slip through burrows and underbrush hunting rodents and birds.",
+  "tip": "Sneak through tight spaces with keen senses, perfect for scouting and spying."
+ },
+ "Wolf": {
+  "desc": "A sleek, grey predator that hunts in coordinated packs across forests and plains. Wolves communicate with howls and work together to bring down large prey.",
+  "tip": "Knock enemies prone and fight alongside allies to overwhelm targets."
+ },
+ "Air Elemental": {
+  "desc": "A swirling vortex of wind and storm given living form, howling as it moves. Air elementals roam the open skies and the elemental plane of air, tearing apart anything in their path.",
+  "tip": "Fly at incredible speed and whirl enemies around, scattering them across the battlefield."
+ },
+ "Earth Elemental": {
+  "desc": "A hulking figure of stone and soil that moves through the ground like a fish through water. Earth elementals dwell deep beneath the world and in the elemental plane of earth.",
+  "tip": "Glide through earth and stone to ambush foes or escape, while pummeling enemies with stony fists."
+ },
+ "Fire Elemental": {
+  "desc": "A flickering, roaring shape of living flame that scorches everything it touches. Fire elementals blaze through the elemental plane of fire and leave ash in their wake.",
+  "tip": "Set enemies ablaze by moving through them and use your fiery body to deal ongoing damage."
+ },
+ "Water Elemental": {
+  "desc": "A surging mass of living water that crashes and swirls like an ocean wave. Water elementals dwell in the seas and the elemental plane of water, drowning anything they engulf.",
+  "tip": "Engulf and drown enemies in a crashing wave, and move freely through water."
+ },
+ "Poisonous Snake": {
+  "desc": "A slender, brightly banded snake no longer than a forearm, it lies still among leaf litter and warm rocks until something steps too close. Its strike is fast, and its venom does far more harm than its size suggests.",
+  "tip": "Small enough to hide almost anywhere -- slip into a camp or under a door, then deliver a venomous bite to a sleeping sentry."
+ }
+}

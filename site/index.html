@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wild Shape Beast List</title>
+<meta name="description" content="Druid Wild Shape beast list for D&D 5e: 2014 and 2024 rules, standard and Circle of the Moon druids, filtered by level.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M20 4a12 12 0 1 0 8 20A10 10 0 0 1 20 4z' fill='%23c9a227'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <div class="brand">
+      <svg class="moon" viewBox="0 0 32 32" aria-hidden="true"><path d="M20 4a12 12 0 1 0 8 20A10 10 0 0 1 20 4z"/></svg>
+      <div>
+        <h1>Wild Shape Beast List</h1>
+        <p class="tagline">Every beast a druid can become, for 2014 and 2024 D&amp;D 5e rules</p>
+      </div>
+    </div>
+    <button id="themeBtn" class="icon-btn" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+    </button>
+  </div>
+</header>
+
+<section class="controls" aria-label="Druid options">
+  <div class="wrap controls-grid">
+    <div class="ctl">
+      <span class="ctl-label">Rules</span>
+      <div class="seg" role="radiogroup" aria-label="Rules edition">
+        <button type="button" role="radio" data-ed="2014">2014</button>
+        <button type="button" role="radio" data-ed="2024">2024</button>
+      </div>
+    </div>
+    <div class="ctl">
+      <span class="ctl-label">Druid</span>
+      <div class="seg" role="radiogroup" aria-label="Druid circle">
+        <button type="button" role="radio" data-circle="standard">Standard</button>
+        <button type="button" role="radio" data-circle="moon">Moon</button>
+      </div>
+    </div>
+    <div class="ctl ctl-level">
+      <label class="ctl-label" for="level">Level <output id="levelOut">2</output></label>
+      <input type="range" id="level" min="2" max="20" value="2">
+    </div>
+    <div class="ctl ctl-wis" id="wisCtl">
+      <label class="ctl-label" for="wis">Wis mod</label>
+      <input type="number" id="wis" min="-1" max="7" value="3">
+    </div>
+    <div class="ctl ctl-search">
+      <label class="ctl-label" for="search">Search</label>
+      <input type="search" id="search" placeholder="Name, trait, attack...">
+    </div>
+  </div>
+  <div class="wrap filters">
+    <div class="chips" role="group" aria-label="Movement filter">
+      <button type="button" class="chip" data-move="fly">Fly</button>
+      <button type="button" class="chip" data-move="swim">Swim</button>
+      <button type="button" class="chip" data-move="climb">Climb</button>
+      <button type="button" class="chip" data-move="burrow">Burrow</button>
+    </div>
+    <select id="size" aria-label="Size">
+      <option value="">Any size</option>
+      <option>Tiny</option><option>Small</option><option>Medium</option><option>Large</option><option>Huge</option><option>Gargantuan</option>
+    </select>
+    <label class="tog"><input type="checkbox" id="showAll"> Show forms I can't use yet</label>
+    <label class="tog"><input type="checkbox" id="swarms"> Swarms (DM's call)</label>
+    <label class="tog"><input type="checkbox" id="favOnly"> My forms only</label>
+  </div>
+</section>
+
+<main class="wrap">
+  <section id="rules" class="rules-card" aria-live="polite"></section>
+
+  <section class="results">
+    <div class="results-head">
+      <h2 id="count">Beasts</h2>
+      <div class="sort">
+        <label for="sort">Sort</label>
+        <select id="sort">
+          <option value="cr-desc">CR, high to low</option>
+          <option value="cr-asc">CR, low to high</option>
+          <option value="name">Name</option>
+          <option value="hp">Hit points</option>
+          <option value="ac">Armor class</option>
+          <option value="speed">Fastest</option>
+        </select>
+      </div>
+    </div>
+    <div id="list" class="list"></div>
+    <p id="empty" class="empty" hidden>No beasts match. Try clearing a filter or raising your level.</p>
+  </section>
+
+  <section class="others" id="othersSec">
+    <h2>From other books</h2>
+    <p class="muted">Beasts published outside the free System Reference Document. Only the basics are listed here; the full stat blocks are in the book named.</p>
+    <div id="others" class="others-list"></div>
+  </section>
+
+  <section class="about" id="about">
+    <h2>About</h2>
+    <p>This site grew out of the <a href="https://docs.google.com/spreadsheets/d/1dTGapgzFstOdRr5EJEV6sAhtNSYi0QsX-Tgr2GRutWI/" rel="noopener">Druid "Wild Shape" Beast List</a> Google Sheet by u/spiralout154 (last updated October 2020, 2014 rules). It adds the 2024 rules, the beasts and changes published since, Circle of the Moon at every level, and a short description and tip for each creature.</p>
+    <p>Stat blocks marked <em>SRD 5.1</em> or <em>SRD 5.2</em> come from the System Reference Documents 5.1 and 5.2 by Wizards of the Coast LLC, available at <a href="https://dnd.wizards.com/resources/systems-reference-document" rel="noopener">dnd.wizards.com</a> and licensed under the <a href="https://creativecommons.org/licenses/by/4.0/legalcode" rel="noopener">Creative Commons Attribution 4.0 International License</a>. They were retrieved through the <a href="https://open5e.com" rel="noopener">Open5e</a> API. A few 2014 Monster Manual beasts that aren't in the SRD (marked <em>summary</em>) show only the key numbers from the original sheet. Creature descriptions and tips were written for this site. Unofficial fan content; not affiliated with Wizards of the Coast.</p>
+    <p class="muted" id="generated"></p>
+  </section>
+</main>
+
+<dialog id="detail" aria-labelledby="dTitle">
+  <div class="dlg">
+    <button type="button" class="icon-btn close" id="closeDlg" aria-label="Close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div id="dBody"></div>
+  </div>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>
