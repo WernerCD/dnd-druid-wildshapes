@@ -25,6 +25,7 @@
 <header class="site-header">
   <div class="wrap hub-bar">
     <a href="https://wernercd.github.io/dnd/">&larr; D&amp;D Toolbox</a>
+    <span class="char-pick" id="charPick"></span>
     <nav class="hub-nav" aria-label="Site">
       <a href="./" aria-current="page">Tool</a>
       <a href="changes.html">Changes</a>
@@ -80,6 +81,7 @@
             <button type="button" data-pact="new">New profile</button>
             <button type="button" data-pact="rename">Rename profile</button>
             <button type="button" data-pact="delete">Delete profile</button>
+            <button type="button" data-pact="savechar" id="saveCharBtn" hidden>Save as character</button>
             <hr>
             <button type="button" data-pact="export">Export backup (.json)</button>
             <button type="button" data-pact="import">Import backup</button>
@@ -88,6 +90,7 @@
         </details>
         <input type="file" id="importFile" accept=".json,application/json" hidden>
       </div>
+      <p class="char-note small muted" id="charNote" hidden></p>
     </div>
     <div class="ctl ctl-search">
       <label class="ctl-label" for="search">Search</label>
@@ -95,7 +98,13 @@
     </div>
   </div>
   <div class="wrap filters">
-    <div class="chips" id="featChips" role="group" aria-label="Feature filter"></div>
+    <details class="srcpick featpick" id="featPick">
+      <summary id="featSum">Features</summary>
+      <div class="srcpop">
+        <div class="srcbtns"><button type="button" id="featNone">Clear all</button><span class="small muted">Beasts must have every ticked feature.</span></div>
+        <div id="featList" class="srclist" role="group" aria-label="Feature filter"></div>
+      </div>
+    </details>
     <div class="chips" role="group" aria-label="Movement filter">
       <button type="button" class="chip" data-move="fly">Fly <span class="n"></span></button>
       <button type="button" class="chip" data-move="swim">Swim <span class="n"></span></button>
@@ -206,6 +215,7 @@
 
 <script src="theme.js?v=dev"></script>
 <script src="version.js?v=dev"></script>
+<script src="character.js?v=dev"></script>
 <script src="app.js?v=dev"></script>
 </body>
 </html>

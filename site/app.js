@@ -512,10 +512,14 @@
       var n = cands.filter(function (x) { return x.b.size === o.value && movesOK(x.b.speed) && featsOK(x); }).length;
       o.textContent = o.value + ' (' + n + ')';
     });
-    $('#featChips').innerHTML = FEATS.map(function (f) {
+    $('#featList').innerHTML = FEATS.map(function (f) {
       var n = cands.filter(function (x) { return (!state.size || x.b.size === state.size) && movesOK(x.b.speed) && featsOK(x, f[0]); }).length;
-      return '<button type="button" class="chip' + (n ? '' : ' zero') + '" data-feat="' + f[0] + '" aria-pressed="' + (state.feats.indexOf(f[0]) >= 0) + '">' + f[1] + ' <span class="n">' + n + '</span></button>';
+      var on = state.feats.indexOf(f[0]) >= 0;
+      return '<label class="srcrow' + (n || on ? '' : ' zero') + '"><input type="checkbox" data-feat="' + f[0] + '"' + (on ? ' checked' : '') + '><span>' + f[1] + '</span><span class="n">' + n + '</span></label>';
     }).join('');
+    var fNames = FEATS.filter(function (f) { return state.feats.indexOf(f[0]) >= 0; }).map(function (f) { return f[1]; });
+    $('#featSum').textContent = fNames.length ? 'Features: ' + (fNames.length > 2 ? fNames.length + ' picked' : fNames.join(', ')) : 'Features';
+    $('#featPick').classList.toggle('filtered', fNames.length > 0);
     var s = state.sort;
     /* when searching, beasts whose name matches come before ones that only mention it */
     function nameHit(x) { return q && (x.b.name.toLowerCase().indexOf(q) >= 0 || (x.e && x.e.name.toLowerCase().indexOf(q) >= 0)) ? 0 : 1; }
@@ -842,7 +846,70 @@
   document.addEventListener('click', function (ev) { var p = $('#pMenu'); if (p.open && !p.contains(ev.target)) p.open = false; });
 
   /* ---------- profiles, export / import ---------- */
+  /* ---------- shared characters (dnd.characters, see character.js) ----------
+     A character with druid levels picks its own profile (named in links[REPO].profile, so stars,
+     hidden beasts and notes are per character) and pre-fills edition, druid level, circle and WIS.
+     The controls stay free to change; nothing is written back unless the user asks. */
+  var REPO = 'dnd-druid-wildshapes', applying = false;
+  function charProfile(ch) { var l = ch && ch.links && ch.links[REPO]; return l && typeof l === 'object' ? l.profile : null; }
+  function linkedChar(name) {
+    if (!window.DndChar) return null;
+    var a = DndChar.active();
+    if (a && charProfile(a) === name) return a;
+    return DndChar.all().filter(function (c) { return charProfile(c) === name; })[0] || null;
+  }
+  function applyChar(ch, first) {
+    if (applying || !window.DndChar) return;
+    applying = true;
+    try {
+      var dl = DndChar.levelIn(ch, 'druid'), note = $('#charNote');
+      if (!ch) { note.hidden = true; return; }
+      if (!dl) {
+        note.innerHTML = '<b>' + esc(ch.name) + '</b> (' + esc(DndChar.short(ch) || 'no classes') + ') has no druid levels, so your own settings are used.';
+        note.hidden = false; return;
+      }
+      var name = charProfile(ch);
+      if (!name || !PROFILES.list[name]) {
+        name = ch.name.slice(0, 40);
+        if (PROFILES.list[name] && linkedChar(name) && linkedChar(name).id !== ch.id) {
+          for (var i = 2; PROFILES.list[name + ' ' + i]; i++);
+          name = name + ' ' + i;
+        }
+        save();
+        if (!PROFILES.list[name]) PROFILES.list[name] = { favs: {}, hidden: {}, notes: {} };
+        DndChar.setLink(ch.id, REPO, { profile: name });
+      }
+      save();
+      PROFILES.active = name;
+      loadProfile();
+      var moon = DndChar.sameSub(DndChar.classOf(ch, 'druid'), { sub: 'moon', subName: 'Circle of the Moon' });
+      var set = { ed: ch.ed, level: dl, circle: moon ? 'moon' : 'standard', wis: DndChar.mod(ch, 'wis') };
+      if (first) { /* a shared link's own settings win on arrival */
+        if (params.get('ed')) delete set.ed; if (params.get('circle')) delete set.circle; if (params.get('lvl')) delete set.level;
+      }
+      for (var k in set) state[k] = set[k];
+      clampState(); save(); renderProfiles(); syncControls();
+      note.innerHTML = 'Following <b>' + esc(ch.name) + '</b> (' + esc(DndChar.summary(ch)) + (moon ? ', Circle of the Moon' : '') + ', WIS ' + sgn(DndChar.mod(ch, 'wis')) + ').' +
+        (dl < 2 ? ' Wild Shape starts at druid level 2, so level 2 is shown.' : '') +
+        ' Change anything here freely; edit the character in the <a href="' + DndChar.url('dnd-multiclass-planner', ch.id) + '">Multiclass Planner</a>.';
+      note.hidden = false;
+    } finally { applying = false; if (!first && DATA) render(); }
+  }
+  function saveAsCharacter() {
+    if (!window.DndChar) return;
+    if (linkedChar(PROFILES.active)) return alert('This profile is already a character: ' + linkedChar(PROFILES.active).name + '.');
+    if (!confirm('Save "' + PROFILES.active + '" as a shared character (Druid ' + state.level + (state.circle === 'moon' ? ', Circle of the Moon' : '') + ', ' + state.ed + ' rules)? Every D&D Toolbox site can then use it. Ability scores other than WIS start at 10; set them in the Multiclass Planner.')) return;
+    save();
+    var ch = DndChar.save({ name: PROFILES.active, ed: state.ed,
+      classes: [{ cls: 'druid', lvl: state.level, sub: state.circle === 'moon' ? 'moon' : null, subName: state.circle === 'moon' ? 'Circle of the Moon' : null }],
+      ab: [10, 10, 10, 10, Math.max(1, Math.min(30, 10 + 2 * state.wis)), 10],
+      links: (function () { var l = {}; l[REPO] = { profile: PROFILES.active }; return l; })() }, REPO);
+    DndChar.setActive(ch.id);
+  }
+  function renderSaveChar() { var b = $('#saveCharBtn'); if (b) b.hidden = !window.DndChar || !!linkedChar(PROFILES.active); }
+
   function renderProfiles() {
+    renderSaveChar();
     $('#profile').innerHTML = Object.keys(PROFILES.list).sort().map(function (n) {
       return '<option' + (n === PROFILES.active ? ' selected' : '') + '>' + esc(n) + '</option>';
     }).join('');
@@ -881,7 +948,9 @@
       if (!nn) return;
       save();
       PROFILES.list[nn] = PROFILES.list[old]; delete PROFILES.list[old];
-      PROFILES.active = nn; save(); renderProfiles(); return render();
+      PROFILES.active = nn; save();
+      if (window.DndChar) DndChar.all().forEach(function (c) { if (charProfile(c) === old) DndChar.setLink(c.id, REPO, { profile: nn }); });
+      renderProfiles(); return render();
     }
     if (a === 'delete') {
       var names = Object.keys(PROFILES.list);
@@ -891,6 +960,7 @@
       PROFILES.active = Object.keys(PROFILES.list)[0];
       loadProfile(); save(); renderProfiles(); return render();
     }
+    if (a === 'savechar') return saveAsCharacter();
     if (a === 'export') return exportData();
     if (a === 'import') return $('#importFile').click();
   }
@@ -940,6 +1010,10 @@
     rd.readAsText(file);
   }
   renderProfiles();
+  if (window.DndChar) {
+    applyChar(DndChar.active(), true);
+    DndChar.onChange(function (ch) { applyChar(ch, false); renderSaveChar(); });
+  }
   $('#level').addEventListener('input', function () { update({ level: +this.value }); });
   $('#wis').addEventListener('input', function () { var v = parseInt(this.value, 10); if (!isNaN(v)) update({ wis: Math.max(-1, Math.min(7, v)) }); });
   $('#search').value = state.q;
@@ -953,6 +1027,14 @@
   $('#srcList').addEventListener('change', function (ev) { var k = ev.target.dataset.src; if (k) setSources([k], ev.target.checked); });
   document.addEventListener('click', function (ev) { var p = $('#srcPick'); if (p.open && !p.contains(ev.target)) p.open = false; });
   $('#favOnly').addEventListener('change', function () { update({ favOnly: this.checked }); });
+  $('#featList').addEventListener('change', function (ev) {
+    var f = ev.target.dataset.feat; if (!f) return;
+    var fs = state.feats.filter(function (x) { return x !== f; });
+    if (ev.target.checked) fs.push(f);
+    update({ feats: fs });
+  });
+  $('#featNone').addEventListener('click', function () { update({ feats: [] }); });
+  document.addEventListener('click', function (ev) { var p = $('#featPick'); if (p.open && !p.contains(ev.target)) p.open = false; });
 
 
   fetch('data/beasts.json?v=dev').then(function (r) { return r.json(); }).then(function (d) {
