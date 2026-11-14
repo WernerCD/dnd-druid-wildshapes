@@ -105,16 +105,20 @@
         <div id="featList" class="srclist" role="group" aria-label="Feature filter"></div>
       </div>
     </details>
-    <div class="chips" role="group" aria-label="Movement filter">
-      <button type="button" class="chip" data-move="fly">Fly <span class="n"></span></button>
-      <button type="button" class="chip" data-move="swim">Swim <span class="n"></span></button>
-      <button type="button" class="chip" data-move="climb">Climb <span class="n"></span></button>
-      <button type="button" class="chip" data-move="burrow">Burrow <span class="n"></span></button>
-    </div>
-    <select id="size" aria-label="Size">
-      <option value="">Any size</option>
-      <option>Tiny</option><option>Small</option><option>Medium</option><option>Large</option><option>Huge</option><option>Gargantuan</option>
-    </select>
+    <details class="srcpick featpick" id="movePick">
+      <summary id="moveSum">Movement</summary>
+      <div class="srcpop">
+        <div class="srcbtns"><button type="button" id="moveNone">Clear all</button><span class="small muted">Beasts must have every ticked speed.</span></div>
+        <div id="moveList" class="srclist" role="group" aria-label="Movement filter"></div>
+      </div>
+    </details>
+    <details class="srcpick featpick" id="sizePick">
+      <summary id="sizeSum">Size</summary>
+      <div class="srcpop">
+        <div class="srcbtns"><button type="button" id="sizeNone">Any size</button><span class="small muted">Shows beasts of any ticked size.</span></div>
+        <div id="sizeList" class="srclist" role="group" aria-label="Size filter"></div>
+      </div>
+    </details>
     <details class="srcpick" id="srcPick">
       <summary id="srcSum">Sources</summary>
       <div class="srcpop">

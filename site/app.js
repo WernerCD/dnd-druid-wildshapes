@@ -33,7 +33,7 @@
     trackerMin: false,
     q: '',
     moves: [],
-    size: '',
+    size: [], /* sizes ticked; empty = any */
     showAll: store.get('ws.showAll', false),
     swarms: store.get('ws.swarms', false),
     favOnly: false,
@@ -132,7 +132,7 @@
     (DATA.others || []).forEach(function (x) { o[x.sourceName || x.source] = 1; });
     return Object.keys(o);
   }
-  var FILTER_DEFAULTS = { q: '', moves: [], feats: [], size: '', favOnly: false, showHidden: false };
+  var FILTER_DEFAULTS = { q: '', moves: [], feats: [], size: [], favOnly: false, showHidden: false };
 
   /* feature filters: tested against senses and trait names */
   function hasTrait(b, re) { return (b.traits || []).some(function (t) { return re.test(t.name); }); }
@@ -187,13 +187,16 @@
     return b._dpr;
   }
 
+  var SIZES = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'];
+  var MOVES = [['fly', 'Fly'], ['swim', 'Swim'], ['climb', 'Climb'], ['burrow', 'Burrow']];
+  function sizeOK(z, extra) { return extra ? z === extra : !state.size.length || state.size.indexOf(z) >= 0; }
   /* filters in the link: ?q=&mv=&ft=&sz=&src=&view=&sort=&all=1 (ed, circle and lvl are always there) */
   (function () {
     var p = params, v;
     if ((v = p.get('q'))) state.q = v.slice(0, 80);
     if ((v = p.get('mv'))) state.moves = v.split(',').filter(function (m) { return ['fly', 'swim', 'climb', 'burrow'].indexOf(m) >= 0; });
     if ((v = p.get('ft'))) state.feats = v.split(',').filter(function (f) { return FEAT_TEST[f]; });
-    if ((v = p.get('sz'))) state.size = v;
+    if ((v = p.get('sz'))) state.size = v.split(',').filter(function (z) { return SIZES.indexOf(z) >= 0; });
     if ((v = p.get('src'))) { state.srcSel = {}; v.split('|').forEach(function (k) { if (k) state.srcSel[k] = true; }); }
     if ((v = p.get('view'))) state.detail = v;
     if ((v = p.get('sort'))) state.sort = v;
@@ -208,7 +211,7 @@
     opt('q', state.q.trim());
     opt('mv', state.moves.join(','));
     opt('ft', state.feats.join(','));
-    opt('sz', state.size);
+    opt('sz', state.size.join(','));
     opt('src', sameSet(state.srcSel, coreSel()) ? '' : Object.keys(state.srcSel).sort().join('|'));
     opt('view', state.detail === 'basic' ? '' : state.detail);
     opt('sort', state.sort === 'cr-desc' ? '' : state.sort);
@@ -500,20 +503,26 @@
       for (var i = 0; i < want.length; i++) if (!FEAT_TEST[want[i]](x.b)) return false;
       return true;
     }
-    var rows = cands.filter(function (x) { return (!state.size || x.b.size === state.size) && movesOK(x.b.speed) && featsOK(x); });
+    var rows = cands.filter(function (x) { return sizeOK(x.b.size) && movesOK(x.b.speed) && featsOK(x); });
     /* counts follow every other filter, so a chip's number is what you get */
-    document.querySelectorAll('[data-move]').forEach(function (btn) {
-      var m = btn.dataset.move, n = cands.filter(function (x) { return (!state.size || x.b.size === state.size) && movesOK(x.b.speed, m) && featsOK(x); }).length;
-      btn.querySelector('.n').textContent = n;
-      btn.classList.toggle('zero', !n);
-    });
-    Array.prototype.forEach.call($('#size').options, function (o) {
-      if (!o.value) return;
-      var n = cands.filter(function (x) { return x.b.size === o.value && movesOK(x.b.speed) && featsOK(x); }).length;
-      o.textContent = o.value + ' (' + n + ')';
-    });
+    function pickList(list, sumSel, pickSel, label, items, joinAll) {
+      $(list).innerHTML = items.map(function (it) {
+        return '<label class="srcrow' + (it.n || it.on ? '' : ' zero') + '"><input type="checkbox" data-' + it.attr + '="' + it.key + '"' + (it.on ? ' checked' : '') + '><span>' + it.name + '</span><span class="n">' + it.n + '</span></label>';
+      }).join('');
+      var on = items.filter(function (it) { return it.on; }).map(function (it) { return it.name; });
+      $(sumSel).textContent = on.length ? label + ': ' + (on.length > 2 ? on.length + ' picked' : on.join(joinAll ? ', ' : ' or ')) : label;
+      $(pickSel).classList.toggle('filtered', on.length > 0);
+    }
+    pickList('#moveList', '#moveSum', '#movePick', 'Movement', MOVES.map(function (m) {
+      return { attr: 'move', key: m[0], name: m[1], on: state.moves.indexOf(m[0]) >= 0,
+        n: cands.filter(function (x) { return sizeOK(x.b.size) && movesOK(x.b.speed, m[0]) && featsOK(x); }).length };
+    }), true);
+    pickList('#sizeList', '#sizeSum', '#sizePick', 'Size', SIZES.map(function (z) {
+      return { attr: 'size', key: z, name: z, on: state.size.indexOf(z) >= 0,
+        n: cands.filter(function (x) { return sizeOK(x.b.size, z) && movesOK(x.b.speed) && featsOK(x); }).length };
+    }), false);
     $('#featList').innerHTML = FEATS.map(function (f) {
-      var n = cands.filter(function (x) { return (!state.size || x.b.size === state.size) && movesOK(x.b.speed) && featsOK(x, f[0]); }).length;
+      var n = cands.filter(function (x) { return sizeOK(x.b.size) && movesOK(x.b.speed) && featsOK(x, f[0]); }).length;
       var on = state.feats.indexOf(f[0]) >= 0;
       return '<label class="srcrow' + (n || on ? '' : ' zero') + '"><input type="checkbox" data-feat="' + f[0] + '"' + (on ? ' checked' : '') + '><span>' + f[1] + '</span><span class="n">' + n + '</span></label>';
     }).join('');
@@ -677,7 +686,7 @@
       if (o.edition !== state.ed) return false;
       if (!srcOn(o.sourceName || o.source)) return false;
       if (q && (o.name + ' ' + o.sourceName).toLowerCase().indexOf(q) < 0) return false;
-      if (state.size && o.size !== state.size) return false;
+      if (!sizeOK(o.size)) return false;
       for (var i = 0; i < state.moves.length; i++) if (!o.speed[state.moves[i]]) return false;
       if (state.favOnly && !state.favs[favKey(o.id)]) return false;
       if (state.hidden[o.id] && !state.showHidden) return false;
@@ -760,7 +769,6 @@
   function syncControls() {
     document.querySelectorAll('[data-ed]').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.ed === state.ed); });
     document.querySelectorAll('[data-circle]').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.circle === state.circle); });
-    document.querySelectorAll('[data-move]').forEach(function (b) { b.setAttribute('aria-pressed', state.moves.indexOf(b.dataset.move) >= 0); });
     $('#level').value = state.level; $('#levelOut').textContent = state.level;
     $('#wis').value = state.wis; $('#showAll').checked = state.showAll; $('#swarms').checked = state.swarms;
     $('#showHidden').checked = state.showHidden;
@@ -799,13 +807,8 @@
     if (t.id === 'srcAll') return setSources(allBooks(), true);
     if (t.id === 'srcNone') return setSources(allBooks(), false);
     if (t.id === 'srcCore') return update({ srcSel: coreSel() });
-    if (t.id === 'resetBtn') { $('#search').value = ''; return update(Object.assign({}, FILTER_DEFAULTS, { moves: [], srcSel: coreSel() })); }
+    if (t.id === 'resetBtn') { $('#search').value = ''; return update(Object.assign({}, FILTER_DEFAULTS, { moves: [], feats: [], size: [], srcSel: coreSel() })); }
     if (t.id === 'srcShown') { var vis = visibleSrcKeys(); setSources(Object.keys(sourceCounts()), false); return setSources(vis, true); }
-    if (t.dataset.move) {
-      var m = state.moves.slice(), i = m.indexOf(t.dataset.move);
-      if (i >= 0) m.splice(i, 1); else m.push(t.dataset.move);
-      return update({ moves: m });
-    }
     if (t.dataset.fav) {
       ev.stopPropagation();
       var f = Object.assign({}, state.favs), k = favKey(t.dataset.fav);
@@ -1018,7 +1021,17 @@
   $('#wis').addEventListener('input', function () { var v = parseInt(this.value, 10); if (!isNaN(v)) update({ wis: Math.max(-1, Math.min(7, v)) }); });
   $('#search').value = state.q;
   $('#search').addEventListener('input', function () { update({ q: this.value }); });
-  $('#size').addEventListener('change', function () { update({ size: this.value }); });
+  function tickList(list, key, attr) {
+    $(list).addEventListener('change', function (ev) {
+      var v = ev.target.dataset[attr]; if (!v) return;
+      var arr = state[key].filter(function (x) { return x !== v; });
+      if (ev.target.checked) arr.push(v);
+      var p = {}; p[key] = arr; update(p);
+    });
+  }
+  tickList('#moveList', 'moves', 'move'); tickList('#sizeList', 'size', 'size');
+  $('#moveNone').addEventListener('click', function () { update({ moves: [] }); });
+  $('#sizeNone').addEventListener('click', function () { update({ size: [] }); });
   $('#sort').addEventListener('change', function () { update({ sort: this.value }); });
   $('#showAll').addEventListener('change', function () { update({ showAll: this.checked }); });
   $('#swarms').addEventListener('change', function () { update({ swarms: this.checked }); });
@@ -1034,7 +1047,19 @@
     update({ feats: fs });
   });
   $('#featNone').addEventListener('click', function () { update({ feats: [] }); });
-  document.addEventListener('click', function (ev) { var p = $('#featPick'); if (p.open && !p.contains(ev.target)) p.open = false; });
+  document.addEventListener('click', function (ev) {
+    ['#featPick', '#movePick', '#sizePick'].forEach(function (id) { var p = $(id); if (p.open && !p.contains(ev.target)) p.open = false; });
+  });
+  /* only one filter menu open at a time */
+  document.querySelectorAll('details.srcpick').forEach(function (d) {
+    d.addEventListener('toggle', function () {
+      if (!d.open) return;
+      document.querySelectorAll('details.srcpick').forEach(function (o) { if (o !== d) o.open = false; });
+      var pop = d.querySelector('.srcpop'); pop.style.left = '0px';
+      var r = pop.getBoundingClientRect(), over = r.right - (document.documentElement.clientWidth - 16);
+      if (over > 0) pop.style.left = -Math.min(over, r.left - 16) + 'px';
+    });
+  });
 
 
   fetch('data/beasts.json?v=dev').then(function (r) { return r.json(); }).then(function (d) {

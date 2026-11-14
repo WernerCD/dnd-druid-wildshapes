@@ -219,8 +219,7 @@ dialog::backdrop { background: rgba(10, 14, 12, .55); }
   .abil { grid-template-columns: repeat(3, 1fr); }
   .dlg { padding: 18px 16px; }
 }
-@media (max-width: 640px) { .srcpick { position: static; } .srcpop { left: 16px; right: 16px; width: auto; } }
-@media (max-width: 640px) { .featpick { position: relative; } .featpick .srcpop { left: 0; right: auto; width: min(280px, calc(100vw - 32px)); } }
+/* filter menus open under their own button; app.js nudges them left so they stay on screen */
 /* book colours: each element carries --h (hue); light/dark set lightness */
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --src-s: 62%; --src-l: 68%; --src-bg: 20%; } }
 :root[data-theme="dark"] { --src-s: 62%; --src-l: 68%; --src-bg: 20%; }
