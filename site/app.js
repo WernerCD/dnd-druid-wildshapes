@@ -149,27 +149,53 @@
   ];
   var FEAT_TEST = {}; FEATS.forEach(function (f) { FEAT_TEST[f[0]] = f[2]; });
 
-  /* rough damage per round: every attack hits, every save fails */
+  /* rough damage per round: every attack hits, every save fails.
+     Either/or damage takes the best plain option; charge/pounce riders are kept apart (dprCharge). */
   var NUMW = { one: 1, two: 2, three: 3, four: 4, five: 5 };
+  var CHG = /\bmoved\b|moves at least|straight toward|\bcharge\b|\bpounce\b/i;
   function diceAvg(expr) {
     var m = String(expr).replace(/\s+/g, '').match(/^(\d+)d(\d+)([+-]\d+)?$/);
     return m ? Math.floor(+m[1] * (+m[2] + 1) / 2 + (m[3] ? +m[3] : 0)) : 0;
   }
+  /* -> { base, bonus, extra }: plain damage of one hit, the extra on a charge, and an extra attack word a charge allows */
   function attackDmg(desc) {
-    var tot = 0, re = /(?:(\d+) \()?(\d+d\d+(?:\s*[+-]\s*\d+)?)\)? \w+ damage/gi, m, n = 0;
-    while ((m = re.exec(desc || '')) && n < 3) { tot += m[1] ? +m[1] : diceAvg(m[2]); n++; }
-    return tot;
+    var out = { base: 0, bonus: 0, extra: null };
+    String(desc || '').split(/\.\s+(?=[A-Z])/).forEach(function (sen) {
+      var re = /(\d+)(?: \((\d+d\d+(?:\s*[+-]\s*\d+)?)\))? [a-z]+ damage|(\d+d\d+(?:\s*[+-]\s*\d+)?) [a-z]+ damage/gi, m, ms = [];
+      while ((m = re.exec(sen))) ms.push({ v: m[3] ? diceAvg(m[3]) : +m[1], i: m.index, end: re.lastIndex });
+      if (CHG.test(sen)) {
+        var w = sen.match(/make (?:one|another) (\w+) attack|another attack with its (\w+)/i);
+        if (w) out.extra = w[1] || w[2];
+        if (!ms.length) return;
+        if (/\bextra\b/i.test(sen) || !/\bor\b/i.test(sen)) { out.bonus += ms.reduce(function (t, x) { return t + x.v; }, 0); return; }
+      }
+      if (!ms.length) return;
+      var alts = [[ms[0]]];
+      for (var k = 1; k < ms.length; k++) {
+        var gap = sen.slice(ms[k - 1].end, ms[k].i);
+        if (/\bor\b/i.test(gap) && !/\bplus\b/i.test(gap)) alts.push([ms[k]]); else alts[alts.length - 1].push(ms[k]);
+      }
+      var plain = 0, charged = 0;
+      alts.forEach(function (g, gi) {
+        var v = g.reduce(function (t, x) { return t + x.v; }, 0);
+        var tail = sen.slice(g[g.length - 1].end, gi + 1 < alts.length ? alts[gi + 1][0].i : sen.length);
+        if (CHG.test(tail)) charged = Math.max(charged, v); else plain = Math.max(plain, v);
+      });
+      out.base += plain; out.bonus += Math.max(0, charged - plain);
+    });
+    return out;
   }
-  function dpr(b) {
-    if (b._dpr != null) return b._dpr;
+  function dmgInfo(b) {
+    if (b._dmg) return b._dmg;
     var acts = (b.actions || []).filter(function (a) { return !/^multiattack$/i.test(a.name); });
-    var dmg = {}; acts.forEach(function (a) { dmg[a.name.toLowerCase()] = attackDmg(a.desc); });
+    var dmg = {}, bonus = 0;
+    acts.forEach(function (a) { dmg[a.name.toLowerCase()] = attackDmg(a.desc); });
     function find(word) {
-      word = word.toLowerCase().replace(/s$/, '');
-      for (var k in dmg) if (k.replace(/s$/, '') === word || k.indexOf(word) === 0) return dmg[k];
+      word = String(word).toLowerCase().replace(/s$/, '');
+      for (var k in dmg) if (k.replace(/s$/, '') === word || k.indexOf(word) === 0) return dmg[k].base;
       return 0;
     }
-    var best = 0; for (var k in dmg) best = Math.max(best, dmg[k]);
+    var best = 0; for (var k in dmg) best = Math.max(best, dmg[k].base);
     var ma = (b.actions || []).filter(function (a) { return /^multiattack$/i.test(a.name); })[0], tot = 0;
     if (ma) {
       var d = ma.desc, m, re;
@@ -183,14 +209,25 @@
       if (/uses (\w+)/i.test(d)) tot += find(d.match(/uses (\w+)/i)[1]);
       if (!tot) { var c = d.match(/makes (one|two|three|four|five)/i); tot = (c ? NUMW[c[1].toLowerCase()] : 1) * best; }
     }
-    b._dpr = Math.max(tot, best);
-    return b._dpr;
+    /* a charge or pounce lands once a turn: the best rider from an attack or a trait */
+    for (var a in dmg) bonus = Math.max(bonus, dmg[a].bonus + (dmg[a].extra ? find(dmg[a].extra) : 0));
+    (b.traits || []).forEach(function (t) {
+      if (!CHG.test(t.name + ' ' + t.desc)) return;
+      var x = attackDmg(t.desc), w = String(t.desc).match(/make (?:one|another) (\w+) attack|another attack with its (\w+)/i);
+      if (w) x.extra = w[1] || w[2]; /* the bonus attack is often in the trait's second sentence */
+      bonus = Math.max(bonus, x.bonus + x.base + (x.extra ? find(x.extra) : 0));
+    });
+    var base = Math.max(tot, best);
+    b._dmg = { base: base, charge: bonus ? base + bonus : 0 };
+    return b._dmg;
   }
+  function dpr(b) { return dmgInfo(b).base; }
+  function dprCharge(b) { return dmgInfo(b).charge; }
 
   var SIZES = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'];
   var MOVES = [['fly', 'Fly'], ['swim', 'Swim'], ['climb', 'Climb'], ['burrow', 'Burrow']];
   function sizeOK(z, extra) { return extra ? z === extra : !state.size.length || state.size.indexOf(z) >= 0; }
-  /* filters in the link: ?q=&mv=&ft=&sz=&src=&view=&sort=&all=1 (ed, circle and lvl are always there) */
+  /* everything in the link: ?ed=&circle=&lvl=&wis=&q=&mv=&ft=&sz=&src=&view=&sort=&all=1&locked=1&swarms=1 */
   (function () {
     var p = params, v;
     if ((v = p.get('q'))) state.q = v.slice(0, 80);
@@ -201,12 +238,15 @@
     if ((v = p.get('view'))) state.detail = v;
     if ((v = p.get('sort'))) state.sort = v;
     if (p.get('all') === '1') state.merge = true;
+    if (p.has('wis') && !isNaN(+p.get('wis'))) state.wis = +p.get('wis');
+    if (p.get('locked') === '1') state.showAll = true;
+    if (p.get('swarms') === '1') state.swarms = true;
     clampState();
   })();
   function sameSet(a, b) { var ka = Object.keys(a), kb = Object.keys(b); return ka.length === kb.length && ka.every(function (k) { return b[k]; }); }
   function writeURL() {
     var u = new URL(location.href), sp = u.searchParams;
-    sp.set('ed', state.ed); sp.set('circle', state.circle); sp.set('lvl', state.level);
+    sp.set('ed', state.ed); sp.set('circle', state.circle); sp.set('lvl', state.level); sp.set('wis', state.wis);
     function opt(k, val) { if (val) sp.set(k, val); else sp.delete(k); }
     opt('q', state.q.trim());
     opt('mv', state.moves.join(','));
@@ -216,6 +256,8 @@
     opt('view', state.detail === 'basic' ? '' : state.detail);
     opt('sort', state.sort === 'cr-desc' ? '' : state.sort);
     opt('all', state.merge ? '1' : '');
+    opt('locked', state.showAll ? '1' : '');
+    opt('swarms', state.swarms ? '1' : '');
     if (u.href !== location.href) history.replaceState(null, '', u);
   }
 
@@ -471,8 +513,24 @@
 
   function shownAC(b, r) { return r.moonAC ? Math.max(b.ac, r.moonAC) : b.ac; }
 
+  /* re-rendering a list replaces its inputs; remember which one had focus and focus its twin again */
+  function focusKey() {
+    var a = document.activeElement;
+    if (!a || a === document.body) return null;
+    var host = a.parentElement && a.parentElement.closest('[id]');
+    for (var k in a.dataset) {
+      return { id: a.id, sel: (host ? '#' + host.id + ' ' : '') + '[data-' + k.replace(/[A-Z]/g, function (c) { return '-' + c.toLowerCase(); }) + '="' + (window.CSS && CSS.escape ? CSS.escape(a.dataset[k]) : a.dataset[k]) + '"]' };
+    }
+    return a.id ? { id: a.id } : null;
+  }
+  function restoreFocus(f) {
+    if (!f || (document.activeElement && document.activeElement !== document.body)) return;
+    var el = f.sel ? document.querySelector(f.sel) : document.getElementById(f.id);
+    if (el) el.focus({ preventScroll: true });
+  }
   function render() {
     if (!DATA) return;
+    var foc = focusKey();
     var r = rules(state.ed, state.circle, state.level, state.wis);
     renderRules(r);
     $('#wisCtl').hidden = !(state.ed === '2024' && state.circle === 'moon');
@@ -555,6 +613,7 @@
     renderTracker();
     syncControls();
     writeURL();
+    restoreFocus(foc);
   }
 
   function hideBtn(id, name) {
@@ -570,15 +629,15 @@
     var fav = !!state.favs[favKey(e.id)];
     var alt = b.name !== e.name ? '<div class="alt">' + esc(e.name) + ' in 2014</div>' : '';
     var acv = shownAC(b, r);
-    return '<article class="card' + (el.ok ? '' : ' locked') + (state.hidden[e.id] ? ' is-hidden' : '') + '"' + hueAttr(b.source) + ' data-id="' + e.id + '" tabindex="0" role="button" aria-label="' + esc(b.name) + ' details">' +
+    return '<article class="card' + (el.ok ? '' : ' locked') + (state.hidden[e.id] ? ' is-hidden' : '') + '"' + hueAttr(b.source) + ' data-id="' + e.id + '">' +
       hideBtn(e.id, b.name) +
       '<button type="button" class="fav" data-fav="' + e.id + '" aria-pressed="' + fav + '" aria-label="Star ' + esc(b.name) + ' as a known form" title="Known form">' +
       '<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>' +
-      '<div class="card-top"><div><h3>' + esc(b.name) + '</h3>' + alt + '</div><span class="cr">CR ' + b.crText + '</span></div>' +
+      '<div class="card-top"><div><h3><button type="button" class="card-open" data-open="' + e.id + '" aria-label="' + esc(b.name) + ': details">' + esc(b.name) + '</button></h3>' + alt + '</div><span class="cr">CR ' + b.crText + '</span></div>' +
       '<div class="meta">' + esc(b.size) + (b.multiattack ? ' &middot; Multiattack' : '') + (b.full ? '' : ' &middot; summary') + '</div>' +
       '<div class="nums"><div><span>AC</span><b>' + acv + '</b>' + (acv !== b.ac ? '<span class="small"> (' + b.ac + ')</span>' : '') + '</div><div><span>HP</span><b>' + (b.hp == null ? '?' : b.hp) + '</b></div>' +
       (b.pp ? '<div><span>PP</span><b>' + b.pp + '</b></div>' : '') +
-      (dpr(b) ? '<div title="Average damage per round if every attack hits (and every save fails)"><span>DPR</span><b>' + dpr(b) + '</b></div>' : '') + '</div>' +
+      (dpr(b) ? '<div title="Average damage per round if every attack hits (and every save fails)' + (dprCharge(b) ? '; ' + dprCharge(b) + ' on a turn it charges or pounces' : '') + '"><span>DPR</span><b>' + dpr(b) + '</b>' + (dprCharge(b) ? '<span class="small"> (' + dprCharge(b) + ')</span>' : '') + '</div>' : '') + '</div>' +
       '<div class="moves">' + moves(b.speed) + '</div>' +
       '<div class="src">' + srcTag(b.source) + '</div>' +
       (el.ok ? '' : '<div class="why">' + esc(el.why.join(' · ')) + '</div>') +
@@ -688,6 +747,7 @@
       if (q && (o.name + ' ' + o.sourceName).toLowerCase().indexOf(q) < 0) return false;
       if (!sizeOK(o.size)) return false;
       for (var i = 0; i < state.moves.length; i++) if (!o.speed[state.moves[i]]) return false;
+      if (state.feats.length) return false; /* no trait data for these books */
       if (state.favOnly && !state.favs[favKey(o.id)]) return false;
       if (state.hidden[o.id] && !state.showHidden) return false;
       return true;
@@ -745,7 +805,7 @@
       (r.moonAC && b.type === 'Beast' ? ' <span class="small">&rarr; ' + Math.max(b.ac, r.moonAC) + ' with Circle Forms</span>' : '') +
       (b.init != null ? ' &nbsp; <b>Initiative</b> ' + sgn(b.init) : '') + '</p>';
     h += '<p><b>Hit Points</b> ' + (b.hp == null ? '?' : b.hp) + (b.hd ? ' (' + esc(b.hd) + ')' : '') +
-      (dpr(b) ? ' &nbsp; <b>Damage per round</b> ~' + dpr(b) + ' <span class="small muted">(all attacks hit)</span>' : '') + '</p>';
+      (dpr(b) ? ' &nbsp; <b>Damage per round</b> ~' + dpr(b) + (dprCharge(b) ? ', ~' + dprCharge(b) + ' with a charge or pounce' : '') + ' <span class="small muted">(all attacks hit)</span>' : '') + '</p>';
     h += '<p><b>Speed</b> ' + ['walk', 'climb', 'swim', 'fly', 'burrow'].filter(function (k) { return b.speed[k]; }).map(function (k) {
       return (k === 'walk' ? '' : k + ' ') + b.speed[k] + ' ft.' + (k === 'fly' && b.speed.hover ? ' (hover)' : '');
     }).join(', ') + '</p><hr>';
@@ -784,16 +844,22 @@
     var p = prof();
     p.favs = state.favs; p.hidden = state.hidden; p.notes = state.notes;
     p.settings = { ed: state.ed, circle: state.circle, level: state.level, wis: state.wis };
-    store.set('ws.profiles', PROFILES);
+    writeProfiles();
     store.set('ws.trk', { open: state.trackerOpen, min: state.trackerMin });
+  }
+  function copyLink(btn) {
+    writeURL();
+    var done = function () { btn.textContent = 'Link copied'; setTimeout(function () { btn.textContent = 'Copy link'; }, 1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(location.href).then(done, function () { prompt('Copy this link:', location.href); });
+    else prompt('Copy this link:', location.href);
   }
   function update(patch) { for (var k in patch) state[k] = patch[k]; save(); render(); }
 
   document.addEventListener('click', function (ev) {
     var t = ev.target.closest('button, .card');
     if (!t) return;
-    if (t.dataset.ed) return update({ ed: t.dataset.ed });
-    if (t.dataset.circle) return update({ circle: t.dataset.circle });
+    if (t.dataset.ed) { manualRules(); return update({ ed: t.dataset.ed }); }
+    if (t.dataset.circle) { manualRules(); return update({ circle: t.dataset.circle }); }
     if (t.dataset.detail) return update({ detail: t.dataset.detail });
     if (t.dataset.trk) return trkAction(t.dataset.trk);
     if (t.id === 'printForms') return printForms();
@@ -807,7 +873,8 @@
     if (t.id === 'srcAll') return setSources(allBooks(), true);
     if (t.id === 'srcNone') return setSources(allBooks(), false);
     if (t.id === 'srcCore') return update({ srcSel: coreSel() });
-    if (t.id === 'resetBtn') { $('#search').value = ''; return update(Object.assign({}, FILTER_DEFAULTS, { moves: [], feats: [], size: [], srcSel: coreSel() })); }
+    if (t.id === 'resetBtn') { $('#search').value = ''; return update(Object.assign({}, FILTER_DEFAULTS, { moves: [], feats: [], size: [], srcSel: coreSel(), showAll: false, swarms: false, merge: false, sort: 'cr-desc', detail: 'basic' })); }
+    if (t.id === 'copyLink') return copyLink(t);
     if (t.id === 'srcShown') { var vis = visibleSrcKeys(); setSources(Object.keys(sourceCounts()), false); return setSources(vis, true); }
     if (t.dataset.fav) {
       ev.stopPropagation();
@@ -825,6 +892,7 @@
       if ($('#detail').open && dlgId === id) openDetail(dlgId, dlgEd);
       return;
     }
+    if (t.dataset.open) return openDetail(t.dataset.open);
     if (t.dataset.pact) { $('#pMenu').open = false; return profileAction(t.dataset.pact); }
     if (t.dataset.edTab) return openDetail(dlgId, t.dataset.edTab);
     if (t.id === 'closeDlg') return $('#detail').close();
@@ -832,7 +900,11 @@
   });
   document.addEventListener('keydown', function (ev) {
     if (ev.key === 'Enter' && ev.target.id === 'trkAmt') { ev.preventDefault(); return trkAction('dmg'); }
-    if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.classList && ev.target.classList.contains('card')) { ev.preventDefault(); openDetail(ev.target.dataset.id); }
+    /* Escape closes an open menu and puts focus back on its button */
+    if (ev.key === 'Escape') {
+      var open = document.querySelector('details.srcpick[open], #pMenu[open]');
+      if (open) { ev.preventDefault(); open.open = false; open.querySelector('summary').focus(); }
+    }
   });
   $('#detail').addEventListener('click', function (ev) { if (ev.target === this) this.close(); });
   $('#detail').addEventListener('close', function () { render(); });
@@ -844,16 +916,56 @@
     state.notes = n; save();
   });
   $('#showHidden').addEventListener('change', function () { update({ showHidden: this.checked }); });
-  $('#profile').addEventListener('change', function () { switchProfile(this.value); });
+  $('#profile').addEventListener('change', function () { if (!linkedChar(PROFILES.active)) PROFILES.lastFree = PROFILES.active; switchProfile(this.value); });
   $('#importFile').addEventListener('change', function () { if (this.files[0]) importData(this.files[0]); this.value = ''; });
   document.addEventListener('click', function (ev) { var p = $('#pMenu'); if (p.open && !p.contains(ev.target)) p.open = false; });
 
   /* ---------- profiles, export / import ---------- */
+  /* ---------- profiles across tabs ----------
+     Another tab can change ws.profiles. Writes merge: this tab owns only its active profile,
+     everything else is taken from storage; structural changes (new, rename, delete, import) re-read first. */
+  function syncProfiles() {
+    var f = store.get('ws.profiles', null);
+    if (!f || !f.list || typeof f.list !== 'object') return;
+    var mine = PROFILES.list[PROFILES.active];
+    PROFILES.list = f.list; PROFILES.lastFree = f.lastFree;
+    if (mine && !PROFILES.list[PROFILES.active]) PROFILES.list[PROFILES.active] = mine;
+  }
+  function writeProfiles() {
+    var f = store.get('ws.profiles', null);
+    if (f && f.list && typeof f.list === 'object') for (var n in f.list) if (n !== PROFILES.active) PROFILES.list[n] = f.list[n];
+    store.set('ws.profiles', PROFILES);
+  }
+  function writeAllProfiles() { store.set('ws.profiles', PROFILES); }
+  window.addEventListener('storage', function (ev) {
+    if (ev.key !== 'ws.profiles') return;
+    var mine = PROFILES.active, keep = PROFILES.list[mine];
+    var f = store.get('ws.profiles', null);
+    if (!f || !f.list) return;
+    PROFILES.list = f.list; PROFILES.lastFree = f.lastFree;
+    if (!PROFILES.list[mine]) PROFILES.list[mine] = keep; /* deleted in the other tab: keep this tab's copy */
+    PROFILES.active = mine;
+    var p = prof(); state.favs = p.favs; state.hidden = p.hidden; state.notes = p.notes;
+    renderProfiles(); renderCharNote();
+    if (DATA && !$('#detail').open) render();
+  });
+
   /* ---------- shared characters (dnd.characters, see character.js) ----------
-     A character with druid levels picks its own profile (named in links[REPO].profile, so stars,
-     hidden beasts and notes are per character) and pre-fills edition, druid level, circle and WIS.
-     The controls stay free to change; nothing is written back unless the user asks. */
-  var REPO = 'dnd-druid-wildshapes', applying = false;
+     A character with druid levels has its own profile (links[REPO].profile), so stars, hidden beasts
+     and notes are per character, and it sets edition, druid level, circle and WIS while the profile
+     follows it (profile.follow). Changing those by hand stops following until the user ticks it again.
+     Changes elsewhere only matter when those fields change (profile.applied); nothing is written back. */
+  var REPO = 'dnd-druid-wildshapes', applying = false, lastSeen = null, URL_WINS = false, UNKNOWN_CHAR = false;
+  (function () {
+    try {
+      var nav = performance.getEntriesByType('navigation')[0];
+      var u = new URL(nav ? nav.name : location.href);
+      /* a link someone opened keeps its own rules; a reload or back/forward takes the character's current ones */
+      URL_WINS = (!nav || nav.type === 'navigate') && (u.searchParams.has('ed') || u.searchParams.has('lvl') || u.searchParams.has('circle'));
+      var want = u.searchParams.get('char');
+      UNKNOWN_CHAR = !!(want && window.DndChar && !DndChar.get(want));
+    } catch (e) { /* old browser */ }
+  })();
   function charProfile(ch) { var l = ch && ch.links && ch.links[REPO]; return l && typeof l === 'object' ? l.profile : null; }
   function linkedChar(name) {
     if (!window.DndChar) return null;
@@ -861,48 +973,103 @@
     if (a && charProfile(a) === name) return a;
     return DndChar.all().filter(function (c) { return charProfile(c) === name; })[0] || null;
   }
-  function applyChar(ch, first) {
+  function charRules(ch) {
+    var dl = ch ? DndChar.levelIn(ch, 'druid') : 0;
+    if (!dl) return null;
+    var moon = DndChar.sameSub(DndChar.classOf(ch, 'druid'), { sub: 'moon', subName: 'Circle of the Moon' });
+    return { ed: ch.ed, level: Math.max(2, dl), circle: moon ? 'moon' : 'standard', wis: Math.max(-1, Math.min(7, DndChar.mod(ch, 'wis'))), dl: dl };
+  }
+  function rulesKey(cr) { return cr ? [cr.ed, cr.level, cr.circle, cr.wis].join('|') : ''; }
+  function following() {
+    var ch = window.DndChar && DndChar.active();
+    return !!(ch && charRules(ch) && charProfile(ch) === PROFILES.active && prof().follow !== false);
+  }
+  /* the profile tied to ch, made (or an unlinked one of the same name adopted) on first use */
+  function profileFor(ch) {
+    var name = charProfile(ch);
+    if (name && PROFILES.list[name]) return name;
+    syncProfiles();
+    name = ch.name.slice(0, 40) || 'Character';
+    var other = PROFILES.list[name] && linkedChar(name);
+    if (other && other.id !== ch.id) { var base = name.slice(0, 36); for (var i = 2; PROFILES.list[base + ' ' + i]; i++); name = base + ' ' + i; }
+    if (!PROFILES.list[name]) PROFILES.list[name] = { favs: {}, hidden: {}, notes: {}, follow: true };
+    writeAllProfiles();
+    DndChar.setLink(ch.id, REPO, { profile: name });
+    return name;
+  }
+  /* a profile with no character: the last one used, else any, else a new "My druid" */
+  function freeProfile() {
+    if (PROFILES.lastFree && PROFILES.list[PROFILES.lastFree] && !linkedChar(PROFILES.lastFree)) return PROFILES.lastFree;
+    var free = Object.keys(PROFILES.list).sort().filter(function (n) { return !linkedChar(n); })[0];
+    if (free) return free;
+    var n = 'My druid'; for (var i = 2; PROFILES.list[n]; i++) n = 'My druid ' + i;
+    PROFILES.list[n] = { favs: {}, hidden: {}, notes: {} }; writeAllProfiles();
+    return n;
+  }
+  function setRules(cr) {
+    state.ed = cr.ed; state.level = cr.level; state.circle = cr.circle; state.wis = cr.wis;
+    clampState(); prof().applied = rulesKey(cr); save(); syncControls();
+  }
+  function applyChar(ch, first, force) {
     if (applying || !window.DndChar) return;
+    var cr = charRules(ch), seen = ch ? ch.id + '#' + rulesKey(cr) : '';
+    if (!first && !force && seen === lastSeen) { renderCharNote(); renderSaveChar(); return; } /* only `updated` or a link changed */
+    lastSeen = seen;
     applying = true;
     try {
-      var dl = DndChar.levelIn(ch, 'druid'), note = $('#charNote');
-      if (!ch) { note.hidden = true; return; }
-      if (!dl) {
-        note.innerHTML = '<b>' + esc(ch.name) + '</b> (' + esc(DndChar.short(ch) || 'no classes') + ') has no druid levels, so your own settings are used.';
-        note.hidden = false; return;
-      }
-      var name = charProfile(ch);
-      if (!name || !PROFILES.list[name]) {
-        name = ch.name.slice(0, 40);
-        if (PROFILES.list[name] && linkedChar(name) && linkedChar(name).id !== ch.id) {
-          for (var i = 2; PROFILES.list[name + ' ' + i]; i++);
-          name = name + ' ' + i;
+      if (!ch || !cr) {
+        /* None (or a character without druid levels): leave a character's profile for a plain one */
+        if (!ch && linkedChar(PROFILES.active)) switchProfile(freeProfile(), true, first);
+      } else {
+        var name = profileFor(ch);
+        if (name !== PROFILES.active) {
+          if (!linkedChar(PROFILES.active)) PROFILES.lastFree = PROFILES.active;
+          switchProfile(name, true, first);
         }
-        save();
-        if (!PROFILES.list[name]) PROFILES.list[name] = { favs: {}, hidden: {}, notes: {} };
-        DndChar.setLink(ch.id, REPO, { profile: name });
+        var p = prof();
+        if (p.follow === undefined) p.follow = true;
+        if (p.follow !== false && !(first && URL_WINS)) setRules(cr);
+        else if (p.applied == null) { p.applied = rulesKey(cr); save(); }
       }
-      save();
-      PROFILES.active = name;
-      loadProfile();
-      var moon = DndChar.sameSub(DndChar.classOf(ch, 'druid'), { sub: 'moon', subName: 'Circle of the Moon' });
-      var set = { ed: ch.ed, level: dl, circle: moon ? 'moon' : 'standard', wis: DndChar.mod(ch, 'wis') };
-      if (first) { /* a shared link's own settings win on arrival */
-        if (params.get('ed')) delete set.ed; if (params.get('circle')) delete set.circle; if (params.get('lvl')) delete set.level;
+    } finally { applying = false; }
+    renderCharNote(); renderSaveChar();
+    if (!first && DATA) render();
+  }
+  /* the user set edition, circle, level or WIS by hand: that wins over the character */
+  function manualRules() { if (following()) { prof().follow = false; save(); renderCharNote(); } }
+  function followAgain() {
+    var ch = DndChar.active(); if (!ch) return;
+    var name = profileFor(ch);
+    if (name !== PROFILES.active) switchProfile(name, true);
+    prof().follow = true; prof().applied = null;
+    applyChar(ch, false, true);
+  }
+  function renderCharNote() {
+    var note = $('#charNote');
+    if (!window.DndChar) { note.hidden = true; return; }
+    var ch = DndChar.active(), h = UNKNOWN_CHAR ? 'That character isn\'t in this browser. ' : '';
+    if (ch) {
+      var cr = charRules(ch);
+      if (!cr) h += '<b>' + esc(ch.name) + '</b> (' + esc(DndChar.short(ch) || 'no classes') + ') has no druid levels, so your own settings are used.';
+      else if (charProfile(ch) !== PROFILES.active) h += 'This profile isn\'t tied to <b>' + esc(ch.name) + '</b>. <button type="button" class="linkbtn" data-follow>Use ' + esc(ch.name) + '</button>';
+      else {
+        var p = prof(), fol = p.follow !== false, changed = rulesKey(cr) !== p.applied;
+        h += '<label class="follow"><input type="checkbox" id="followChar"' + (fol ? ' checked' : '') + '> Follow <b>' + esc(ch.name) + '</b></label> ' +
+          '<span>(' + esc(DndChar.summary(ch)) + (cr.circle === 'moon' ? ', Circle of the Moon' : '') + ', WIS ' + sgn(cr.wis) + ')</span>. ';
+        if (!fol) h += changed ? 'The character has changed since you set things by hand. <button type="button" class="linkbtn" data-follow>Apply it</button> ' : 'You set the rules by hand. ';
+        else if (rulesKey(cr) !== rulesKey(state)) h += 'This link set its own rules. <button type="button" class="linkbtn" data-follow>Use the character\'s</button> ';
+        else if (cr.dl < 2) h += 'Wild Shape starts at druid level 2, so level 2 is shown. ';
+        h += 'Edit the character in the <a href="' + DndChar.url('dnd-multiclass-planner', ch.id) + '">Multiclass Planner</a>.';
       }
-      for (var k in set) state[k] = set[k];
-      clampState(); save(); renderProfiles(); syncControls();
-      note.innerHTML = 'Following <b>' + esc(ch.name) + '</b> (' + esc(DndChar.summary(ch)) + (moon ? ', Circle of the Moon' : '') + ', WIS ' + sgn(DndChar.mod(ch, 'wis')) + ').' +
-        (dl < 2 ? ' Wild Shape starts at druid level 2, so level 2 is shown.' : '') +
-        ' Change anything here freely; edit the character in the <a href="' + DndChar.url('dnd-multiclass-planner', ch.id) + '">Multiclass Planner</a>.';
-      note.hidden = false;
-    } finally { applying = false; if (!first && DATA) render(); }
+    }
+    note.innerHTML = h; note.hidden = !h;
   }
   function saveAsCharacter() {
     if (!window.DndChar) return;
     if (linkedChar(PROFILES.active)) return alert('This profile is already a character: ' + linkedChar(PROFILES.active).name + '.');
     if (!confirm('Save "' + PROFILES.active + '" as a shared character (Druid ' + state.level + (state.circle === 'moon' ? ', Circle of the Moon' : '') + ', ' + state.ed + ' rules)? Every D&D Toolbox site can then use it. Ability scores other than WIS start at 10; set them in the Multiclass Planner.')) return;
     save();
+    prof().follow = true;
     var ch = DndChar.save({ name: PROFILES.active, ed: state.ed,
       classes: [{ cls: 'druid', lvl: state.level, sub: state.circle === 'moon' ? 'moon' : null, subName: state.circle === 'moon' ? 'Circle of the Moon' : null }],
       ab: [10, 10, 10, 10, Math.max(1, Math.min(30, 10 + 2 * state.wis)), 10],
@@ -924,11 +1091,13 @@
     if (st.level) state.level = st.level; if (st.wis != null) state.wis = st.wis;
     clampState();
   }
-  function switchProfile(name) {
-    save();
+  /* fromChar: called by the character code, which renders afterwards; noSave: the current state isn't the old profile's (first load) */
+  function switchProfile(name, fromChar, noSave) {
+    if (!noSave) save();
     if (!PROFILES.list[name]) return;
     PROFILES.active = name;
-    loadProfile(); save(); renderProfiles(); render();
+    loadProfile(); save(); renderProfiles();
+    if (!fromChar) { renderCharNote(); render(); }
   }
   function askName(msg, def) {
     var n = prompt(msg, def || '');
@@ -942,16 +1111,17 @@
     if (a === 'new') {
       var n = askName('Name for the new profile (for example the character\'s name):');
       if (!n) return;
-      save();
+      save(); syncProfiles();
       PROFILES.list[n] = { favs: {}, hidden: {}, notes: {}, settings: { ed: state.ed, circle: state.circle, level: state.level, wis: state.wis } };
+      writeAllProfiles();
       return switchProfile(n);
     }
     if (a === 'rename') {
       var old = PROFILES.active, nn = askName('Rename "' + old + '" to:', old);
       if (!nn) return;
-      save();
+      save(); syncProfiles();
       PROFILES.list[nn] = PROFILES.list[old]; delete PROFILES.list[old];
-      PROFILES.active = nn; save();
+      PROFILES.active = nn; writeAllProfiles();
       if (window.DndChar) DndChar.all().forEach(function (c) { if (charProfile(c) === old) DndChar.setLink(c.id, REPO, { profile: nn }); });
       renderProfiles(); return render();
     }
@@ -959,9 +1129,11 @@
       var names = Object.keys(PROFILES.list);
       if (names.length < 2) return alert('This is your only profile. Create another one before deleting it.');
       if (!confirm('Delete the profile "' + PROFILES.active + '" with its starred forms, hidden beasts and notes? Export a backup first if you might want it back.')) return;
+      syncProfiles();
       delete PROFILES.list[PROFILES.active];
       PROFILES.active = Object.keys(PROFILES.list)[0];
-      loadProfile(); save(); renderProfiles(); return render();
+      writeAllProfiles();
+      loadProfile(); save(); renderProfiles(); renderCharNote(); return render();
     }
     if (a === 'savechar') return saveAsCharacter();
     if (a === 'export') return exportData();
@@ -997,17 +1169,25 @@
       var d;
       try { d = JSON.parse(rd.result); } catch (e) { return alert('That file is not a Wild Shape backup (it is not valid JSON).'); }
       if (!d || d.app !== 'druid-wildshape' || !d.profiles || typeof d.profiles !== 'object') return alert('That file is not a Wild Shape backup.');
-      var names = Object.keys(d.profiles).filter(function (n) { return n && n.length <= 40; });
+      var map = {}, names = [];
+      Object.keys(d.profiles).forEach(function (n) {
+        var t = String(n).trim().slice(0, 40); if (!t) return;
+        for (var i = 2; map[t]; i++) t = String(n).trim().slice(0, 36) + ' ' + i; /* two names that shorten alike */
+        map[t] = n; names.push(t);
+      });
       if (!names.length) return alert('The backup has no profiles in it.');
+      syncProfiles();
       var clash = names.filter(function (n) { return PROFILES.list[n]; });
       if (clash.length && !confirm('The backup has ' + names.length + ' profile(s). These already exist here and will be replaced by the backup copy:\n\n' + clash.join(', ') + '\n\nYour other profiles are kept. Continue?')) return;
       save();
       names.forEach(function (n) {
-        var p = d.profiles[n] || {};
+        var p = d.profiles[map[n]] || {};
         PROFILES.list[n] = { favs: cleanFlags(p.favs), hidden: cleanFlags(p.hidden), notes: cleanNotes(p.notes), settings: cleanSettings(p.settings) };
       });
-      PROFILES.active = d.active && PROFILES.list[d.active] ? d.active : names[0];
-      loadProfile(); save(); renderProfiles(); render();
+      var act = names.filter(function (n) { return map[n] === d.active; })[0];
+      PROFILES.active = act || names[0];
+      writeAllProfiles();
+      loadProfile(); save(); renderProfiles(); renderCharNote(); render();
       alert('Restored ' + names.length + ' profile(s) from the backup.');
     };
     rd.readAsText(file);
@@ -1015,10 +1195,15 @@
   renderProfiles();
   if (window.DndChar) {
     applyChar(DndChar.active(), true);
-    DndChar.onChange(function (ch) { applyChar(ch, false); renderSaveChar(); });
+    DndChar.onChange(function (ch) { applyChar(ch, false); });
   }
-  $('#level').addEventListener('input', function () { update({ level: +this.value }); });
-  $('#wis').addEventListener('input', function () { var v = parseInt(this.value, 10); if (!isNaN(v)) update({ wis: Math.max(-1, Math.min(7, v)) }); });
+  $('#charNote').addEventListener('change', function (ev) {
+    if (ev.target.id !== 'followChar') return;
+    if (ev.target.checked) followAgain(); else { prof().follow = false; save(); renderCharNote(); }
+  });
+  $('#charNote').addEventListener('click', function (ev) { if (ev.target.closest('[data-follow]')) followAgain(); });
+  $('#level').addEventListener('input', function () { manualRules(); update({ level: +this.value }); });
+  $('#wis').addEventListener('input', function () { var v = parseInt(this.value, 10); if (!isNaN(v)) { manualRules(); update({ wis: Math.max(-1, Math.min(7, v)) }); } });
   $('#search').value = state.q;
   $('#search').addEventListener('input', function () { update({ q: this.value }); });
   function tickList(list, key, attr) {

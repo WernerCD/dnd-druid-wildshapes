@@ -296,6 +296,12 @@ body.has-tracker .site-footer { padding-bottom: 260px; }
 /* shared character note under the profile picker */
 .char-note { margin: 4px 0 0; max-width: 260px; }
 .char-note b { color: var(--ink); }
+.char-note .follow { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+.char-note .follow input { accent-color: var(--accent); width: 15px; height: 15px; margin: 0; }
+.linkbtn { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
+.card-open { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }
+.card-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.card:focus-within { border-color: var(--accent); }
 
 /* print: controls and filters hidden, cards and stat blocks only */
 @media print {
