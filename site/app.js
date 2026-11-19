@@ -119,11 +119,16 @@
 
   /* source key: "Monster Manual (2014) p.79" -> "Monster Manual (2014)" */
   function srcKey(x) { return String(x || '').replace(/\s+p\.\s*\d+$/, ''); }
-  /* the main books: listed first in the Sources picker and selected by default */
-  var CORE = ['SRD 5.1', 'SRD 5.2', 'Monster Manual (2014)', 'Monster Manual (2025)'];
-  function coreSel() { var o = {}; CORE.forEach(function (k) { o[k] = true; }); return o; }
-  function coreIdx(k) { var i = CORE.indexOf(k); return i < 0 ? 99 : i; }
-  function srcSort(a, b) { return coreIdx(a) - coreIdx(b) || a.localeCompare(b); }
+  /* books: shared order and defaults (sources.js, STYLE.md 6f): core rules first and on by default,
+     then official supplements, settings and adventures, partner books, all listed but off */
+  var CORE = ['SRD 5.1', 'SRD 5.2', 'Monster Manual (2014)', 'Monster Manual (2025)']; /* used until the data loads */
+  function coreSel() {
+    var keys = DATA ? allBooks() : CORE, o = {};
+    (window.DndSources ? DndSources.defaults(keys) : CORE).forEach(function (k) { o[k] = true; });
+    return o;
+  }
+  function isCore(k) { return window.DndSources ? DndSources.isCore(k) : CORE.indexOf(k) >= 0; }
+  function sortBooks(keys) { return window.DndSources ? DndSources.sort(keys) : keys.slice().sort(); }
   if (!state.srcSel || typeof state.srcSel !== 'object') state.srcSel = coreSel();
   function srcOn(k) { return !!state.srcSel[k]; }
   function allBooks() {
@@ -294,7 +299,7 @@
     var seen = {};
     DATA.beasts.forEach(function (e) { for (var ed in e.editions) seen[srcKey(e.editions[ed].source)] = 1; });
     (DATA.others || []).forEach(function (o) { seen[o.sourceName || o.source] = 1; });
-    var keys = Object.keys(seen).sort(srcSort);
+    var keys = sortBooks(Object.keys(seen));
     $('#srcLinks').innerHTML = keys.map(function (k) {
       var u = BOOK_URL[k];
       var note = k === "Boo's Astral Menagerie" ? ' (in the Spelljammer: Adventures in Space set)' : /^SRD/.test(k) ? ' (free, CC-BY-4.0)' : '';
@@ -743,12 +748,15 @@
     return c;
   }
   function renderSources() {
-    var c = sourceCounts(), keys = Object.keys(c).sort(srcSort);
+    var c = sourceCounts(), keys = sortBooks(Object.keys(c));
     var on = keys.filter(srcOn).length, q = state.srcQ.trim().toLowerCase();
     $('#srcSum').textContent = 'Sources' + (on === keys.length ? '' : ' (' + on + ' of ' + keys.length + ')');
     $('#srcPick').classList.toggle('filtered', on !== keys.length);
+    var lastGroup = null;
     $('#srcList').innerHTML = keys.filter(function (k) { return !q || k.toLowerCase().indexOf(q) >= 0; }).map(function (k) {
-      return '<label class="srcrow' + (coreIdx(k) < 99 ? ' core' : '') + '"' + hueAttr(k) + '><input type="checkbox" data-src="' + esc(k) + '"' + (srcOn(k) ? ' checked' : '') + '> <i class="dot" aria-hidden="true"></i><span>' + esc(k) + '</span><span class="n">' + c[k] + '</span></label>';
+      var g = window.DndSources ? DndSources.info(k).groupName : null, head = '';
+      if (g && g !== lastGroup) { head = '<div class="src-group">' + esc(g) + '</div>'; lastGroup = g; }
+      return head + '<label class="srcrow' + (isCore(k) ? ' core' : '') + '"' + hueAttr(k) + '><input type="checkbox" data-src="' + esc(k) + '"' + (srcOn(k) ? ' checked' : '') + '> <i class="dot" aria-hidden="true"></i><span>' + esc(k) + '</span><span class="n">' + c[k] + '</span></label>';
     }).join('') || '<p class="small muted">No book matches.</p>';
   }
   function setSources(keys, on) {
