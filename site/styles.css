@@ -323,7 +323,7 @@ body.has-tracker .site-footer { padding-bottom: 260px; }
   body.has-tracker .site-footer { padding-bottom: 20px; }
 }
 
-/* === dnd-shared v1.9 (canonical copy: WernerCD/dnd shared/dnd-shared.css) === */
+/* === dnd-shared v1.9.1 (canonical copy: WernerCD/dnd shared/dnd-shared.css) === */
 /* Paste this block unchanged at the END of each site's styles.css. Do not edit it per site;
    change it in the hub repo and re-copy it to every site. It relies on the shared tokens
    (--bg, --surface, --surface-2, --ink, --ink-2, --muted, --line, --accent, --gold, --radius). */
@@ -434,8 +434,12 @@ body.has-tracker .site-footer { padding-bottom: 260px; }
 .tm-list a[aria-current="page"] { color: var(--ink); font-weight: 600; }
 .tm-all { display: none; }
 @media (max-width: 720px) {
+  .hub-bar.has-menu { position: relative; flex-wrap: wrap; row-gap: 6px; }
+  .hub-bar.has-menu .tool-menu { position: static; flex: 0 0 auto; order: 1; }
+  .hub-bar.has-menu .hub-nav { order: 2; margin-left: auto; }
+  .hub-bar.has-menu .char-pick { order: 3; flex: 1 1 100%; white-space: nowrap; }
   .tm-all { display: inline-flex; }
-  .tm-groups { display: none; position: absolute; top: calc(100% + 4px); left: 50%; transform: translateX(-50%); z-index: 900; width: min(300px, calc(100vw - 32px)); flex-direction: column; gap: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, .16); padding: 8px; }
+  .tm-groups { display: none; position: absolute; top: 36px; left: 16px; right: 16px; z-index: 900; width: auto; max-width: 340px; flex-direction: column; gap: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, .16); padding: 8px; }
   .tool-menu.open .tm-groups { display: flex; }
   .tm-btn { pointer-events: none; color: var(--muted); font-size: .75rem; letter-spacing: .05em; text-transform: uppercase; padding: 2px 10px; }
   .tm-btn span { display: none; }
@@ -452,4 +456,4 @@ body.has-tracker .site-footer { padding-bottom: 260px; }
   .ui-anim [data-reveal] > * { opacity: 1 !important; }
   .plot-fig { break-inside: avoid; }
 }
-/* === end dnd-shared v1.9 === */
+/* === end dnd-shared v1.9.1 === */
