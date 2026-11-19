@@ -236,7 +236,10 @@ def write_search(beasts):
         names = sorted({e["editions"][x]["name"] for x in eds} - {e["name"]})
         if names:
             t += f" (also {', '.join(names)})"
-        items.append({"n": e["name"], "t": t, "k": b["type"].capitalize(), "u": f"#beast={e['id']}"})
+        it = {"n": e["name"], "t": t, "k": b["type"].capitalize(), "u": f"#beast={e['id']}" + ("&ed=2024" if len(eds) > 1 else "")}
+        if len(eds) > 1:
+            it["u14"] = f"#beast={e['id']}&ed=2014"   # STYLE 6j: the 2014 version when u opens the 2024 one
+        items.append(it)
     with open(ROOT / "site" / "search.json", "w", encoding="utf-8") as f:
         json.dump({"v": 1, "items": items}, f, ensure_ascii=False, separators=(",", ":"))
     print(f"search.json: {len(items)} items")

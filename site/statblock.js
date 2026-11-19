@@ -1,4 +1,4 @@
-/* dnd-shared statblock.js v1.1 (canonical copy: WernerCD/dnd shared/statblock.js). Copy unchanged to site/statblock.js.
+/* dnd-shared statblock.js v1.1.1 (canonical copy: WernerCD/dnd shared/statblock.js). Copy unchanged to site/statblock.js.
  * One stat block look for every D&D Toolbox page that shows a creature (STYLE.md 6i): Monster Lookup, the
  * encounter builder, Wild Shape. Styles are the .dsb rules in the dnd-shared CSS block (v1.10+).
  *
@@ -15,6 +15,7 @@
  *   DndStatblock.typeLine(m), .speedText(m), .md(text), .mod(score), .sgn(n)
  * v1.1: modifiers, saves, skills and initiative carry data-roll (dice.js makes them rollable), the block
  *   carries data-roll-ctx (the creature's name) and the creature type is a .dsb-ctype span (links.js). STYLE 6k.
+ * v1.1.1: the block carries data-ed (its edition), so links.js picks 2014 or 2024 entries.
  */
 (function () {
   var AB = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
@@ -94,7 +95,7 @@
       section('Reactions', m.reactions) + section('Legendary Actions', m.legendary, m.legIntro);
     h += o.extra || '';
     if (o.source) h += '<p class="dsb-src">' + esc(o.source) + '</p>';
-    return '<div class="dsb' + (o.mini ? ' mini' : '') + '" data-roll-ctx="' + esc(m.name || '') + '">' + h + '</div>';
+    return '<div class="dsb' + (o.mini ? ' mini' : '') + '" data-ed="' + esc(ed) + '" data-roll-ctx="' + esc(m.name || '') + '">' + h + '</div>';
   }
 
   window.DndStatblock = { html: html, typeLine: typeLine, speedText: speedText, md: md, mod: mod, sgn: sgn };
