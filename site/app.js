@@ -948,15 +948,7 @@
     }
   });
   $('#detail').addEventListener('click', function (ev) { if (ev.target === this) this.close(); });
-  /* dice.js puts its roll tray on <body>, under the modal stat block dialog's top layer; while the dialog is
-     open, keep the tray inside it so rolls made there can be seen (until shared dice.js handles dialogs) */
-  document.addEventListener('click', function (ev) {
-    var d = $('#detail');
-    if (!d.open || !ev.target.closest('#detail .dd-roll')) return;
-    setTimeout(function () { var tr = document.querySelector('.dd-tray'); if (tr && tr.parentNode !== d) d.appendChild(tr); }, 0);
-  }, true);
   $('#detail').addEventListener('close', function () {
-    var tr = document.querySelector('#detail .dd-tray'); if (tr) document.body.appendChild(tr);
     if (/^#beast=/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
     render();
   });
