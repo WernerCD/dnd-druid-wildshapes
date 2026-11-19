@@ -46,6 +46,13 @@ def run(page, base, check):
     page.wait_for_selector("#detail[open] .dsb", timeout=15000)
     check(page.inner_text("#dTitle") == "Brown Bear", "#beast=brown-bear opens the Brown Bear stat block")
     check("with Circle Forms" in page.inner_text("#detail .dsb"), "Moon stat block shows the Circle Forms AC")
+    # dice (dice.js): attack rolls in the dialog, and the roll tray shows above the modal dialog
+    page.wait_for_selector("#detail .dsb-blk .dd-roll", timeout=5000)
+    page.locator("#detail .dsb-blk .dd-roll").first.click()
+    page.wait_for_timeout(300)
+    over = page.evaluate("""() => { const t = document.querySelector('.dd-tray'); if (!t || t.hidden) return false;
+        const r = t.getBoundingClientRect(); return t.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); }""")
+    check(over, "a roll in the stat block dialog shows the dice tray above the dialog")
     page.keyboard.press("Escape")
     page.wait_for_timeout(200)
     check("#beast=" not in page.url, "closing the stat block clears the #beast link")
@@ -53,6 +60,11 @@ def run(page, base, check):
     # "Full" card view shows small shared stat blocks
     load("?ed=2014&circle=standard&lvl=2&view=full")
     check(page.locator("#list .card .dsb.mini").count() > 0, "full card view shows .dsb.mini stat blocks")
+    page.locator("#list .card .dd-roll").first.click()
+    page.wait_for_timeout(200)
+    check(not page.evaluate("document.querySelector('#detail').open"), "a dice roll inside a card does not open the stat block")
+    load("?ed=2014&circle=standard&lvl=2&view=stats")
+    check(page.locator("#list .card .cstats .dd-roll").count() > 0, "Stats card view has rollable attacks")
 
     # Size filter: Tiny shows only Tiny beasts
     load("?ed=2024&circle=standard&lvl=2&sz=Tiny")

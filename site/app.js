@@ -484,8 +484,8 @@
           var at = attackParts(a);
           if (at.bonus == null && !at.dmg.length) return '';
           return '<div class="trk-a"><b>' + esc(a.name) + '</b>' +
-            (at.bonus != null ? '<button type="button" class="btn sm" data-roll="' + i + '" data-kind="hit">Attack ' + sgn(at.bonus) + '</button>' : '<span class="small muted">' + esc(at.dc) + '</span>') +
-            (at.dmg.length ? '<button type="button" class="btn sm" data-roll="' + i + '" data-kind="dmg">Damage</button>' : '') + '</div>';
+            (at.bonus != null ? '<button type="button" class="btn sm" data-trkroll="' + i + '" data-kind="hit">Attack ' + sgn(at.bonus) + '</button>' : '<span class="small muted">' + esc(at.dc) + '</span>') +
+            (at.dmg.length ? '<button type="button" class="btn sm" data-trkroll="' + i + '" data-kind="dmg">Damage</button>' : '') + '</div>';
         }).join('') + '</div>';
       } else {
         body += '<p class="small muted trk-empty">' + (c && c.done ? 'You are back in druid form. ' : '') + 'Open a beast and press <b>Transform</b> to start. Rests restore uses (2014: a short rest restores all; 2024: a short rest restores one, a long rest all).</p>' +
@@ -692,10 +692,10 @@
     while ((m = re.exec(d)) && dmg.length < 3) dmg.push((m[1] ? m[1] + ' (' + m[2].replace(/\s+/g, '') + ')' : m[2].replace(/\s+/g, '')) + ' ' + m[3].toLowerCase());
     if (/^multiattack$/i.test(a.name)) return '<li><b>Multiattack.</b> ' + esc(d.replace(/^The [\w ]+? makes /, 'Makes ')) + '</li>';
     if (!dmg.length && !hit && !sv) return '<li><b>' + esc(a.name) + '</b></li>';
-    return '<li><b>' + esc(a.name) + '</b> ' + esc(bits.join(', ')) + (dmg.length ? ' &rarr; ' + esc(dmg.join(' + ')) : '') + '</li>';
+    return '<li data-roll-entry><b>' + esc(a.name) + '</b> ' + esc(bits.join(', ')) + (dmg.length ? ' &rarr; ' + esc(dmg.join(' + ')) : '') + '</li>';
   }
   function cardStats(b) {
-    var h = '<div class="cstats">' + abilRow(b);
+    var h = '<div class="cstats" data-dice data-roll-ctx="' + esc(b.name) + '">' + abilRow(b);
     if (b.traits && b.traits.length) h += '<p class="ctraits"><b>Traits:</b> ' + esc(b.traits.map(function (t) { return t.name; }).join(', ')) + '</p>';
     var acts = (b.actions || []).concat(b.bonusActions || []);
     if (acts.length) h += '<ul class="attacks">' + acts.map(attackLine).join('') + '</ul>';
@@ -803,7 +803,7 @@
     var el = eligibility(e, b, r);
     var eds = Object.keys(e.editions).sort();
     var h = '<div class="sb-head"><h2 id="dTitle">' + esc(b.name) + '</h2>' +
-      '<p class="sb-sub">' + esc(b.size + ' ' + b.type + (b.swarm ? ' (swarm)' : '')) + ', CR ' + b.crText + ' ' + bookLink(b.source) + '</p></div>';
+      '<p class="sb-sub" data-links>' + esc(b.size) + ' <span class="dsb-ctype" data-ctype="' + esc(b.type) + '">' + esc(b.type) + '</span>' + (b.swarm ? ' (swarm)' : '') + ', CR ' + b.crText + ' ' + bookLink(b.source) + '</p></div>';
     if (eds.length > 1) {
       h += '<div class="ed-tabs" role="tablist">' + eds.map(function (x) {
         return '<button type="button" role="tab" data-ed-tab="' + x + '" aria-selected="' + (x === dlgEd) + '">' + x + ' rules' + (e.names[x] !== b.name ? '' : '') + '</button>';
@@ -896,6 +896,7 @@
   })();
 
   document.addEventListener('click', function (ev) {
+    if (ev.target.closest('.dd-roll, a')) return;   // dice (dice.js) and links (links.js) inside cards act on their own
     var t = ev.target.closest('button, .card');
     if (!t) return;
     if (t.dataset.ed) { manualRules(); return update({ ed: t.dataset.ed }); }
@@ -903,7 +904,7 @@
     if (t.dataset.detail) return update({ detail: t.dataset.detail });
     if (t.dataset.trk) return trkAction(t.dataset.trk);
     if (t.id === 'printForms') return printForms();
-    if (t.dataset.roll) return rollAttack(+t.dataset.roll, t.dataset.kind);
+    if (t.dataset.trkroll) return rollAttack(+t.dataset.trkroll, t.dataset.kind);
     if (t.dataset.transform) return startForm(t.dataset.transform, t.dataset.ted);
     if (t.dataset.feat) {
       var fs = state.feats.slice(), fi = fs.indexOf(t.dataset.feat);
@@ -947,7 +948,15 @@
     }
   });
   $('#detail').addEventListener('click', function (ev) { if (ev.target === this) this.close(); });
+  /* dice.js puts its roll tray on <body>, under the modal stat block dialog's top layer; while the dialog is
+     open, keep the tray inside it so rolls made there can be seen (until shared dice.js handles dialogs) */
+  document.addEventListener('click', function (ev) {
+    var d = $('#detail');
+    if (!d.open || !ev.target.closest('#detail .dd-roll')) return;
+    setTimeout(function () { var tr = document.querySelector('.dd-tray'); if (tr && tr.parentNode !== d) d.appendChild(tr); }, 0);
+  }, true);
   $('#detail').addEventListener('close', function () {
+    var tr = document.querySelector('#detail .dd-tray'); if (tr) document.body.appendChild(tr);
     if (/^#beast=/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
     render();
   });

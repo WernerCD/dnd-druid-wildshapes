@@ -1,4 +1,4 @@
-/* dnd-shared statblock.js v1.0 (canonical copy: WernerCD/dnd shared/statblock.js). Copy unchanged to site/statblock.js.
+/* dnd-shared statblock.js v1.1 (canonical copy: WernerCD/dnd shared/statblock.js). Copy unchanged to site/statblock.js.
  * One stat block look for every D&D Toolbox page that shows a creature (STYLE.md 6i): Monster Lookup, the
  * encounter builder, Wild Shape. Styles are the .dsb rules in the dnd-shared CSS block (v1.10+).
  *
@@ -13,12 +13,16 @@
  *     opts.extra   html appended at the end, inside the block
  *     opts.source  text for the small credit line at the bottom (e.g. "SRD 5.2, CC BY 4.0"), escaped here
  *   DndStatblock.typeLine(m), .speedText(m), .md(text), .mod(score), .sgn(n)
+ * v1.1: modifiers, saves, skills and initiative carry data-roll (dice.js makes them rollable), the block
+ *   carries data-roll-ctx (the creature's name) and the creature type is a .dsb-ctype span (links.js). STYLE 6k.
  */
 (function () {
   var AB = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function sgn(n) { return (n >= 0 ? '+' : '−') + Math.abs(n); }
   function mod(s) { return Math.floor((s - 10) / 2); }
+  function rl(expr, label, text) { return '<span data-roll="' + esc(expr) + '" data-roll-label="' + esc(label) + '">' + text + '</span>'; }
+  function d20(n) { return '1d20' + (n < 0 ? '-' + Math.abs(n) : n ? '+' + n : ''); }
   function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
   function num(n) { return Number(n).toLocaleString('en-US'); }
   function abil(m) {
@@ -58,22 +62,22 @@
     o = o || {};
     var ed = String(o.ed || m.edition || '2024'), x = o.after || {}, a = abil(m), h = '';
     var t = esc(o.headTag || 'h3');
-    if (o.head) h += '<div class="dsb-head"><' + t + ' class="dsb-name">' + esc(m.name) + '</' + t + '><p class="dsb-type">' + esc(typeLine(m)) + '</p></div>';
+    if (o.head) h += '<div class="dsb-head"><' + t + ' class="dsb-name">' + esc(m.name) + '</' + t + '><p class="dsb-type">' + (m.type ? esc(typeLine(m)).replace(esc(m.type), '<span class="dsb-ctype" data-ctype="' + esc(m.type) + '">' + esc(m.type) + '</span>') : esc(typeLine(m))) + '</p></div>';
     var ac = m.ac != null ? m.ac + (m.acNote ? ' (' + m.acNote + ')' : '') : '';
-    h += '<p><b>Armor Class</b> ' + esc(ac || '?') + (x.ac || '') + (ed === '2024' && m.init != null ? ' &nbsp; <b>Initiative</b> ' + sgn(m.init) + ' (' + (10 + m.init) + ')' : '') + '</p>';
-    h += '<p><b>Hit Points</b> ' + esc(m.hp == null ? '?' : m.hp) + (m.hd ? ' (' + esc(m.hd) + ')' : '') + (x.hp || '') + '</p>';
+    h += '<p><b>Armor Class</b> ' + esc(ac || '?') + (x.ac || '') + (ed === '2024' && m.init != null ? ' &nbsp; <b>Initiative</b> ' + rl(d20(m.init), 'Initiative', sgn(m.init)) + ' (' + (10 + m.init) + ')' : '') + '</p>';
+    h += '<p><b>Hit Points</b> ' + esc(m.hp == null ? '?' : m.hp) + (m.hd ? ' (<span data-roll="' + esc(m.hd) + '" data-roll-label="Hit points">' + esc(m.hd) + '</span>)' : '') + (x.hp || '') + '</p>';
     h += '<p><b>Speed</b> ' + esc(speedText(m)) + (x.speed || '') + '</p>';
     if (a.some(function (s) { return s != null; })) {
       h += '<div class="dsb-abil' + (ed === '2024' ? ' saves' : '') + '">' + AB.map(function (k, i) {
         var s = a[i], md_ = s == null ? null : mod(s), sv = m.saves && m.saves[k] != null ? m.saves[k] : md_;
-        return '<div><b>' + k.toUpperCase() + '</b>' + (s == null ? '?' : s + ' <span class="dsb-mod">(' + sgn(md_) + ')</span>') +
-          (ed === '2024' && sv != null ? '<span class="dsb-sv" title="Saving throw">Save ' + sgn(sv) + '</span>' : '') + '</div>';
+        return '<div><b>' + k.toUpperCase() + '</b>' + (s == null ? '?' : s + ' <span class="dsb-mod">(' + rl(d20(md_), k.toUpperCase() + ' check', sgn(md_)) + ')</span>') +
+          (ed === '2024' && sv != null ? '<span class="dsb-sv" title="Saving throw">Save ' + rl(d20(sv), k.toUpperCase() + ' save', sgn(sv)) + '</span>' : '') + '</div>';
       }).join('') + '</div>';
     }
     if (ed !== '2024') {
-      h += line('Saving Throws', AB.filter(function (k) { return m.saves && m.saves[k] != null; }).map(function (k) { return cap(k) + ' ' + sgn(m.saves[k]); }).join(', '));
+      h += line('Saving Throws', '', AB.filter(function (k) { return m.saves && m.saves[k] != null; }).map(function (k) { return cap(k) + ' ' + rl(d20(m.saves[k]), cap(k) + ' save', sgn(m.saves[k])); }).join(', '));
     }
-    h += line('Skills', Object.keys(m.skills || {}).sort().map(function (k) { return k.split('_').map(cap).join(' ') + ' ' + sgn(m.skills[k]); }).join(', '));
+    h += line('Skills', '', Object.keys(m.skills || {}).sort().map(function (k) { var n = k.split('_').map(cap).join(' '); return esc(n) + ' ' + rl(d20(m.skills[k]), n, sgn(m.skills[k])); }).join(', '));
     h += line(ed === '2024' ? 'Vulnerabilities' : 'Damage Vulnerabilities', m.vuln);
     h += line(ed === '2024' ? 'Resistances' : 'Damage Resistances', m.resist);
     if (ed === '2024') h += line('Immunities', [m.immune, m.condImmune].filter(Boolean).join('; '));
@@ -90,7 +94,7 @@
       section('Reactions', m.reactions) + section('Legendary Actions', m.legendary, m.legIntro);
     h += o.extra || '';
     if (o.source) h += '<p class="dsb-src">' + esc(o.source) + '</p>';
-    return '<div class="dsb' + (o.mini ? ' mini' : '') + '">' + h + '</div>';
+    return '<div class="dsb' + (o.mini ? ' mini' : '') + '" data-roll-ctx="' + esc(m.name || '') + '">' + h + '</div>';
   }
 
   window.DndStatblock = { html: html, typeLine: typeLine, speedText: speedText, md: md, mod: mod, sgn: sgn };
