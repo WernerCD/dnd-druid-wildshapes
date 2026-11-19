@@ -38,7 +38,21 @@ def run(page, base, check):
     page.locator("#list .card-open", has_text="Cat").first.click()
     page.wait_for_selector("#detail[open] .sb-sub")
     check(page.inner_text("#detail .sb-sub").startswith("Tiny"), "2024 Cat stat block says Tiny")
+    check(page.locator("#detail .dsb .dsb-abil > div").count() == 6, "stat block drawn by the shared statblock.js")
     page.keyboard.press("Escape")
+
+    # deep link from the hub search opens the stat block; Moon druids see the Circle Forms AC note
+    page.goto(base + "?ed=2024&circle=moon&lvl=6#beast=brown-bear", wait_until="load")
+    page.wait_for_selector("#detail[open] .dsb", timeout=15000)
+    check(page.inner_text("#dTitle") == "Brown Bear", "#beast=brown-bear opens the Brown Bear stat block")
+    check("with Circle Forms" in page.inner_text("#detail .dsb"), "Moon stat block shows the Circle Forms AC")
+    page.keyboard.press("Escape")
+    page.wait_for_timeout(200)
+    check("#beast=" not in page.url, "closing the stat block clears the #beast link")
+
+    # "Full" card view shows small shared stat blocks
+    load("?ed=2014&circle=standard&lvl=2&view=full")
+    check(page.locator("#list .card .dsb.mini").count() > 0, "full card view shows .dsb.mini stat blocks")
 
     # Size filter: Tiny shows only Tiny beasts
     load("?ed=2024&circle=standard&lvl=2&sz=Tiny")

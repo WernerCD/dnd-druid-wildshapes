@@ -667,7 +667,7 @@
       '<div class="src">' + srcTag(b.source) + '</div>' +
       (el.ok ? '' : '<div class="why">' + esc(el.why.join(' · ')) + '</div>') +
       noteHTML(e.id) +
-      (state.detail === 'stats' ? cardStats(b) : state.detail === 'full' ? '<div class="statblock mini">' + sbBody(b, r) + '</div>' : '') +
+      (state.detail === 'stats' ? cardStats(b) : state.detail === 'full' ? sbBody(b, r, true) : '') +
       '</article>';
   }
 
@@ -817,7 +817,7 @@
       '<div class="mn-actions"><button type="button" class="btn primary" data-transform="' + e.id + '" data-ted="' + dlgEd + '">Transform' + (e.elemental ? ' (2 uses)' : '') + '</button>' +
       '<button type="button" class="btn" data-fav="' + e.id + '" aria-pressed="' + isFav + '">' + (isFav ? '&#9733; Known form' : '&#9734; Mark as known form') + '</button>' +
       '<button type="button" class="btn" data-hide="' + e.id + '" aria-pressed="' + isHid + '">' + (isHid ? 'Show in list again' : 'Hide from list') + '</button></div></div>';
-    h += '<div class="statblock">' + sbBody(b, r) + '</div>';
+    h += sbBody(b, r);
     if (b.note) h += '<p class="small">' + esc(b.note) + '</p>';
     h += '<div class="wsnote">' + (el.ok ? '<b>Available</b> to a ' + (r.moonActive ? 'Moon' : 'standard') + ' druid at level ' + state.level + ' (' + dlgEd + ' rules).' :
       '<b>Not yet available</b> at level ' + state.level + ': ' + esc(el.why.join('; ')) + '.') +
@@ -827,30 +827,11 @@
     if (!d.open) { if (d.showModal) d.showModal(); else d.setAttribute('open', ''); if (window.DndUI) DndUI.enter(d.querySelector('.dlg')); }
     d.querySelector('.dlg').scrollTop = 0;
   }
-  function sbBody(b, r) {
-    var h = '';
-    h += '<p><b>Armor Class</b> ' + b.ac + (b.acNote ? ' (' + esc(b.acNote) + ')' : '') +
-      (r.moonAC && b.type === 'Beast' ? ' <span class="small">&rarr; ' + Math.max(b.ac, r.moonAC) + ' with Circle Forms</span>' : '') +
-      (b.init != null ? ' &nbsp; <b>Initiative</b> ' + sgn(b.init) : '') + '</p>';
-    h += '<p><b>Hit Points</b> ' + (b.hp == null ? '?' : b.hp) + (b.hd ? ' (' + esc(b.hd) + ')' : '') +
-      (dpr(b) ? ' &nbsp; <b>Damage per round</b> ~' + dpr(b) + (dprCharge(b) ? ', ~' + dprCharge(b) + ' with a charge or pounce' : '') + ' <span class="small muted">(all attacks hit)</span>' : '') + '</p>';
-    h += '<p><b>Speed</b> ' + ['walk', 'climb', 'swim', 'fly', 'burrow'].filter(function (k) { return b.speed[k]; }).map(function (k) {
-      return (k === 'walk' ? '' : k + ' ') + b.speed[k] + ' ft.' + (k === 'fly' && b.speed.hover ? ' (hover)' : '');
-    }).join(', ') + '</p><hr>';
-    h += abilRow(b) + '<hr>';
-    var sk = Object.keys(b.skills || {});
-    if (sk.length) h += '<p><b>Skills</b> ' + sk.map(function (k) { return k.replace(/_/g, ' ').replace(/^./, function (c) { return c.toUpperCase(); }) + ' ' + sgn(b.skills[k]); }).join(', ') + '</p>';
-    if (b.vuln) h += '<p><b>Vulnerabilities</b> ' + esc(b.vuln) + '</p>';
-    if (b.resist) h += '<p><b>Resistances</b> ' + esc(b.resist) + '</p>';
-    if (b.immune) h += '<p><b>Immunities</b> ' + esc(b.immune) + '</p>';
-    if (b.condImmune) h += '<p><b>Condition Immunities</b> ' + esc(b.condImmune) + '</p>';
-    h += '<p><b>Senses</b> ' + esc((b.senses || []).concat(b.pp ? ['Passive Perception ' + b.pp] : []).join(', ') || '--') + '</p>';
-    h += section('Traits', b.traits) + section('Actions', b.actions) + section('Bonus Actions', b.bonusActions) + section('Reactions', b.reactions);
-    return h;
-  }
-  function section(t, list) {
-    if (!list || !list.length) return '';
-    return '<div class="sb-sec">' + t + '</div>' + list.map(function (a) { return '<p class="blk"><b>' + esc(a.name) + '.</b> ' + esc(a.desc) + '</p>'; }).join('');
+  /* full stat block: the shared renderer (STYLE.md 6i), with Wild Shape's own notes in its hooks */
+  function sbBody(b, r, mini) {
+    var acx = r.moonAC && b.type === 'Beast' ? ' <span class="small">&rarr; ' + Math.max(b.ac, r.moonAC) + ' with Circle Forms</span>' : '';
+    var hpx = dpr(b) ? ' &nbsp; <b>Damage per round</b> ~' + dpr(b) + (dprCharge(b) ? ', ~' + dprCharge(b) + ' with a charge or pounce' : '') + ' <span class="small muted">(all attacks hit)</span>' : '';
+    return DndStatblock.html(b, { ed: b.edition || state.ed, mini: !!mini, after: { ac: acx, hp: hpx } });
   }
 
   /* ---------- controls ---------- */
@@ -966,7 +947,16 @@
     }
   });
   $('#detail').addEventListener('click', function (ev) { if (ev.target === this) this.close(); });
-  $('#detail').addEventListener('close', function () { render(); });
+  $('#detail').addEventListener('close', function () {
+    if (/^#beast=/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
+    render();
+  });
+  /* deep link #beast=<id>[&ed=2014] opens that beast's stat block (the hub search links here, STYLE.md 6j) */
+  function openFromHash() {
+    var m = /^#beast=([\w-]+)(?:&ed=(2014|2024))?/.exec(location.hash);
+    if (m && DATA && DATA.beasts.some(function (x) { return x.id === m[1]; })) openDetail(m[1], m[2]);
+  }
+  window.addEventListener('hashchange', openFromHash);
   document.addEventListener('input', function (ev) {
     var id = ev.target.dataset && ev.target.dataset.note;
     if (!id) return;
@@ -1311,6 +1301,7 @@
     $('#generated').textContent = 'Data built ' + d.generated + ' · ' + d.beasts.length + ' creatures with stat blocks, ' + (d.others || []).length + ' more from other books.';
     renderSourceLinks();
     render();
+    openFromHash();
   }).catch(function (err) {
     $('#list').innerHTML = '<p class="empty">Could not load the beast data (' + esc(err.message) + ').</p>';
   });

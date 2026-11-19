@@ -163,17 +163,13 @@ dialog::backdrop { background: rgba(10, 14, 12, .55); }
 .ed-tabs { display: flex; gap: 6px; margin: 4px 0 12px; }
 .ed-tabs button { font: inherit; font-size: .85rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); border-radius: 8px; padding: 4px 10px; cursor: pointer; }
 .ed-tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-.statblock { border-top: 3px solid var(--gold); border-bottom: 3px solid var(--gold); padding: 10px 0; }
-.statblock p { margin: 3px 0; }
-.statblock hr { border: 0; border-top: 1px solid var(--line); margin: 8px 0; }
 .abil { display: grid; grid-template-columns: repeat(6, 1fr); text-align: center; gap: 4px; margin: 6px 0; }
 .abil.three { grid-template-columns: repeat(3, 1fr); }
 .abil div { background: var(--surface-2); border-radius: 6px; padding: 4px 0; font-size: .85rem; }
 .abil b { display: block; font-size: .7rem; letter-spacing: .06em; color: var(--muted); }
 .abil .mental { opacity: .55; }
-.sb-sec { font-family: Fraunces, Georgia, serif; font-size: 1.05rem; color: var(--gold); border-bottom: 1px solid var(--line); margin: 12px 0 6px; padding-bottom: 2px; }
-.blk { margin: 6px 0; }
-.blk b { font-style: italic; }
+.dsb-abil > div:nth-child(n+4) { opacity: .55; }   /* Int/Wis/Cha: replaced by the druid's own */
+.dsb.mini { margin-top: 10px; }
 .small { font-size: .82rem; color: var(--muted); }
 .wsnote { font-size: .85rem; color: var(--ink-2); background: var(--surface-2); border-radius: 8px; padding: 8px 12px; margin-top: 12px; }
 
@@ -190,9 +186,6 @@ dialog::backdrop { background: rgba(10, 14, 12, .55); }
 .ctraits { margin: 6px 0 4px; color: var(--ink-2); }
 .attacks { list-style: none; margin: 4px 0 0; padding: 0; }
 .attacks li { margin: 3px 0; line-height: 1.35; }
-.statblock.mini { margin-top: 10px; font-size: .84rem; border-width: 2px; }
-.statblock.mini .abil div { font-size: .76rem; }
-.statblock.mini .sb-sec { font-size: .95rem; margin: 8px 0 4px; }
 .nostats { margin: 8px 0 0; }
 .filters { position: relative; }
 .srcpick { position: relative; }
@@ -323,7 +316,7 @@ body.has-tracker .site-footer { padding-bottom: 260px; }
   body.has-tracker .site-footer { padding-bottom: 20px; }
 }
 
-/* === dnd-shared v1.9.1 (canonical copy: WernerCD/dnd shared/dnd-shared.css) === */
+/* === dnd-shared v1.10 (canonical copy: WernerCD/dnd shared/dnd-shared.css) === */
 /* Paste this block unchanged at the END of each site's styles.css. Do not edit it per site;
    change it in the hub repo and re-copy it to every site. It relies on the shared tokens
    (--bg, --surface, --surface-2, --ink, --ink-2, --muted, --line, --accent, --gold, --radius). */
@@ -445,6 +438,27 @@ body.has-tracker .site-footer { padding-bottom: 260px; }
   .tm-btn span { display: none; }
   .tm-list, .tm-btn[aria-expanded="true"] + .tm-list { display: block; position: static; transform: none; box-shadow: none; border: 0; padding: 0; min-width: 0; }
 }
+/* stat blocks (statblock.js) */
+.dsb { border-top: 3px solid var(--gold); border-bottom: 3px solid var(--gold); padding: 10px 0; line-height: 1.45; }
+.dsb p { margin: 3px 0; }
+.dsb-head { margin-bottom: 6px; }
+.dsb-name { font-family: Fraunces, Georgia, serif; font-size: 1.35rem; margin: 0; }
+.dsb-type { color: var(--muted); font-style: italic; margin: 0; }
+.dsb-abil { display: grid; grid-template-columns: repeat(6, 1fr); text-align: center; gap: 4px; margin: 8px 0; padding: 8px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.dsb-abil div { background: var(--surface-2); border-radius: 6px; padding: 4px 0; font-size: .85rem; }
+.dsb-abil b { display: block; font-size: .7rem; letter-spacing: .06em; color: var(--muted); }
+.dsb-mod { color: var(--ink-2); }
+.dsb-sv { display: block; font-size: .72rem; color: var(--muted); }
+.dsb-sec { font-family: Fraunces, Georgia, serif; font-size: 1.05rem; font-weight: 600; color: var(--gold); border-bottom: 1px solid var(--line); margin: 12px 0 6px; padding-bottom: 2px; }
+.dsb-blk { margin: 6px 0; }
+.dsb-blk > b { font-style: italic; }
+.dsb ul { margin: 4px 0; padding-left: 20px; }
+.dsb ul li { margin: 2px 0; }
+.dsb-src { font-size: .78rem; color: var(--muted); margin-top: 10px !important; }
+.dsb.mini { font-size: .84rem; border-width: 2px; padding: 8px 0; }
+.dsb.mini .dsb-abil div { font-size: .76rem; }
+.dsb.mini .dsb-sec { font-size: .95rem; margin: 8px 0 4px; }
+@media (max-width: 520px) { .dsb-abil { grid-template-columns: repeat(3, 1fr); } }
 /* print: paper-friendly, no chrome. Sites add their own rules to hide tool controls. */
 @media print {
   :root, :root:not([data-theme="light"]), :root[data-theme="dark"] { --bg: #fff; --surface: #fff; --surface-2: #f3f3f3; --ink: #000; --ink-2: #222; --muted: #555; --line: #bbb; --shadow: none; --accent: #2f6b4f; --accent-ink: #ffffff; --gold: #a8841c; --warn: #9a4b1c; --warn-bg: #f7e6d8; --chip: #e6efe9; color-scheme: light; }
@@ -452,8 +466,8 @@ body.has-tracker .site-footer { padding-bottom: 260px; }
   .hub-bar, .tool-menu, .char-pick, .char-import, .plot-tip, .plot-table summary, #themeBtn, .site-footer .foot-links, button, dialog::backdrop { display: none !important; }
   .site-header { border-bottom: 1px solid #000; }
   a { color: inherit; text-decoration: none; }
-  .card, .change-day li, .statblock { break-inside: avoid; }
+  .card, .change-day li, .dsb { break-inside: avoid; }
   .ui-anim [data-reveal] > * { opacity: 1 !important; }
   .plot-fig { break-inside: avoid; }
 }
-/* === end dnd-shared v1.9.1 === */
+/* === end dnd-shared v1.10 === */

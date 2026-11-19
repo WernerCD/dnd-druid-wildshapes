@@ -225,6 +225,23 @@ def from_sheet(row, canon, skills_idx):
     }
 
 
+def write_search(beasts):
+    """site/search.json for the hub's "Search every tool" box (STYLE.md 6j): names and short facts only."""
+    items = []
+    for e in beasts:
+        eds = sorted(e["editions"])
+        b = e["editions"]["2024" if "2024" in eds else eds[0]]
+        kind = b["type"].lower()
+        t = f"CR {b['crText']} {b['size']} {kind}, {' and '.join(eds)}"
+        names = sorted({e["editions"][x]["name"] for x in eds} - {e["name"]})
+        if names:
+            t += f" (also {', '.join(names)})"
+        items.append({"n": e["name"], "t": t, "k": b["type"].capitalize(), "u": f"#beast={e['id']}"})
+    with open(ROOT / "site" / "search.json", "w", encoding="utf-8") as f:
+        json.dump({"v": 1, "items": items}, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"search.json: {len(items)} items")
+
+
 def main():
     s14 = load(SRC / "open5e-srd-2014.json")
     s24 = load(SRC / "open5e-srd-2024.json")
@@ -319,6 +336,7 @@ def main():
     OUT.parent.mkdir(parents=True, exist_ok=True)
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
+    write_search(data["beasts"])
     missing = [e["name"] for e in entries.values() if not e["desc"]]
     print(f"beasts={len(entries)} others={len(others)} missing_desc={len(missing)} {missing[:20]}")
     print(f"2024 sizes fixed from 5e-bits: {len(fixed)} {fixed}")
