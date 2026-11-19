@@ -614,6 +614,7 @@
     renderTracker();
     syncControls();
     writeURL();
+    publishSheet();
     restoreFocus(foc);
   }
 
@@ -866,6 +867,32 @@
     writeProfiles();
     store.set('ws.trk', { open: state.trackerOpen, min: state.trackerMin });
   }
+  /* read-only summary for the hub's Character Sheet and Party pages (STYLE.md 6e): the linked druid
+     character's starred forms for the current edition, with final AC (Moon AC floor applied) */
+  function spdText(sp) {
+    return ['walk', 'climb', 'swim', 'fly', 'burrow'].filter(function (k) { return sp && sp[k]; }).map(function (k) {
+      return (k === 'walk' ? '' : k + ' ') + sp[k] + (k === 'fly' && sp.hover ? ' (hover)' : '');
+    }).join(', ');
+  }
+  function publishSheet() {
+    if (!window.DndChar || !DndChar.setSheet || !DATA || applying) return;
+    var ch = linkedChar(PROFILES.active);
+    if (!ch || !DndChar.levelIn(ch, 'druid')) return;
+    var r = rules(state.ed, state.circle, state.level, state.wis), forms = [];
+    DATA.beasts.forEach(function (e) {
+      var b = e.editions[state.ed];
+      if (!b || !state.favs[favKey(e.id)]) return;
+      forms.push({ n: b.name, cr: b.crText, ac: shownAC(b, r), hp: b.hp, spd: spdText(b.speed) });
+    });
+    (DATA.others || []).forEach(function (o) {
+      if (state.favs[favKey(o.id)]) forms.push({ n: o.name, cr: o.crText, spd: spdText(o.speed) });
+    });
+    forms.sort(function (x, y) { return crNum(y.cr) - crNum(x.cr) || x.n.localeCompare(y.n); });
+    var sum = { v: 1, ed: state.ed, uses: r.uses, maxcr: crText(r.maxCR), forms: forms };
+    while (JSON.stringify(sum).length > 5900 && sum.forms.length) sum.forms.pop();
+    DndChar.setSheet(ch.id, REPO, sum);
+  }
+  function crNum(t) { var m = String(t).split('/'); return m.length > 1 ? m[0] / m[1] : +t || 0; }
   function copyLink(btn) {
     writeURL();
     var done = function () { btn.textContent = 'Link copied'; if (window.DndUI) DndUI.pop(btn); setTimeout(function () { btn.textContent = 'Copy link'; }, 1500); };
