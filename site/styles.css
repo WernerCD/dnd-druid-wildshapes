@@ -466,7 +466,7 @@ body.has-tracker .site-footer { padding-bottom: 260px; }
   .hub-bar, .tool-menu, .char-pick, .char-import, .plot-tip, .plot-table summary, #themeBtn, .site-footer .foot-links, button, dialog::backdrop { display: none !important; }
   .site-header { border-bottom: 1px solid #000; }
   a { color: inherit; text-decoration: none; }
-  .card, .change-day li, .dsb { break-inside: avoid; }
+  .card, .change-day li, .statblock, .dsb { break-inside: avoid; }
   .ui-anim [data-reveal] > * { opacity: 1 !important; }
   .plot-fig { break-inside: avoid; }
 }
