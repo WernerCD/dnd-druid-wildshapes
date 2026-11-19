@@ -1,0 +1,1366 @@
+[
+ {
+  "name": "Aboleth",
+  "size": "Large"
+ },
+ {
+  "name": "Adult Black Dragon",
+  "size": "Huge"
+ },
+ {
+  "name": "Adult Blue Dragon",
+  "size": "Huge"
+ },
+ {
+  "name": "Adult Brass Dragon",
+  "size": "Huge"
+ },
+ {
+  "name": "Adult Bronze Dragon",
+  "size": "Huge"
+ },
+ {
+  "name": "Adult Copper Dragon",
+  "size": "Huge"
+ },
+ {
+  "name": "Adult Gold Dragon",
+  "size": "Huge"
+ },
+ {
+  "name": "Adult Green Dragon",
+  "size": "Huge"
+ },
+ {
+  "name": "Adult Red Dragon",
+  "size": "Huge"
+ },
+ {
+  "name": "Adult Silver Dragon",
+  "size": "Huge"
+ },
+ {
+  "name": "Adult White Dragon",
+  "size": "Huge"
+ },
+ {
+  "name": "Air Elemental",
+  "size": "Large"
+ },
+ {
+  "name": "Allosaurus",
+  "size": "Large"
+ },
+ {
+  "name": "Ancient Black Dragon",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Ancient Blue Dragon",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Ancient Brass Dragon",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Ancient Bronze Dragon",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Ancient Copper Dragon",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Ancient Gold Dragon",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Ancient Green Dragon",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Ancient Red Dragon",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Ancient Silver Dragon",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Ancient White Dragon",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Animated Armor",
+  "size": "Medium"
+ },
+ {
+  "name": "Animated Flying Sword",
+  "size": "Small"
+ },
+ {
+  "name": "Animated Rug of Smothering",
+  "size": "Large"
+ },
+ {
+  "name": "Ankheg",
+  "size": "Large"
+ },
+ {
+  "name": "Ankylosaurus",
+  "size": "Huge"
+ },
+ {
+  "name": "Ape",
+  "size": "Medium"
+ },
+ {
+  "name": "Archelon",
+  "size": "Huge"
+ },
+ {
+  "name": "Archmage",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Assassin",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Awakened Shrub",
+  "size": "Small"
+ },
+ {
+  "name": "Awakened Tree",
+  "size": "Huge"
+ },
+ {
+  "name": "Axe Beak",
+  "size": "Large"
+ },
+ {
+  "name": "Azer Sentinel",
+  "size": "Medium"
+ },
+ {
+  "name": "Baboon",
+  "size": "Small"
+ },
+ {
+  "name": "Badger",
+  "size": "Tiny"
+ },
+ {
+  "name": "Balor",
+  "size": "Huge"
+ },
+ {
+  "name": "Bandit",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Bandit Captain",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Barbed Devil",
+  "size": "Medium"
+ },
+ {
+  "name": "Basilisk",
+  "size": "Medium"
+ },
+ {
+  "name": "Bat",
+  "size": "Tiny"
+ },
+ {
+  "name": "Bearded Devil",
+  "size": "Medium"
+ },
+ {
+  "name": "Behir",
+  "size": "Huge"
+ },
+ {
+  "name": "Berserker",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Black Bear",
+  "size": "Medium"
+ },
+ {
+  "name": "Black Dragon Wyrmling",
+  "size": "Medium"
+ },
+ {
+  "name": "Black Pudding",
+  "size": "Large"
+ },
+ {
+  "name": "Blink Dog",
+  "size": "Medium"
+ },
+ {
+  "name": "Blood Hawk",
+  "size": "Small"
+ },
+ {
+  "name": "Blue Dragon Wyrmling",
+  "size": "Medium"
+ },
+ {
+  "name": "Boar",
+  "size": "Medium"
+ },
+ {
+  "name": "Bone Devil",
+  "size": "Large"
+ },
+ {
+  "name": "Brass Dragon Wyrmling",
+  "size": "Medium"
+ },
+ {
+  "name": "Bronze Dragon Wyrmling",
+  "size": "Medium"
+ },
+ {
+  "name": "Brown Bear",
+  "size": "Large"
+ },
+ {
+  "name": "Bugbear Stalker",
+  "size": "Medium"
+ },
+ {
+  "name": "Bugbear Warrior",
+  "size": "Medium"
+ },
+ {
+  "name": "Bulette",
+  "size": "Large"
+ },
+ {
+  "name": "Camel",
+  "size": "Large"
+ },
+ {
+  "name": "Cat",
+  "size": "Tiny"
+ },
+ {
+  "name": "Centaur Trooper",
+  "size": "Large"
+ },
+ {
+  "name": "Chain Devil",
+  "size": "Medium"
+ },
+ {
+  "name": "Chimera",
+  "size": "Large"
+ },
+ {
+  "name": "Chuul",
+  "size": "Large"
+ },
+ {
+  "name": "Clay Golem",
+  "size": "Large"
+ },
+ {
+  "name": "Cloaker",
+  "size": "Large"
+ },
+ {
+  "name": "Cloud Giant",
+  "size": "Huge"
+ },
+ {
+  "name": "Cockatrice",
+  "size": "Small"
+ },
+ {
+  "name": "Commoner",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Constrictor Snake",
+  "size": "Large"
+ },
+ {
+  "name": "Copper Dragon Wyrmling",
+  "size": "Medium"
+ },
+ {
+  "name": "Couatl",
+  "size": "Medium"
+ },
+ {
+  "name": "Crab",
+  "size": "Tiny"
+ },
+ {
+  "name": "Crocodile",
+  "size": "Large"
+ },
+ {
+  "name": "Cultist",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Cultist Fanatic",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Darkmantle",
+  "size": "Small"
+ },
+ {
+  "name": "Death Dog",
+  "size": "Medium"
+ },
+ {
+  "name": "Deer",
+  "size": "Medium"
+ },
+ {
+  "name": "Deva",
+  "size": "Medium"
+ },
+ {
+  "name": "Dire Wolf",
+  "size": "Large"
+ },
+ {
+  "name": "Djinni",
+  "size": "Large"
+ },
+ {
+  "name": "Doppelganger",
+  "size": "Medium"
+ },
+ {
+  "name": "Draft Horse",
+  "size": "Large"
+ },
+ {
+  "name": "Dragon Turtle",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Dretch",
+  "size": "Small"
+ },
+ {
+  "name": "Drider",
+  "size": "Large"
+ },
+ {
+  "name": "Druid",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Dryad",
+  "size": "Medium"
+ },
+ {
+  "name": "Dust Mephit",
+  "size": "Small"
+ },
+ {
+  "name": "Eagle",
+  "size": "Small"
+ },
+ {
+  "name": "Earth Elemental",
+  "size": "Large"
+ },
+ {
+  "name": "Efreeti",
+  "size": "Large"
+ },
+ {
+  "name": "Elephant",
+  "size": "Huge"
+ },
+ {
+  "name": "Elk",
+  "size": "Large"
+ },
+ {
+  "name": "Erinyes",
+  "size": "Medium"
+ },
+ {
+  "name": "Ettercap",
+  "size": "Medium"
+ },
+ {
+  "name": "Ettin",
+  "size": "Large"
+ },
+ {
+  "name": "Fire Elemental",
+  "size": "Large"
+ },
+ {
+  "name": "Fire Giant",
+  "size": "Huge"
+ },
+ {
+  "name": "Flesh Golem",
+  "size": "Medium"
+ },
+ {
+  "name": "Flying Snake",
+  "size": "Tiny"
+ },
+ {
+  "name": "Frog",
+  "size": "Tiny"
+ },
+ {
+  "name": "Frost Giant",
+  "size": "Huge"
+ },
+ {
+  "name": "Gargoyle",
+  "size": "Medium"
+ },
+ {
+  "name": "Gelatinous Cube",
+  "size": "Large"
+ },
+ {
+  "name": "Ghast",
+  "size": "Medium"
+ },
+ {
+  "name": "Ghost",
+  "size": "Medium"
+ },
+ {
+  "name": "Ghoul",
+  "size": "Medium"
+ },
+ {
+  "name": "Giant Ape",
+  "size": "Huge"
+ },
+ {
+  "name": "Giant Badger",
+  "size": "Medium"
+ },
+ {
+  "name": "Giant Bat",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Boar",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Centipede",
+  "size": "Small"
+ },
+ {
+  "name": "Giant Constrictor Snake",
+  "size": "Huge"
+ },
+ {
+  "name": "Giant Crab",
+  "size": "Medium"
+ },
+ {
+  "name": "Giant Crocodile",
+  "size": "Huge"
+ },
+ {
+  "name": "Giant Eagle",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Elk",
+  "size": "Huge"
+ },
+ {
+  "name": "Giant Fire Beetle",
+  "size": "Small"
+ },
+ {
+  "name": "Giant Frog",
+  "size": "Medium"
+ },
+ {
+  "name": "Giant Goat",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Hyena",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Lizard",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Octopus",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Owl",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Rat",
+  "size": "Small"
+ },
+ {
+  "name": "Giant Scorpion",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Seahorse",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Shark",
+  "size": "Huge"
+ },
+ {
+  "name": "Giant Spider",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Toad",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Venomous Snake",
+  "size": "Medium"
+ },
+ {
+  "name": "Giant Vulture",
+  "size": "Large"
+ },
+ {
+  "name": "Giant Wasp",
+  "size": "Medium"
+ },
+ {
+  "name": "Giant Weasel",
+  "size": "Medium"
+ },
+ {
+  "name": "Giant Wolf Spider",
+  "size": "Medium"
+ },
+ {
+  "name": "Gibbering Mouther",
+  "size": "Medium"
+ },
+ {
+  "name": "Glabrezu",
+  "size": "Large"
+ },
+ {
+  "name": "Gladiator",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Gnoll Warrior",
+  "size": "Medium"
+ },
+ {
+  "name": "Goat",
+  "size": "Medium"
+ },
+ {
+  "name": "Goblin Boss",
+  "size": "Small"
+ },
+ {
+  "name": "Goblin Minion",
+  "size": "Small"
+ },
+ {
+  "name": "Goblin Warrior",
+  "size": "Small"
+ },
+ {
+  "name": "Gold Dragon Wyrmling",
+  "size": "Medium"
+ },
+ {
+  "name": "Gorgon",
+  "size": "Large"
+ },
+ {
+  "name": "Gray Ooze",
+  "size": "Medium"
+ },
+ {
+  "name": "Green Dragon Wyrmling",
+  "size": "Medium"
+ },
+ {
+  "name": "Green Hag",
+  "size": "Medium"
+ },
+ {
+  "name": "Grick",
+  "size": "Medium"
+ },
+ {
+  "name": "Griffon",
+  "size": "Large"
+ },
+ {
+  "name": "Grimlock",
+  "size": "Medium"
+ },
+ {
+  "name": "Guard",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Guard Captain",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Guardian Naga",
+  "size": "Large"
+ },
+ {
+  "name": "Half-Dragon",
+  "size": "Medium"
+ },
+ {
+  "name": "Harpy",
+  "size": "Medium"
+ },
+ {
+  "name": "Hawk",
+  "size": "Tiny"
+ },
+ {
+  "name": "Hell Hound",
+  "size": "Medium"
+ },
+ {
+  "name": "Hezrou",
+  "size": "Large"
+ },
+ {
+  "name": "Hill Giant",
+  "size": "Huge"
+ },
+ {
+  "name": "Hippogriff",
+  "size": "Large"
+ },
+ {
+  "name": "Hippopotamus",
+  "size": "Large"
+ },
+ {
+  "name": "Hobgoblin Captain",
+  "size": "Medium"
+ },
+ {
+  "name": "Hobgoblin Warrior",
+  "size": "Medium"
+ },
+ {
+  "name": "Homunculus",
+  "size": "Tiny"
+ },
+ {
+  "name": "Horned Devil",
+  "size": "Large"
+ },
+ {
+  "name": "Hunter Shark",
+  "size": "Large"
+ },
+ {
+  "name": "Hydra",
+  "size": "Huge"
+ },
+ {
+  "name": "Hyena",
+  "size": "Medium"
+ },
+ {
+  "name": "Ice Devil",
+  "size": "Large"
+ },
+ {
+  "name": "Ice Mephit",
+  "size": "Small"
+ },
+ {
+  "name": "Imp",
+  "size": "Tiny"
+ },
+ {
+  "name": "Incubus",
+  "size": "Medium"
+ },
+ {
+  "name": "Invisible Stalker",
+  "size": "Large"
+ },
+ {
+  "name": "Iron Golem",
+  "size": "Large"
+ },
+ {
+  "name": "Jackal",
+  "size": "Small"
+ },
+ {
+  "name": "Killer Whale",
+  "size": "Huge"
+ },
+ {
+  "name": "Knight",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Kobold Warrior",
+  "size": "Small"
+ },
+ {
+  "name": "Kraken",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Lamia",
+  "size": "Large"
+ },
+ {
+  "name": "Lemure",
+  "size": "Medium"
+ },
+ {
+  "name": "Lich",
+  "size": "Medium"
+ },
+ {
+  "name": "Lion",
+  "size": "Large"
+ },
+ {
+  "name": "Lizard",
+  "size": "Tiny"
+ },
+ {
+  "name": "Mage",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Magma Mephit",
+  "size": "Small"
+ },
+ {
+  "name": "Magmin",
+  "size": "Small"
+ },
+ {
+  "name": "Mammoth",
+  "size": "Huge"
+ },
+ {
+  "name": "Manticore",
+  "size": "Large"
+ },
+ {
+  "name": "Marilith",
+  "size": "Large"
+ },
+ {
+  "name": "Mastiff",
+  "size": "Medium"
+ },
+ {
+  "name": "Medusa",
+  "size": "Medium"
+ },
+ {
+  "name": "Merfolk Skirmisher",
+  "size": "Medium"
+ },
+ {
+  "name": "Merrow",
+  "size": "Large"
+ },
+ {
+  "name": "Mimic",
+  "size": "Medium"
+ },
+ {
+  "name": "Minotaur Skeleton",
+  "size": "Large"
+ },
+ {
+  "name": "Minotaur of Baphomet",
+  "size": "Large"
+ },
+ {
+  "name": "Mule",
+  "size": "Medium"
+ },
+ {
+  "name": "Mummy",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Mummy Lord",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Nalfeshnee",
+  "size": "Large"
+ },
+ {
+  "name": "Night Hag",
+  "size": "Medium"
+ },
+ {
+  "name": "Nightmare",
+  "size": "Large"
+ },
+ {
+  "name": "Noble",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Ochre Jelly",
+  "size": "Large"
+ },
+ {
+  "name": "Ogre",
+  "size": "Large"
+ },
+ {
+  "name": "Ogre Zombie",
+  "size": "Large"
+ },
+ {
+  "name": "Oni",
+  "size": "Large"
+ },
+ {
+  "name": "Otyugh",
+  "size": "Large"
+ },
+ {
+  "name": "Owl",
+  "size": "Tiny"
+ },
+ {
+  "name": "Owlbear",
+  "size": "Large"
+ },
+ {
+  "name": "Panther",
+  "size": "Medium"
+ },
+ {
+  "name": "Pegasus",
+  "size": "Large"
+ },
+ {
+  "name": "Phase Spider",
+  "size": "Large"
+ },
+ {
+  "name": "Piranha",
+  "size": "Tiny"
+ },
+ {
+  "name": "Pirate",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Pirate Captain",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Pit Fiend",
+  "size": "Large"
+ },
+ {
+  "name": "Planetar",
+  "size": "Large"
+ },
+ {
+  "name": "Plesiosaurus",
+  "size": "Large"
+ },
+ {
+  "name": "Polar Bear",
+  "size": "Large"
+ },
+ {
+  "name": "Pony",
+  "size": "Medium"
+ },
+ {
+  "name": "Priest",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Priest Acolyte",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Pseudodragon",
+  "size": "Tiny"
+ },
+ {
+  "name": "Pteranodon",
+  "size": "Medium"
+ },
+ {
+  "name": "Purple Worm",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Quasit",
+  "size": "Tiny"
+ },
+ {
+  "name": "Rakshasa",
+  "size": "Medium"
+ },
+ {
+  "name": "Rat",
+  "size": "Tiny"
+ },
+ {
+  "name": "Raven",
+  "size": "Tiny"
+ },
+ {
+  "name": "Red Dragon Wyrmling",
+  "size": "Medium"
+ },
+ {
+  "name": "Reef Shark",
+  "size": "Medium"
+ },
+ {
+  "name": "Remorhaz",
+  "size": "Huge"
+ },
+ {
+  "name": "Rhinoceros",
+  "size": "Large"
+ },
+ {
+  "name": "Riding Horse",
+  "size": "Large"
+ },
+ {
+  "name": "Roc",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Roper",
+  "size": "Large"
+ },
+ {
+  "name": "Rust Monster",
+  "size": "Medium"
+ },
+ {
+  "name": "Saber-Toothed Tiger",
+  "size": "Large"
+ },
+ {
+  "name": "Sahuagin Warrior",
+  "size": "Medium"
+ },
+ {
+  "name": "Salamander",
+  "size": "Large"
+ },
+ {
+  "name": "Satyr",
+  "size": "Medium"
+ },
+ {
+  "name": "Scorpion",
+  "size": "Tiny"
+ },
+ {
+  "name": "Scout",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Sea Hag",
+  "size": "Medium"
+ },
+ {
+  "name": "Seahorse",
+  "size": "Tiny"
+ },
+ {
+  "name": "Shadow",
+  "size": "Medium"
+ },
+ {
+  "name": "Shambling Mound",
+  "size": "Large"
+ },
+ {
+  "name": "Shield Guardian",
+  "size": "Large"
+ },
+ {
+  "name": "Shrieker Fungus",
+  "size": "Medium"
+ },
+ {
+  "name": "Silver Dragon Wyrmling",
+  "size": "Medium"
+ },
+ {
+  "name": "Skeleton",
+  "size": "Medium"
+ },
+ {
+  "name": "Solar",
+  "size": "Large"
+ },
+ {
+  "name": "Specter",
+  "size": "Medium"
+ },
+ {
+  "name": "Sphinx of Lore",
+  "size": "Large"
+ },
+ {
+  "name": "Sphinx of Valor",
+  "size": "Large"
+ },
+ {
+  "name": "Sphinx of Wonder",
+  "size": "Tiny"
+ },
+ {
+  "name": "Spider",
+  "size": "Tiny"
+ },
+ {
+  "name": "Spirit Naga",
+  "size": "Large"
+ },
+ {
+  "name": "Sprite",
+  "size": "Tiny"
+ },
+ {
+  "name": "Spy",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Steam Mephit",
+  "size": "Small"
+ },
+ {
+  "name": "Stirge",
+  "size": "Tiny"
+ },
+ {
+  "name": "Stone Giant",
+  "size": "Huge"
+ },
+ {
+  "name": "Stone Golem",
+  "size": "Large"
+ },
+ {
+  "name": "Storm Giant",
+  "size": "Huge"
+ },
+ {
+  "name": "Succubus",
+  "size": "Medium"
+ },
+ {
+  "name": "Swarm of Bats",
+  "size": "Large"
+ },
+ {
+  "name": "Swarm of Crawling Claws",
+  "size": "Medium"
+ },
+ {
+  "name": "Swarm of Insects",
+  "size": "Medium"
+ },
+ {
+  "name": "Swarm of Piranhas",
+  "size": "Medium"
+ },
+ {
+  "name": "Swarm of Rats",
+  "size": "Medium"
+ },
+ {
+  "name": "Swarm of Ravens",
+  "size": "Medium"
+ },
+ {
+  "name": "Swarm of Venomous Snakes",
+  "size": "Medium"
+ },
+ {
+  "name": "Tarrasque",
+  "size": "Gargantuan"
+ },
+ {
+  "name": "Tiger",
+  "size": "Large"
+ },
+ {
+  "name": "Tough",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Tough Boss",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Treant",
+  "size": "Huge"
+ },
+ {
+  "name": "Triceratops",
+  "size": "Huge"
+ },
+ {
+  "name": "Troll",
+  "size": "Large"
+ },
+ {
+  "name": "Troll Limb",
+  "size": "Small"
+ },
+ {
+  "name": "Tyrannosaurus Rex",
+  "size": "Huge"
+ },
+ {
+  "name": "Unicorn",
+  "size": "Large"
+ },
+ {
+  "name": "Vampire Familiar",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Vampire Spawn",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Vampire, Bat Form",
+  "size": "Tiny"
+ },
+ {
+  "name": "Vampire, Mist Form",
+  "size": "Medium"
+ },
+ {
+  "name": "Vampire, Vampire Form",
+  "size": "Medium"
+ },
+ {
+  "name": "Venomous Snake",
+  "size": "Tiny"
+ },
+ {
+  "name": "Violet Fungus",
+  "size": "Medium"
+ },
+ {
+  "name": "Vrock",
+  "size": "Large"
+ },
+ {
+  "name": "Vulture",
+  "size": "Medium"
+ },
+ {
+  "name": "Warhorse",
+  "size": "Large"
+ },
+ {
+  "name": "Warhorse Skeleton",
+  "size": "Large"
+ },
+ {
+  "name": "Warrior Infantry",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Warrior Veteran",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Water Elemental",
+  "size": "Large"
+ },
+ {
+  "name": "Weasel",
+  "size": "Tiny"
+ },
+ {
+  "name": "Werebear, Bear Form",
+  "size": "Large"
+ },
+ {
+  "name": "Werebear, Human Form",
+  "size": "Medium"
+ },
+ {
+  "name": "Werebear, Hybrid Form",
+  "size": "Large"
+ },
+ {
+  "name": "Wereboar, Boar Form",
+  "size": "Small"
+ },
+ {
+  "name": "Wereboar, Human Form",
+  "size": "Medium"
+ },
+ {
+  "name": "Wereboar, Hybrid Form",
+  "size": "Medium"
+ },
+ {
+  "name": "Wererat, Human Form",
+  "size": "Medium"
+ },
+ {
+  "name": "Wererat, Hybrid Form",
+  "size": "Medium"
+ },
+ {
+  "name": "Wererat, Rat Form",
+  "size": "Small"
+ },
+ {
+  "name": "Weretiger, Human Form",
+  "size": "Medium"
+ },
+ {
+  "name": "Weretiger, Hybrid Form",
+  "size": "Large"
+ },
+ {
+  "name": "Weretiger, Tiger Form",
+  "size": "Large"
+ },
+ {
+  "name": "Werewolf, Human Form",
+  "size": "Medium"
+ },
+ {
+  "name": "Werewolf, Hybrid Form",
+  "size": "Large"
+ },
+ {
+  "name": "Werewolf, Wolf Form",
+  "size": "Medium"
+ },
+ {
+  "name": "White Dragon Wyrmling",
+  "size": "Medium"
+ },
+ {
+  "name": "Wight",
+  "size": "Medium"
+ },
+ {
+  "name": "Will-o'-Wisp",
+  "size": "Tiny"
+ },
+ {
+  "name": "Winter Wolf",
+  "size": "Large"
+ },
+ {
+  "name": "Wolf",
+  "size": "Medium"
+ },
+ {
+  "name": "Worg",
+  "size": "Large"
+ },
+ {
+  "name": "Wraith",
+  "size": "Medium or small"
+ },
+ {
+  "name": "Wyvern",
+  "size": "Large"
+ },
+ {
+  "name": "Xorn",
+  "size": "Medium"
+ },
+ {
+  "name": "Young Black Dragon",
+  "size": "Large"
+ },
+ {
+  "name": "Young Blue Dragon",
+  "size": "Large"
+ },
+ {
+  "name": "Young Brass Dragon",
+  "size": "Large"
+ },
+ {
+  "name": "Young Bronze Dragon",
+  "size": "Large"
+ },
+ {
+  "name": "Young Copper Dragon",
+  "size": "Large"
+ },
+ {
+  "name": "Young Gold Dragon",
+  "size": "Large"
+ },
+ {
+  "name": "Young Green Dragon",
+  "size": "Large"
+ },
+ {
+  "name": "Young Red Dragon",
+  "size": "Large"
+ },
+ {
+  "name": "Young Silver Dragon",
+  "size": "Large"
+ },
+ {
+  "name": "Young White Dragon",
+  "size": "Large"
+ },
+ {
+  "name": "Zombie",
+  "size": "Medium"
+ }
+]

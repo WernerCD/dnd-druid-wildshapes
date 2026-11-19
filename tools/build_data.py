@@ -3,6 +3,8 @@
 Inputs (all in the repo):
   source/open5e-srd-2014.json   SRD 5.1 beasts + 4 elementals (Open5e API, CC-BY-4.0)
   source/open5e-srd-2024.json   SRD 5.2 beasts + 4 elementals (Open5e API, CC-BY-4.0)
+  source/5e-bits-srd-2024-sizes.json  2024 sizes from 5e-bits/5e-database (tools/fetch_sizes.py):
+                                Open5e lists every 2024 Tiny creature as Small
   source/sheet-beasts.json      "All Beasts Expanded" tab of the original Google Sheet
   source/sheet-skills.json      "Skill Index" tab of the original Google Sheet
   data-src/descriptions.json    original descriptions + wild shape tips
@@ -226,12 +228,14 @@ def from_sheet(row, canon, skills_idx):
 def main():
     s14 = load(SRC / "open5e-srd-2014.json")
     s24 = load(SRC / "open5e-srd-2024.json")
+    sizes24 = {m["name"]: m["size"] for m in load(SRC / "5e-bits-srd-2024-sizes.json")}
     sheet = load(SRC / "sheet-beasts.json")
     skills_idx = {k: v for k, v in load(SRC / "sheet-skills.json").items()}
     desc = load(DSRC / "descriptions.json") if (DSRC / "descriptions.json").exists() else {}
     other = load(DSRC / "other-beasts.json") if (DSRC / "other-beasts.json").exists() else []
 
     entries = {}
+    fixed = []
 
     def entry(canon):
         if canon not in entries:
@@ -253,7 +257,11 @@ def main():
         canon = RENAMES_2024.get(c["name"], c["name"])
         e = entry(canon)
         e["names"]["2024"] = c["name"]
-        e["editions"]["2024"] = multi_first(from_open5e(c, "2024"))
+        b = multi_first(from_open5e(c, "2024"))
+        if sizes24.get(c["name"]) and sizes24[c["name"]] != b["size"]:
+            b["size"] = sizes24[c["name"]]  # Open5e has 2024 Tiny creatures as Small
+            fixed.append(c["name"])
+        e["editions"]["2024"] = b
 
     seen = set()
     for row in sheet:
@@ -313,6 +321,7 @@ def main():
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
     missing = [e["name"] for e in entries.values() if not e["desc"]]
     print(f"beasts={len(entries)} others={len(others)} missing_desc={len(missing)} {missing[:20]}")
+    print(f"2024 sizes fixed from 5e-bits: {len(fixed)} {fixed}")
 
 
 if __name__ == "__main__":
