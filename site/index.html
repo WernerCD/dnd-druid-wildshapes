@@ -136,8 +136,16 @@
   </div>
 </section>
 
-<main class="wrap">
+<main class="wrap" data-reveal>
   <section id="rules" class="rules-card" aria-live="polite"></section>
+
+  <details class="rules-card crchart" id="crSec" open>
+    <summary><h2>Beasts you can become, by CR</h2></summary>
+    <div class="crbody">
+      <p class="small muted" id="crNote"></p>
+      <div id="crChart"></div>
+    </div>
+  </details>
 
   <section class="results">
     <div class="results-head">
@@ -221,6 +229,8 @@
 <script src="theme.js?v=dev"></script>
 <script src="version.js?v=dev"></script>
 <script src="character.js?v=dev"></script>
+<script src="chart.js?v=dev"></script>
 <script src="app.js?v=dev"></script>
+<script src="motion.js?v=dev" defer></script><script src="ui.js?v=dev" defer></script>
 </body>
 </html>

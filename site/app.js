@@ -608,12 +608,31 @@
     list.className = 'list detail-' + state.detail;
     list.innerHTML = rows.map(function (x) { return x.o ? otherCard(x.o, x.el) : card(x.e, x.b, x.el, r); }).join('');
     $('#empty').hidden = rows.length > 0;
+    renderCRChart(rows, r);
     if (state.merge) $('#othersSec').hidden = true; else renderOthers(r, q);
     renderSources();
     renderTracker();
     syncControls();
     writeURL();
     restoreFocus(foc);
+  }
+
+  /* bar chart: how many of the beasts that pass the filters you can become at each CR up to your maximum */
+  var crPlot = null, CR_STEPS = [0, 0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  function renderCRChart(rows, r) {
+    var sec = $('#crSec');
+    if (!window.DndPlot || !sec) { if (sec) sec.hidden = true; return; }
+    if (!sec.open) return; /* drawn when opened */
+    var steps = CR_STEPS.filter(function (c) { return c <= r.maxCR; });
+    var ok = rows.filter(function (x) { return x.el.ok; });
+    var vals = steps.map(function (c) { return ok.filter(function (x) { return x.b.cr === c; }).length; });
+    var filtered = state.q.trim() || state.moves.length || state.feats.length || state.size.length || state.favOnly;
+    $('#crNote').textContent = ok.length + ' beast' + (ok.length === 1 ? '' : 's') + ' at druid level ' + state.level +
+      (state.circle === 'moon' ? ', Circle of the Moon' : '') + ' (' + state.ed + ' rules), max CR ' + crText(r.maxCR) +
+      (filtered ? ', counting only the beasts that match your filters.' : '.');
+    var opts = { labels: steps.map(crText), values: vals, name: 'Beasts', xLabel: 'Challenge rating', yLabel: 'Beasts',
+      title: 'Beasts you can become at each challenge rating' };
+    if (crPlot) crPlot.update(opts); else crPlot = DndPlot.bars($('#crChart'), opts);
   }
 
   function hideBtn(id, name) {
@@ -629,7 +648,7 @@
     var fav = !!state.favs[favKey(e.id)];
     var alt = b.name !== e.name ? '<div class="alt">' + esc(e.name) + ' in 2014</div>' : '';
     var acv = shownAC(b, r);
-    return '<article class="card' + (el.ok ? '' : ' locked') + (state.hidden[e.id] ? ' is-hidden' : '') + '"' + hueAttr(b.source) + ' data-id="' + e.id + '">' +
+    return '<article class="card' + (el.ok ? '' : ' locked') + (state.hidden[e.id] ? ' is-hidden' : '') + '"' + hueAttr(b.source) + ' data-spot data-id="' + e.id + '">' +
       hideBtn(e.id, b.name) +
       '<button type="button" class="fav" data-fav="' + e.id + '" aria-pressed="' + fav + '" aria-label="Star ' + esc(b.name) + ' as a known form" title="Known form">' +
       '<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>' +
@@ -696,7 +715,7 @@
   }
   function otherCard(o, el) {
     var fav = !!state.favs[favKey(o.id)], book = o.sourceName || o.source;
-    return '<article class="card book' + (el.ok ? '' : ' locked') + (state.hidden[o.id] ? ' is-hidden' : '') + '"' + hueAttr(book) + '>' + hideBtn(o.id, o.name) +
+    return '<article class="card book' + (el.ok ? '' : ' locked') + (state.hidden[o.id] ? ' is-hidden' : '') + '"' + hueAttr(book) + ' data-spot>' + hideBtn(o.id, o.name) +
       '<button type="button" class="fav" data-fav="' + o.id + '" aria-pressed="' + fav + '" aria-label="Star ' + esc(o.name) + ' as a known form" title="Known form">' +
       '<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>' +
       '<div class="card-top"><div><h3>' + esc(o.name) + '</h3></div><span class="cr">CR ' + esc(o.crText) + '</span></div>' +
@@ -796,7 +815,7 @@
       ' Faded scores (Int/Wis/Cha) are replaced by your own.</div>';
     $('#dBody').innerHTML = h;
     var d = $('#detail');
-    if (!d.open) { if (d.showModal) d.showModal(); else d.setAttribute('open', ''); }
+    if (!d.open) { if (d.showModal) d.showModal(); else d.setAttribute('open', ''); if (window.DndUI) DndUI.enter(d.querySelector('.dlg')); }
     d.querySelector('.dlg').scrollTop = 0;
   }
   function sbBody(b, r) {
@@ -849,11 +868,16 @@
   }
   function copyLink(btn) {
     writeURL();
-    var done = function () { btn.textContent = 'Link copied'; setTimeout(function () { btn.textContent = 'Copy link'; }, 1500); };
+    var done = function () { btn.textContent = 'Link copied'; if (window.DndUI) DndUI.pop(btn); setTimeout(function () { btn.textContent = 'Copy link'; }, 1500); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(location.href).then(done, function () { prompt('Copy this link:', location.href); });
     else prompt('Copy this link:', location.href);
   }
   function update(patch) { for (var k in patch) state[k] = patch[k]; save(); render(); }
+  (function () {
+    var sec = $('#crSec'); if (!sec) return;
+    if (store.get('ws.crchart') === 'closed') sec.open = false;
+    sec.addEventListener('toggle', function () { store.set('ws.crchart', sec.open ? 'open' : 'closed'); if (sec.open) render(); });
+  })();
 
   document.addEventListener('click', function (ev) {
     var t = ev.target.closest('button, .card');
